@@ -1,0 +1,4 @@
+/bin
+/obj
+app-api.http
+Dockerfile
