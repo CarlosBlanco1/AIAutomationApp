@@ -57,6 +57,7 @@ public partial class MydbContext : DbContext
 
             entity.HasOne(d => d.Workspace).WithMany(p => p.Automations)
                 .HasForeignKey(d => d.WorkspaceId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("automations_workspace_id_fkey");
         });
 
@@ -80,6 +81,7 @@ public partial class MydbContext : DbContext
 
             entity.HasOne(d => d.Automation).WithMany(p => p.AutomationLogs)
                 .HasForeignKey(d => d.AutomationId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("automation_logs_automation_id_fkey");
         });
 
@@ -107,6 +109,7 @@ public partial class MydbContext : DbContext
 
             entity.HasOne(d => d.Workspace).WithMany(p => p.Documents)
                 .HasForeignKey(d => d.WorkspaceId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("documents_workspace_id_fkey");
         });
 
@@ -115,6 +118,8 @@ public partial class MydbContext : DbContext
             entity.HasKey(e => e.UserId).HasName("users_pkey");
 
             entity.ToTable("users");
+
+            entity.HasIndex(e => e.Email, "users_email_key").IsUnique();
 
             entity.Property(e => e.UserId)
                 .ValueGeneratedNever()

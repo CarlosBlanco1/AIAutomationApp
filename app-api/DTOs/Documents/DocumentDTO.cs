@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace app_api.Models;
-
-public partial class Document
+public class DocumentDTO
 {
     public Guid DocumentId { get; set; }
 
@@ -18,6 +13,4 @@ public partial class Document
     public string Summary { get; set; } = null!;
 
     public DateTime CreatedAt { get; set; }
-
-    public virtual Workspace Workspace { get; set; } = null!;
 }

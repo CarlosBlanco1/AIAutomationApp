@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace app_api.Models;
-
-public partial class Automation
+public class AutomationDTO
 {
     public Guid AutomationId { get; set; }
 
@@ -18,8 +13,4 @@ public partial class Automation
     public string WebhookUrl { get; set; } = null!;
 
     public bool IsActive { get; set; }
-
-    public virtual ICollection<AutomationLog> AutomationLogs { get; set; } = new List<AutomationLog>();
-
-    public virtual Workspace Workspace { get; set; } = null!;
 }

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace app_api.Models;
-
-public partial class User
+public class UserDTO
 {
     public Guid UserId { get; set; }
 
@@ -16,6 +11,4 @@ public partial class User
     public string PasswordHash { get; set; } = null!;
 
     public DateOnly CreatedAt { get; set; }
-
-    public virtual ICollection<Workspace> Workspaces { get; set; } = new List<Workspace>();
 }
