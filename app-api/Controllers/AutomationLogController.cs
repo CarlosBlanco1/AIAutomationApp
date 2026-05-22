@@ -5,25 +5,25 @@ using Microsoft.AspNetCore.Mvc;
 [Route("/api/[controller]")]
 public class AutomationLogController : Controller
 {
-    private readonly MydbContext _mydbContext;
+    private readonly MydbContext _dbContext;
 
-    public AutomationLogController(MydbContext mydbContext)
+    public AutomationLogController(MydbContext dbContext)
     {
-        _mydbContext = mydbContext;
+        _dbContext = dbContext;
     }
 
     [HttpGet]
     [Route("{automationId:guid}")]
     public IActionResult GetAutomationLogsByAutomationId([FromRoute] Guid automationId)
     {
-        var automationExists = _mydbContext.Automations.Any(a => a.AutomationId == automationId);
+        var automationExists = _dbContext.Automations.Any(a => a.AutomationId == automationId);
 
         if (!automationExists)
         {
             return NotFound("Automation doesn't exist!");
         }
 
-        var automationLogs = _mydbContext.AutomationLogs
+        var automationLogs = _dbContext.AutomationLogs
         .Where(a => a.AutomationId == automationId)
         .Select(a => new AutomationLogDTO()
         {
@@ -41,7 +41,7 @@ public class AutomationLogController : Controller
     [HttpPost]
     public IActionResult CreateAutomationLog([FromBody] CreateAutomationLogDTO createAutomationLogDTO)
     {
-        var automationExists = _mydbContext.Automations.Any(a => a.AutomationId == createAutomationLogDTO.AutomationId);
+        var automationExists = _dbContext.Automations.Any(a => a.AutomationId == createAutomationLogDTO.AutomationId);
 
         if (!automationExists)
         {
@@ -57,8 +57,8 @@ public class AutomationLogController : Controller
             CreatedAt = DateTime.Now
         };
 
-        _mydbContext.AutomationLogs.Add(newAutomationLog);
-        _mydbContext.SaveChanges();
+        _dbContext.AutomationLogs.Add(newAutomationLog);
+        _dbContext.SaveChanges();
 
         var returnAutomationLog = new AutomationLogDTO()
         {
@@ -70,5 +70,22 @@ public class AutomationLogController : Controller
         };
 
         return CreatedAtAction(nameof(GetAutomationLogsByAutomationId), new { automationId = returnAutomationLog.AutomationId }, returnAutomationLog);
+    }
+
+    [HttpDelete]
+    [Route("{automationLogId:guid}")]
+    public IActionResult DeleteAutomationLog([FromRoute] Guid automationLogId)
+    {
+        var automationLogToDelete = _dbContext.AutomationLogs.FirstOrDefault(d => d.AutomationLogId == automationLogId);
+
+        if(automationLogToDelete == null)
+        {
+            return NotFound("Automation Log doesn't exist!");
+        }
+
+        _dbContext.AutomationLogs.Remove(automationLogToDelete);
+        _dbContext.SaveChanges();
+
+        return Ok();
     }
 }

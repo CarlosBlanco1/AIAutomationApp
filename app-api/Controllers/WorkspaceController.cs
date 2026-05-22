@@ -65,6 +65,48 @@ public class WorkspaceController : ControllerBase
             OwnerId = newWorkspace.OwnerId
         };
 
-        return CreatedAtAction(nameof(GetWorkspacesByUserId), new {userId = returnWorkspaceDto.OwnerId}, returnWorkspaceDto);  
+        return CreatedAtAction(nameof(GetWorkspacesByUserId), new { userId = returnWorkspaceDto.OwnerId }, returnWorkspaceDto);
+    }
+
+    [HttpPut]
+    [Route("{workspaceId:guid}")]
+    public IActionResult UpdateWorkspace(Guid workspaceId, [FromBody] UpdateWorkspaceDTO updateWorkspaceDTO)
+    {
+        var workspaceToUpdate = _dbContext.Workspaces.FirstOrDefault(w => w.WorkspaceId == workspaceId);
+
+        if (workspaceToUpdate == null)
+        {
+            return NotFound("Workspace doesn't exist!");
+        }
+
+        workspaceToUpdate.WorkspaceName = updateWorkspaceDTO.WorkspaceName;
+
+        _dbContext.SaveChanges();
+
+        var workspaceToReturn = new Workspace()
+        {
+            WorkspaceId = workspaceToUpdate.WorkspaceId,
+            WorkspaceName = workspaceToUpdate.WorkspaceName,
+            OwnerId = workspaceToUpdate.OwnerId
+        };
+
+        return Ok(workspaceToReturn);
+    }
+
+    [HttpDelete]
+    [Route("{workspaceId:guid}")]
+    public IActionResult DeleteWorkspace([FromRoute] Guid workspaceId)
+    {
+        var workspaceToDelete = _dbContext.Workspaces.FirstOrDefault(w => w.WorkspaceId == workspaceId);
+
+        if (workspaceToDelete == null)
+        {
+            return NotFound("Workspace doesn't exist!");
+        }
+
+        _dbContext.Workspaces.Remove(workspaceToDelete);
+        _dbContext.SaveChanges();
+
+        return Ok();
     }
 }

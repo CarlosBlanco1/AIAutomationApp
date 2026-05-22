@@ -77,4 +77,53 @@ public class AutomationController : Controller
 
         return CreatedAtAction(nameof(GetAutomationsByWorkspaceId), new {workspaceId = returnAuto.WorkspaceId}, returnAuto);
     }
+
+    [HttpPut]
+    [Route("{automationId:guid}")]
+    public IActionResult UpdateAutomation([FromRoute] Guid automationId, [FromBody] UpdateAutomationDTO updateAutomationDTO)
+    {
+        var automationToUpdate = _dbContext.Automations.FirstOrDefault(a => a.AutomationId == automationId);
+
+        if(automationToUpdate == null)
+        {
+            return NotFound("Automation doesn't exist!");
+        }
+
+        automationToUpdate.AutomationName = updateAutomationDTO.AutomationName;
+        automationToUpdate.TriggerType = updateAutomationDTO.TriggerType;
+        automationToUpdate.ActionType = updateAutomationDTO.ActionType;
+        automationToUpdate.WebhookUrl = updateAutomationDTO.WebhookUrl;
+        automationToUpdate.IsActive = updateAutomationDTO.IsActive;
+
+        _dbContext.SaveChanges();
+
+        var automationToReturn = new AutomationDTO()
+        {
+            AutomationId = automationToUpdate.AutomationId,
+            WorkspaceId = automationToUpdate.WorkspaceId,
+            AutomationName = automationToUpdate.AutomationName,
+            TriggerType = automationToUpdate.TriggerType,
+            ActionType = automationToUpdate.ActionType,
+            WebhookUrl = automationToUpdate.WebhookUrl,
+            IsActive = automationToUpdate.IsActive
+        };
+
+        return Ok(automationToReturn);
+    }
+    [HttpDelete]
+    [Route("{automationId:guid}")]
+    public IActionResult DeleteAutomation([FromRoute] Guid automationId)
+    {
+        var automationToDelete = _dbContext.Automations.FirstOrDefault(d => d.AutomationId == automationId);
+
+        if(automationToDelete == null)
+        {
+            return NotFound("Automation doesn't exist!");
+        }
+
+        _dbContext.Automations.Remove(automationToDelete);
+        _dbContext.SaveChanges();
+
+        return Ok();
+    }
 }

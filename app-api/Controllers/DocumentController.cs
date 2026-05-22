@@ -77,4 +77,50 @@ public class DocumentController : Controller
 
         return CreatedAtAction(nameof(GetDocumentsByWorkspaceId), new {workspaceId = newDoc.WorkspaceId}, newDoc);
     }
+
+    [HttpPut]
+    [Route("{documentId:guid}")]
+    public IActionResult UpdateDocument([FromRoute] Guid documentId, [FromBody] UpdateDocumentDTO updateDocumentDTO)
+    {
+        var documentToUpdate = _dbContext.Documents.FirstOrDefault(d => d.DocumentId == documentId);
+
+        if(documentToUpdate == null)
+        {
+            return NotFound("Document doesn't exist!");
+        }
+
+        documentToUpdate.FileName = updateDocumentDTO.FileName;
+
+        _dbContext.SaveChanges();
+
+        var documentToReturn = new DocumentDTO()
+        {
+            DocumentId = documentToUpdate.DocumentId,
+            WorkspaceId = documentToUpdate.WorkspaceId,
+            FileName = documentToUpdate.FileName,
+            FilePath = documentToUpdate.FilePath,
+            FileText = documentToUpdate.FileText,
+            Summary = documentToUpdate.Summary,
+            CreatedAt = documentToUpdate.CreatedAt
+        };
+
+        return Ok(documentToReturn);
+    }
+
+    [HttpDelete]
+    [Route("{documentId:guid}")]
+    public IActionResult DeleteDocument([FromRoute] Guid documentId)
+    {
+        var documentToDelete = _dbContext.Documents.FirstOrDefault(d => d.DocumentId == documentId);
+
+        if(documentToDelete == null)
+        {
+            return NotFound("Document doesn't exist!");
+        }
+
+        _dbContext.Documents.Remove(documentToDelete);
+        _dbContext.SaveChanges();
+
+        return Ok();
+    }
 }

@@ -95,5 +95,51 @@ namespace app_api.Controllers
 
             return CreatedAtAction(nameof(GetUserById), new { id = returnUser.UserId}, returnUser);
         }
+
+        [HttpPut]
+        [Route("{userId:guid}")]
+        public IActionResult UpdateUser(Guid userId, [FromBody] UpdateUserDTO updateUserDTO)
+        {
+            var userToUpdate = _dbContext.Users.FirstOrDefault(u => u.UserId == userId);
+
+            if(userToUpdate == null)
+            {
+                return NotFound("User doesn't exist!");
+            }
+
+            userToUpdate.FirstName = updateUserDTO.FirstName;
+            userToUpdate.LastName = updateUserDTO.LastName;
+
+            _dbContext.SaveChanges();
+
+            var userToReturn = new UserDTO()
+            {
+                UserId = userToUpdate.UserId,
+                FirstName = userToUpdate.FirstName,
+                LastName = userToUpdate.LastName,
+                Email = userToUpdate.Email,
+                PasswordHash = userToUpdate.PasswordHash,
+                CreatedAt = userToUpdate.CreatedAt
+            };
+
+            return Ok(userToReturn);
+        }
+
+        [HttpDelete]
+        [Route("{userId:guid}")]
+        public IActionResult DeleteUser([FromRoute] Guid userId)
+        {
+            var userToDelete = _dbContext.Users.FirstOrDefault(u => u.UserId == userId);
+
+            if(userToDelete == null)
+            {
+                return NotFound("User doesn't exist!");
+            }
+
+            _dbContext.Users.Remove(userToDelete);
+            _dbContext.SaveChanges();
+
+            return Ok();
+        }
     }
 }
