@@ -16,16 +16,16 @@ public class WorkspaceController : ControllerBase
 
     [HttpGet]
     [Route("{userId:guid}")]
-    public IActionResult GetWorkspacesByUserId(Guid userId)
+    public async Task<IActionResult> GetWorkspacesByUserId(Guid userId)
     {
-        var userExists = _dbContext.Users.Any(u => u.UserId == userId);
+        var userExists = await _dbContext.Users.AnyAsync(u => u.UserId == userId);
 
         if (!userExists)
         {
             return NotFound("User doesn't exist");
         }
 
-        var userWorkspacesDtos = _dbContext.Workspaces
+        var userWorkspacesDtos = await _dbContext.Workspaces
         .Where(w => w.OwnerId == userId)
         .Select(w => new WorkspaceDTO()
         {
@@ -33,15 +33,15 @@ public class WorkspaceController : ControllerBase
             WorkspaceName = w.WorkspaceName,
             OwnerId = w.OwnerId
         })
-        .ToList();
+        .ToListAsync();
 
         return Ok(userWorkspacesDtos);
     }
 
     [HttpPost]
-    public IActionResult CreateWorkspace([FromBody] CreateWorkspaceDTO createWorkspaceDTO)
+    public async Task<IActionResult> CreateWorkspace([FromBody] CreateWorkspaceDTO createWorkspaceDTO)
     {
-        var userExists = _dbContext.Users.Any(u => u.UserId == createWorkspaceDTO.OwnerId);
+        var userExists = await _dbContext.Users.AnyAsync(u => u.UserId == createWorkspaceDTO.OwnerId);
 
         if (!userExists)
         {
@@ -55,8 +55,8 @@ public class WorkspaceController : ControllerBase
             OwnerId = createWorkspaceDTO.OwnerId
         };
 
-        _dbContext.Workspaces.Add(newWorkspace);
-        _dbContext.SaveChanges();
+        await _dbContext.Workspaces.AddAsync(newWorkspace);
+        await _dbContext.SaveChangesAsync();
 
         var returnWorkspaceDto = new WorkspaceDTO()
         {
@@ -70,9 +70,9 @@ public class WorkspaceController : ControllerBase
 
     [HttpPut]
     [Route("{workspaceId:guid}")]
-    public IActionResult UpdateWorkspace(Guid workspaceId, [FromBody] UpdateWorkspaceDTO updateWorkspaceDTO)
+    public async Task<IActionResult> UpdateWorkspace(Guid workspaceId, [FromBody] UpdateWorkspaceDTO updateWorkspaceDTO)
     {
-        var workspaceToUpdate = _dbContext.Workspaces.FirstOrDefault(w => w.WorkspaceId == workspaceId);
+        var workspaceToUpdate = await _dbContext.Workspaces.FirstOrDefaultAsync(w => w.WorkspaceId == workspaceId);
 
         if (workspaceToUpdate == null)
         {
@@ -81,7 +81,7 @@ public class WorkspaceController : ControllerBase
 
         workspaceToUpdate.WorkspaceName = updateWorkspaceDTO.WorkspaceName;
 
-        _dbContext.SaveChanges();
+        await _dbContext.SaveChangesAsync();
 
         var workspaceToReturn = new Workspace()
         {
@@ -95,9 +95,9 @@ public class WorkspaceController : ControllerBase
 
     [HttpDelete]
     [Route("{workspaceId:guid}")]
-    public IActionResult DeleteWorkspace([FromRoute] Guid workspaceId)
+    public async Task<IActionResult> DeleteWorkspace([FromRoute] Guid workspaceId)
     {
-        var workspaceToDelete = _dbContext.Workspaces.FirstOrDefault(w => w.WorkspaceId == workspaceId);
+        var workspaceToDelete = await _dbContext.Workspaces.FirstOrDefaultAsync(w => w.WorkspaceId == workspaceId);
 
         if (workspaceToDelete == null)
         {
@@ -105,7 +105,7 @@ public class WorkspaceController : ControllerBase
         }
 
         _dbContext.Workspaces.Remove(workspaceToDelete);
-        _dbContext.SaveChanges();
+        await _dbContext.SaveChangesAsync();
 
         return Ok();
     }

@@ -1,5 +1,6 @@
 using app_api.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 [ApiController]
 [Route("/api/[controller]")]
@@ -14,16 +15,16 @@ public class AutomationController : Controller
 
     [HttpGet]
     [Route("{workspaceId:guid}")]
-    public IActionResult GetAutomationsByWorkspaceId(Guid workspaceId)
+    public async Task<IActionResult> GetAutomationsByWorkspaceId(Guid workspaceId)
     {
-        var workspaceExists = _dbContext.Workspaces.Any(w => w.WorkspaceId == workspaceId);
+        var workspaceExists = await _dbContext.Workspaces.AnyAsync(w => w.WorkspaceId == workspaceId);
 
         if (!workspaceExists)
         {
             return NotFound("Workspace not found!");
         }
 
-        var workspaceAutos = _dbContext.Automations
+        var workspaceAutos = await _dbContext.Automations
         .Where(a => a.WorkspaceId == workspaceId)
         .Select(a => new AutomationDTO()
         {
@@ -35,15 +36,15 @@ public class AutomationController : Controller
             WebhookUrl = a.WebhookUrl,
             IsActive = a.IsActive
         })
-        .ToList();
+        .ToListAsync();
 
         return Ok(workspaceAutos);
     }
 
     [HttpPost]
-    public IActionResult CreateAutomation([FromBody] CreateAutomationDTO createAutomationDTO)
+    public async Task<IActionResult> CreateAutomation([FromBody] CreateAutomationDTO createAutomationDTO)
     {
-        var workspaceExists = _dbContext.Workspaces.Any(w => w.WorkspaceId == createAutomationDTO.WorkspaceId);
+        var workspaceExists = await _dbContext.Workspaces.AnyAsync(w => w.WorkspaceId == createAutomationDTO.WorkspaceId);
 
         if (!workspaceExists)
         {
@@ -61,8 +62,8 @@ public class AutomationController : Controller
             IsActive = createAutomationDTO.IsActive
         };
 
-        _dbContext.Automations.Add(newAuto);
-        _dbContext.SaveChanges();
+        await _dbContext.Automations.AddAsync(newAuto);
+        await _dbContext.SaveChangesAsync();
 
         var returnAuto = new AutomationDTO()
         {
@@ -80,9 +81,9 @@ public class AutomationController : Controller
 
     [HttpPut]
     [Route("{automationId:guid}")]
-    public IActionResult UpdateAutomation([FromRoute] Guid automationId, [FromBody] UpdateAutomationDTO updateAutomationDTO)
+    public async Task<IActionResult> UpdateAutomation([FromRoute] Guid automationId, [FromBody] UpdateAutomationDTO updateAutomationDTO)
     {
-        var automationToUpdate = _dbContext.Automations.FirstOrDefault(a => a.AutomationId == automationId);
+        var automationToUpdate = await _dbContext.Automations.FirstOrDefaultAsync(a => a.AutomationId == automationId);
 
         if(automationToUpdate == null)
         {
@@ -95,7 +96,7 @@ public class AutomationController : Controller
         automationToUpdate.WebhookUrl = updateAutomationDTO.WebhookUrl;
         automationToUpdate.IsActive = updateAutomationDTO.IsActive;
 
-        _dbContext.SaveChanges();
+        await _dbContext.SaveChangesAsync();
 
         var automationToReturn = new AutomationDTO()
         {
@@ -112,9 +113,9 @@ public class AutomationController : Controller
     }
     [HttpDelete]
     [Route("{automationId:guid}")]
-    public IActionResult DeleteAutomation([FromRoute] Guid automationId)
+    public async Task<IActionResult> DeleteAutomation([FromRoute] Guid automationId)
     {
-        var automationToDelete = _dbContext.Automations.FirstOrDefault(d => d.AutomationId == automationId);
+        var automationToDelete = await _dbContext.Automations.FirstOrDefaultAsync(d => d.AutomationId == automationId);
 
         if(automationToDelete == null)
         {
@@ -122,7 +123,7 @@ public class AutomationController : Controller
         }
 
         _dbContext.Automations.Remove(automationToDelete);
-        _dbContext.SaveChanges();
+        await _dbContext.SaveChangesAsync();
 
         return Ok();
     }

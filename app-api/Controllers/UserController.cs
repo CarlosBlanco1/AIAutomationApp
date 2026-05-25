@@ -1,6 +1,7 @@
 using app_api.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace app_api.Controllers
@@ -16,9 +17,9 @@ namespace app_api.Controllers
             _dbContext = dbContext;
         }
         [HttpGet]
-        public IActionResult GetAllUsers()
+        public async Task<IActionResult> GetAllUsers()
         {
-            var users = _dbContext.Users.ToList();
+            var users = await _dbContext.Users.ToListAsync();
 
             var dtoUsers = new List<UserDTO>();
 
@@ -40,9 +41,9 @@ namespace app_api.Controllers
 
         [HttpGet]
         [Route("{id:guid}")]
-        public IActionResult GetUserById(Guid id)
+        public async Task<IActionResult> GetUserById(Guid id)
         {
-            var userToFind = _dbContext.Users.Find(id);
+            var userToFind = await _dbContext.Users.FindAsync(id);
 
             if(userToFind == null)
             {
@@ -65,7 +66,7 @@ namespace app_api.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateUser([FromBody] CreateUserDTO createUserDTO)
+        public async Task<IActionResult> CreateUser([FromBody] CreateUserDTO createUserDTO)
         {
             PasswordHasher<User> hasher = new();
 
@@ -80,8 +81,8 @@ namespace app_api.Controllers
 
             modelUser.PasswordHash = hasher.HashPassword(modelUser, createUserDTO.Password);
 
-            _dbContext.Users.Add(modelUser);
-            _dbContext.SaveChanges();
+            await _dbContext.Users.AddAsync(modelUser);
+            await _dbContext.SaveChangesAsync();
 
             var returnUser = new UserDTO()
             {
@@ -98,9 +99,9 @@ namespace app_api.Controllers
 
         [HttpPut]
         [Route("{userId:guid}")]
-        public IActionResult UpdateUser(Guid userId, [FromBody] UpdateUserDTO updateUserDTO)
+        public async Task<IActionResult> UpdateUser(Guid userId, [FromBody] UpdateUserDTO updateUserDTO)
         {
-            var userToUpdate = _dbContext.Users.FirstOrDefault(u => u.UserId == userId);
+            var userToUpdate = await _dbContext.Users.FirstOrDefaultAsync(u => u.UserId == userId);
 
             if(userToUpdate == null)
             {
@@ -110,7 +111,7 @@ namespace app_api.Controllers
             userToUpdate.FirstName = updateUserDTO.FirstName;
             userToUpdate.LastName = updateUserDTO.LastName;
 
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync();
 
             var userToReturn = new UserDTO()
             {
@@ -127,9 +128,9 @@ namespace app_api.Controllers
 
         [HttpDelete]
         [Route("{userId:guid}")]
-        public IActionResult DeleteUser([FromRoute] Guid userId)
+        public async Task<IActionResult> DeleteUser([FromRoute] Guid userId)
         {
-            var userToDelete = _dbContext.Users.FirstOrDefault(u => u.UserId == userId);
+            var userToDelete = await _dbContext.Users.FirstOrDefaultAsync(u => u.UserId == userId);
 
             if(userToDelete == null)
             {
@@ -137,7 +138,7 @@ namespace app_api.Controllers
             }
 
             _dbContext.Users.Remove(userToDelete);
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync();
 
             return Ok();
         }

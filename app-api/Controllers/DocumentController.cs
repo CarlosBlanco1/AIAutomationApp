@@ -1,5 +1,6 @@
 using app_api.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -14,16 +15,16 @@ public class DocumentController : Controller
 
     [HttpGet]
     [Route("{workspaceId:guid}")]
-    public IActionResult GetDocumentsByWorkspaceId(Guid workspaceId)
+    public async Task<IActionResult> GetDocumentsByWorkspaceId(Guid workspaceId)
     {
-        var workspaceExists = _dbContext.Workspaces.Any(w => w.WorkspaceId == workspaceId);
+        var workspaceExists = await _dbContext.Workspaces.AnyAsync(w => w.WorkspaceId == workspaceId);
 
         if (!workspaceExists)
         {
             return NotFound("Workspace not found!");
         }
         
-        var workspaceDocs = _dbContext.Documents
+        var workspaceDocs = await _dbContext.Documents
         .Where(d => d.WorkspaceId == workspaceId)
         .Select(d => new DocumentDTO()
         {
@@ -35,15 +36,15 @@ public class DocumentController : Controller
             Summary = d.Summary,
             CreatedAt = d.CreatedAt
         })
-        .ToList();
+        .ToListAsync();
 
         return Ok(workspaceDocs);
     }
 
     [HttpPost]
-    public IActionResult CreateDocument([FromBody] CreateDocumentDTO createDocumentDTO)
+    public async Task<IActionResult> CreateDocument([FromBody] CreateDocumentDTO createDocumentDTO)
     {
-        var workspaceExists = _dbContext.Documents.Any(d => d.WorkspaceId == createDocumentDTO.WorkspaceId);
+        var workspaceExists = await _dbContext.Documents.AnyAsync(d => d.WorkspaceId == createDocumentDTO.WorkspaceId);
 
         if (!workspaceExists)
         {
@@ -61,8 +62,8 @@ public class DocumentController : Controller
             CreatedAt = DateTime.Now
         };
 
-        _dbContext.Documents.Add(newDoc);
-        _dbContext.SaveChanges();
+        await _dbContext.Documents.AddAsync(newDoc);
+        await _dbContext.SaveChangesAsync();
 
         var returnDocDto = new DocumentDTO()
         {
@@ -80,9 +81,9 @@ public class DocumentController : Controller
 
     [HttpPut]
     [Route("{documentId:guid}")]
-    public IActionResult UpdateDocument([FromRoute] Guid documentId, [FromBody] UpdateDocumentDTO updateDocumentDTO)
+    public async Task<IActionResult> UpdateDocument([FromRoute] Guid documentId, [FromBody] UpdateDocumentDTO updateDocumentDTO)
     {
-        var documentToUpdate = _dbContext.Documents.FirstOrDefault(d => d.DocumentId == documentId);
+        var documentToUpdate = await _dbContext.Documents.FirstOrDefaultAsync(d => d.DocumentId == documentId);
 
         if(documentToUpdate == null)
         {
@@ -91,7 +92,7 @@ public class DocumentController : Controller
 
         documentToUpdate.FileName = updateDocumentDTO.FileName;
 
-        _dbContext.SaveChanges();
+        await _dbContext.SaveChangesAsync();
 
         var documentToReturn = new DocumentDTO()
         {
@@ -109,9 +110,9 @@ public class DocumentController : Controller
 
     [HttpDelete]
     [Route("{documentId:guid}")]
-    public IActionResult DeleteDocument([FromRoute] Guid documentId)
+    public async Task<IActionResult> DeleteDocument([FromRoute] Guid documentId)
     {
-        var documentToDelete = _dbContext.Documents.FirstOrDefault(d => d.DocumentId == documentId);
+        var documentToDelete = await _dbContext.Documents.FirstOrDefaultAsync(d => d.DocumentId == documentId);
 
         if(documentToDelete == null)
         {
@@ -119,7 +120,7 @@ public class DocumentController : Controller
         }
 
         _dbContext.Documents.Remove(documentToDelete);
-        _dbContext.SaveChanges();
+        await _dbContext.SaveChangesAsync();
 
         return Ok();
     }
