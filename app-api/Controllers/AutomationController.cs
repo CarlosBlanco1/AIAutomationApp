@@ -6,26 +6,25 @@ using Microsoft.EntityFrameworkCore;
 [Route("/api/[controller]")]
 public class AutomationController : Controller
 {
-    private readonly MydbContext _dbContext;
+    private readonly IAutomationRepository automationRepository;
 
-    public AutomationController(MydbContext dbContext)
+    public AutomationController(IAutomationRepository automationRepository)
     {
-        _dbContext = dbContext;
+        this.automationRepository = automationRepository;
     }
 
     [HttpGet]
     [Route("{workspaceId:guid}")]
     public async Task<IActionResult> GetAutomationsByWorkspaceId(Guid workspaceId)
     {
-        var workspaceExists = await _dbContext.Workspaces.AnyAsync(w => w.WorkspaceId == workspaceId);
+        var workspaceAutomations = await automationRepository.GetAutomationsByWorkspaceIdAsync(workspaceId);
 
-        if (!workspaceExists)
+        if (workspaceAutomations == null)
         {
             return NotFound("Workspace not found!");
         }
 
-        var workspaceAutos = await _dbContext.Automations
-        .Where(a => a.WorkspaceId == workspaceId)
+        var workspaceAutomationsDtos = workspaceAutomations
         .Select(a => new AutomationDTO()
         {
             AutomationId = a.AutomationId,
@@ -36,22 +35,15 @@ public class AutomationController : Controller
             WebhookUrl = a.WebhookUrl,
             IsActive = a.IsActive
         })
-        .ToListAsync();
+        .ToList();
 
-        return Ok(workspaceAutos);
+        return Ok(workspaceAutomationsDtos);
     }
 
     [HttpPost]
     public async Task<IActionResult> CreateAutomation([FromBody] CreateAutomationDTO createAutomationDTO)
     {
-        var workspaceExists = await _dbContext.Workspaces.AnyAsync(w => w.WorkspaceId == createAutomationDTO.WorkspaceId);
-
-        if (!workspaceExists)
-        {
-            return NotFound("Workspace not found!");
-        }
-
-        var newAuto = new Automation()
+        var newAutomation = new Automation()
         {
             AutomationId = Guid.NewGuid(),
             WorkspaceId = createAutomationDTO.WorkspaceId,
@@ -62,41 +54,46 @@ public class AutomationController : Controller
             IsActive = createAutomationDTO.IsActive
         };
 
-        await _dbContext.Automations.AddAsync(newAuto);
-        await _dbContext.SaveChangesAsync();
+        newAutomation = await automationRepository.CreateAutomationAsync(newAutomation);
+
+        if (newAutomation == null)
+        {
+            return NotFound("Workspace not found!");
+        }
 
         var returnAuto = new AutomationDTO()
         {
-            AutomationId = newAuto.AutomationId,
-            WorkspaceId = newAuto.WorkspaceId,
-            AutomationName = newAuto.AutomationName,
-            TriggerType = newAuto.TriggerType,
-            ActionType = newAuto.ActionType,
-            WebhookUrl = newAuto.WebhookUrl,
-            IsActive = newAuto.IsActive
+            AutomationId = newAutomation.AutomationId,
+            WorkspaceId = newAutomation.WorkspaceId,
+            AutomationName = newAutomation.AutomationName,
+            TriggerType = newAutomation.TriggerType,
+            ActionType = newAutomation.ActionType,
+            WebhookUrl = newAutomation.WebhookUrl,
+            IsActive = newAutomation.IsActive
         };
 
-        return CreatedAtAction(nameof(GetAutomationsByWorkspaceId), new {workspaceId = returnAuto.WorkspaceId}, returnAuto);
+        return CreatedAtAction(nameof(GetAutomationsByWorkspaceId), new { workspaceId = returnAuto.WorkspaceId }, returnAuto);
     }
 
     [HttpPut]
     [Route("{automationId:guid}")]
     public async Task<IActionResult> UpdateAutomation([FromRoute] Guid automationId, [FromBody] UpdateAutomationDTO updateAutomationDTO)
     {
-        var automationToUpdate = await _dbContext.Automations.FirstOrDefaultAsync(a => a.AutomationId == automationId);
+        var automationToUpdate = new Automation()
+        {
+            AutomationName = updateAutomationDTO.AutomationName,
+            TriggerType = updateAutomationDTO.TriggerType,
+            ActionType = updateAutomationDTO.ActionType,
+            WebhookUrl = updateAutomationDTO.WebhookUrl,
+            IsActive = updateAutomationDTO.IsActive
+        };
 
-        if(automationToUpdate == null)
+        automationToUpdate = await automationRepository.UpdateAutomationAsync(automationId, automationToUpdate);
+
+        if (automationToUpdate == null)
         {
             return NotFound("Automation doesn't exist!");
         }
-
-        automationToUpdate.AutomationName = updateAutomationDTO.AutomationName;
-        automationToUpdate.TriggerType = updateAutomationDTO.TriggerType;
-        automationToUpdate.ActionType = updateAutomationDTO.ActionType;
-        automationToUpdate.WebhookUrl = updateAutomationDTO.WebhookUrl;
-        automationToUpdate.IsActive = updateAutomationDTO.IsActive;
-
-        await _dbContext.SaveChangesAsync();
 
         var automationToReturn = new AutomationDTO()
         {
@@ -115,15 +112,12 @@ public class AutomationController : Controller
     [Route("{automationId:guid}")]
     public async Task<IActionResult> DeleteAutomation([FromRoute] Guid automationId)
     {
-        var automationToDelete = await _dbContext.Automations.FirstOrDefaultAsync(d => d.AutomationId == automationId);
+        var automationToDelete = await automationRepository.DeleteAutomationAsync(automationId);
 
-        if(automationToDelete == null)
+        if (automationToDelete == null)
         {
             return NotFound("Automation doesn't exist!");
         }
-
-        _dbContext.Automations.Remove(automationToDelete);
-        await _dbContext.SaveChangesAsync();
 
         return Ok();
     }

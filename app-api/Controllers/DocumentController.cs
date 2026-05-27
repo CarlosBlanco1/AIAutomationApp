@@ -6,26 +6,25 @@ using Microsoft.EntityFrameworkCore;
 [Route("api/[controller]")]
 public class DocumentController : Controller
 {
-    private readonly MydbContext _dbContext;
+    private readonly IDocumentRepository documentRepository;
 
-    public DocumentController(MydbContext dbContext)
+    public DocumentController(IDocumentRepository documentRepository)
     {
-        _dbContext = dbContext;
+        this.documentRepository = documentRepository;
     }
 
     [HttpGet]
     [Route("{workspaceId:guid}")]
     public async Task<IActionResult> GetDocumentsByWorkspaceId(Guid workspaceId)
     {
-        var workspaceExists = await _dbContext.Workspaces.AnyAsync(w => w.WorkspaceId == workspaceId);
+        var workspaceDocs = await documentRepository.GetDocumentsByWorkspaceIdAsync(workspaceId);
 
-        if (!workspaceExists)
+        if (workspaceDocs == null)
         {
             return NotFound("Workspace not found!");
         }
         
-        var workspaceDocs = await _dbContext.Documents
-        .Where(d => d.WorkspaceId == workspaceId)
+        var workspaceDocsDtos = workspaceDocs
         .Select(d => new DocumentDTO()
         {
             DocumentId = d.DocumentId,
@@ -36,21 +35,14 @@ public class DocumentController : Controller
             Summary = d.Summary,
             CreatedAt = d.CreatedAt
         })
-        .ToListAsync();
+        .ToList();
 
-        return Ok(workspaceDocs);
+        return Ok(workspaceDocsDtos);
     }
 
     [HttpPost]
     public async Task<IActionResult> CreateDocument([FromBody] CreateDocumentDTO createDocumentDTO)
     {
-        var workspaceExists = await _dbContext.Documents.AnyAsync(d => d.WorkspaceId == createDocumentDTO.WorkspaceId);
-
-        if (!workspaceExists)
-        {
-            return NotFound("Workspace not found!");
-        }
-
         var newDoc = new Document()
         {
             DocumentId = Guid.NewGuid(),
@@ -62,8 +54,12 @@ public class DocumentController : Controller
             CreatedAt = DateTime.Now
         };
 
-        await _dbContext.Documents.AddAsync(newDoc);
-        await _dbContext.SaveChangesAsync();
+        newDoc = await documentRepository.CreateDocumentAsync(newDoc);
+
+        if (newDoc == null)
+        {
+            return NotFound("Workspace not found!");
+        }
 
         var returnDocDto = new DocumentDTO()
         {
@@ -83,16 +79,17 @@ public class DocumentController : Controller
     [Route("{documentId:guid}")]
     public async Task<IActionResult> UpdateDocument([FromRoute] Guid documentId, [FromBody] UpdateDocumentDTO updateDocumentDTO)
     {
-        var documentToUpdate = await _dbContext.Documents.FirstOrDefaultAsync(d => d.DocumentId == documentId);
+        var documentToUpdate = new Document()
+        {
+            FileName = updateDocumentDTO.FileName
+        };
+
+        documentToUpdate = await documentRepository.UpdateDocumentAsync(documentId, documentToUpdate);
 
         if(documentToUpdate == null)
         {
             return NotFound("Document doesn't exist!");
         }
-
-        documentToUpdate.FileName = updateDocumentDTO.FileName;
-
-        await _dbContext.SaveChangesAsync();
 
         var documentToReturn = new DocumentDTO()
         {
@@ -112,15 +109,12 @@ public class DocumentController : Controller
     [Route("{documentId:guid}")]
     public async Task<IActionResult> DeleteDocument([FromRoute] Guid documentId)
     {
-        var documentToDelete = await _dbContext.Documents.FirstOrDefaultAsync(d => d.DocumentId == documentId);
+        var documentToDelete = await documentRepository.DeleteDocumentAsync(documentId);
 
         if(documentToDelete == null)
         {
             return NotFound("Document doesn't exist!");
         }
-
-        _dbContext.Documents.Remove(documentToDelete);
-        await _dbContext.SaveChangesAsync();
 
         return Ok();
     }

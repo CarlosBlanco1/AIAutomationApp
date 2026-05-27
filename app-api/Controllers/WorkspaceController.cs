@@ -8,32 +8,32 @@ namespace app_api.Controllers;
 [Route("api/[controller]")]
 public class WorkspaceController : ControllerBase
 {
-    private readonly MydbContext _dbContext;
-    public WorkspaceController(MydbContext dbContext)
+    private readonly IWorkspaceRepository workspaceRepository;
+
+    public WorkspaceController(IWorkspaceRepository workspaceRepository)
     {
-        _dbContext = dbContext;
+        this.workspaceRepository = workspaceRepository;
     }
 
     [HttpGet]
     [Route("{userId:guid}")]
     public async Task<IActionResult> GetWorkspacesByUserId(Guid userId)
     {
-        var userExists = await _dbContext.Users.AnyAsync(u => u.UserId == userId);
+        var userWorkspaces = await workspaceRepository.GetWorkspacesByUserIdAsync(userId);
 
-        if (!userExists)
+        if (userWorkspaces == null)
         {
             return NotFound("User doesn't exist");
         }
 
-        var userWorkspacesDtos = await _dbContext.Workspaces
-        .Where(w => w.OwnerId == userId)
+        var userWorkspacesDtos = userWorkspaces
         .Select(w => new WorkspaceDTO()
         {
             WorkspaceId = w.WorkspaceId,
             WorkspaceName = w.WorkspaceName,
             OwnerId = w.OwnerId
         })
-        .ToListAsync();
+        .ToList();
 
         return Ok(userWorkspacesDtos);
     }
@@ -41,13 +41,6 @@ public class WorkspaceController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> CreateWorkspace([FromBody] CreateWorkspaceDTO createWorkspaceDTO)
     {
-        var userExists = await _dbContext.Users.AnyAsync(u => u.UserId == createWorkspaceDTO.OwnerId);
-
-        if (!userExists)
-        {
-            return NotFound("User doesn't exist");
-        }
-
         var newWorkspace = new Workspace()
         {
             WorkspaceId = Guid.NewGuid(),
@@ -55,8 +48,12 @@ public class WorkspaceController : ControllerBase
             OwnerId = createWorkspaceDTO.OwnerId
         };
 
-        await _dbContext.Workspaces.AddAsync(newWorkspace);
-        await _dbContext.SaveChangesAsync();
+        newWorkspace = await workspaceRepository.CreateWorkspaceAsync(newWorkspace);
+
+        if (newWorkspace == null)
+        {
+            return NotFound("User doesn't exist");
+        }
 
         var returnWorkspaceDto = new WorkspaceDTO()
         {
@@ -72,16 +69,17 @@ public class WorkspaceController : ControllerBase
     [Route("{workspaceId:guid}")]
     public async Task<IActionResult> UpdateWorkspace(Guid workspaceId, [FromBody] UpdateWorkspaceDTO updateWorkspaceDTO)
     {
-        var workspaceToUpdate = await _dbContext.Workspaces.FirstOrDefaultAsync(w => w.WorkspaceId == workspaceId);
+        var updatedWorkspace = new Workspace()
+        {
+            WorkspaceName = updateWorkspaceDTO.WorkspaceName
+        };
+
+        var workspaceToUpdate = await workspaceRepository.UpdateWorkspaceAsync(workspaceId, updatedWorkspace);
 
         if (workspaceToUpdate == null)
         {
             return NotFound("Workspace doesn't exist!");
         }
-
-        workspaceToUpdate.WorkspaceName = updateWorkspaceDTO.WorkspaceName;
-
-        await _dbContext.SaveChangesAsync();
 
         var workspaceToReturn = new Workspace()
         {
@@ -97,15 +95,12 @@ public class WorkspaceController : ControllerBase
     [Route("{workspaceId:guid}")]
     public async Task<IActionResult> DeleteWorkspace([FromRoute] Guid workspaceId)
     {
-        var workspaceToDelete = await _dbContext.Workspaces.FirstOrDefaultAsync(w => w.WorkspaceId == workspaceId);
+        var workspaceToDelete = await workspaceRepository.DeleteWorkspaceAsync(workspaceId);
 
         if (workspaceToDelete == null)
         {
             return NotFound("Workspace doesn't exist!");
         }
-
-        _dbContext.Workspaces.Remove(workspaceToDelete);
-        await _dbContext.SaveChangesAsync();
 
         return Ok();
     }

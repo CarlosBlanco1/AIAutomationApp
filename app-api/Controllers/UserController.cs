@@ -10,16 +10,16 @@ namespace app_api.Controllers
     [Route("api/[controller]")]
     public class UserController : ControllerBase
     {
-        private readonly MydbContext _dbContext;
+        private readonly IUserRepository userRepository;
 
-        public UserController(MydbContext dbContext)
+        public UserController(IUserRepository userRepository)
         {
-            _dbContext = dbContext;
+            this.userRepository = userRepository;
         }
         [HttpGet]
         public async Task<IActionResult> GetAllUsers()
         {
-            var users = await _dbContext.Users.ToListAsync();
+            var users = await userRepository.GetAllUsersAsync();
 
             var dtoUsers = new List<UserDTO>();
 
@@ -43,7 +43,7 @@ namespace app_api.Controllers
         [Route("{id:guid}")]
         public async Task<IActionResult> GetUserById(Guid id)
         {
-            var userToFind = await _dbContext.Users.FindAsync(id);
+            var userToFind = await userRepository.GetUserByIdAsync(id);
 
             if(userToFind == null)
             {
@@ -81,8 +81,7 @@ namespace app_api.Controllers
 
             modelUser.PasswordHash = hasher.HashPassword(modelUser, createUserDTO.Password);
 
-            await _dbContext.Users.AddAsync(modelUser);
-            await _dbContext.SaveChangesAsync();
+            modelUser = await userRepository.CreateUserAsync(modelUser);
 
             var returnUser = new UserDTO()
             {
@@ -101,17 +100,18 @@ namespace app_api.Controllers
         [Route("{userId:guid}")]
         public async Task<IActionResult> UpdateUser(Guid userId, [FromBody] UpdateUserDTO updateUserDTO)
         {
-            var userToUpdate = await _dbContext.Users.FirstOrDefaultAsync(u => u.UserId == userId);
+            var userToUpdate = new User()
+            {
+                FirstName = updateUserDTO.FirstName,
+                LastName = updateUserDTO.LastName
+            };
+
+            userToUpdate = await userRepository.UpdateUserAsync(userId, userToUpdate);
 
             if(userToUpdate == null)
             {
                 return NotFound("User doesn't exist!");
             }
-
-            userToUpdate.FirstName = updateUserDTO.FirstName;
-            userToUpdate.LastName = updateUserDTO.LastName;
-
-            await _dbContext.SaveChangesAsync();
 
             var userToReturn = new UserDTO()
             {
@@ -130,15 +130,12 @@ namespace app_api.Controllers
         [Route("{userId:guid}")]
         public async Task<IActionResult> DeleteUser([FromRoute] Guid userId)
         {
-            var userToDelete = await _dbContext.Users.FirstOrDefaultAsync(u => u.UserId == userId);
+            var userToDelete = await userRepository.DeleteUserAsync(userId);
 
             if(userToDelete == null)
             {
                 return NotFound("User doesn't exist!");
             }
-
-            _dbContext.Users.Remove(userToDelete);
-            await _dbContext.SaveChangesAsync();
 
             return Ok();
         }
