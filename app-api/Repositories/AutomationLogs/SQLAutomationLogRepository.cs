@@ -1,11 +1,11 @@
 using app_api.Models;
 using Microsoft.EntityFrameworkCore;
 
-public class AutomationLogRepository : IAutomationLogRepository
+public class SQLAutomationLogRepository : IAutomationLogRepository
 {
     private readonly MydbContext _dbContext;
 
-    public AutomationLogRepository(MydbContext dbContext)
+    public SQLAutomationLogRepository(MydbContext dbContext)
     {
         _dbContext = dbContext;
     }

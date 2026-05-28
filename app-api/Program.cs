@@ -16,6 +16,14 @@ builder.Services.AddDbContext<MydbContext>(options =>
 builder.Services.AddScoped<IUserRepository, SQLUserRepository>();
 builder.Services.AddScoped<IWorkspaceRepository, SQLWorkspaceRepository>();
 builder.Services.AddScoped<IDocumentRepository, SQLDocumentRepository>();
+builder.Services.AddScoped<IAutomationRepository, SQLAutomationRepository>();
+builder.Services.AddScoped<IAutomationLogRepository, SQLAutomationLogRepository>();
+
+builder.Services.AddAutoMapper(cfg => {}, typeof(UserProfiles), 
+typeof(DocumentProfiles), 
+typeof(WorkspaceProfiles), 
+typeof(AutomationProfiles), 
+typeof(AutomationLogProfiles));
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

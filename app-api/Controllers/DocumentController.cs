@@ -1,4 +1,5 @@
 using app_api.Models;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -7,10 +8,12 @@ using Microsoft.EntityFrameworkCore;
 public class DocumentController : Controller
 {
     private readonly IDocumentRepository documentRepository;
+    private readonly IMapper mapper;
 
-    public DocumentController(IDocumentRepository documentRepository)
+    public DocumentController(IDocumentRepository documentRepository, IMapper mapper)
     {
         this.documentRepository = documentRepository;
+        this.mapper = mapper;
     }
 
     [HttpGet]
@@ -23,36 +26,14 @@ public class DocumentController : Controller
         {
             return NotFound("Workspace not found!");
         }
-        
-        var workspaceDocsDtos = workspaceDocs
-        .Select(d => new DocumentDTO()
-        {
-            DocumentId = d.DocumentId,
-            WorkspaceId = d.WorkspaceId,
-            FileName = d.FileName,
-            FilePath = d.FilePath,
-            FileText = d.FileText,
-            Summary = d.Summary,
-            CreatedAt = d.CreatedAt
-        })
-        .ToList();
 
-        return Ok(workspaceDocsDtos);
+        return Ok(mapper.Map<List<DocumentDTO>>(workspaceDocs));
     }
 
     [HttpPost]
     public async Task<IActionResult> CreateDocument([FromBody] CreateDocumentDTO createDocumentDTO)
     {
-        var newDoc = new Document()
-        {
-            DocumentId = Guid.NewGuid(),
-            WorkspaceId = createDocumentDTO.WorkspaceId,
-            FileName = createDocumentDTO.FileName,
-            FilePath = createDocumentDTO.FilePath,
-            FileText = createDocumentDTO.FileText,
-            Summary = createDocumentDTO.Summary,
-            CreatedAt = DateTime.Now
-        };
+        var newDoc = mapper.Map<Document>(createDocumentDTO);
 
         newDoc = await documentRepository.CreateDocumentAsync(newDoc);
 
@@ -61,16 +42,7 @@ public class DocumentController : Controller
             return NotFound("Workspace not found!");
         }
 
-        var returnDocDto = new DocumentDTO()
-        {
-            DocumentId = newDoc.DocumentId,
-            WorkspaceId = newDoc.WorkspaceId,
-            FileName = newDoc.FileName,
-            FilePath = newDoc.FilePath,
-            FileText = newDoc.FileText,
-            Summary = newDoc.Summary,
-            CreatedAt = newDoc.CreatedAt
-        };
+        var returnDocDto = mapper.Map<DocumentDTO>(newDoc);
 
         return CreatedAtAction(nameof(GetDocumentsByWorkspaceId), new {workspaceId = newDoc.WorkspaceId}, newDoc);
     }
@@ -79,10 +51,7 @@ public class DocumentController : Controller
     [Route("{documentId:guid}")]
     public async Task<IActionResult> UpdateDocument([FromRoute] Guid documentId, [FromBody] UpdateDocumentDTO updateDocumentDTO)
     {
-        var documentToUpdate = new Document()
-        {
-            FileName = updateDocumentDTO.FileName
-        };
+        var documentToUpdate = mapper.Map<Document>(updateDocumentDTO);
 
         documentToUpdate = await documentRepository.UpdateDocumentAsync(documentId, documentToUpdate);
 
@@ -91,18 +60,7 @@ public class DocumentController : Controller
             return NotFound("Document doesn't exist!");
         }
 
-        var documentToReturn = new DocumentDTO()
-        {
-            DocumentId = documentToUpdate.DocumentId,
-            WorkspaceId = documentToUpdate.WorkspaceId,
-            FileName = documentToUpdate.FileName,
-            FilePath = documentToUpdate.FilePath,
-            FileText = documentToUpdate.FileText,
-            Summary = documentToUpdate.Summary,
-            CreatedAt = documentToUpdate.CreatedAt
-        };
-
-        return Ok(documentToReturn);
+        return Ok(mapper.Map<DocumentDTO>(documentToUpdate));
     }
 
     [HttpDelete]

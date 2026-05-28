@@ -1,4 +1,5 @@
 using app_api.Models;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,10 +10,12 @@ namespace app_api.Controllers;
 public class WorkspaceController : ControllerBase
 {
     private readonly IWorkspaceRepository workspaceRepository;
+    private readonly IMapper mapper;
 
-    public WorkspaceController(IWorkspaceRepository workspaceRepository)
+    public WorkspaceController(IWorkspaceRepository workspaceRepository, IMapper mapper)
     {
         this.workspaceRepository = workspaceRepository;
+        this.mapper = mapper;
     }
 
     [HttpGet]
@@ -26,27 +29,13 @@ public class WorkspaceController : ControllerBase
             return NotFound("User doesn't exist");
         }
 
-        var userWorkspacesDtos = userWorkspaces
-        .Select(w => new WorkspaceDTO()
-        {
-            WorkspaceId = w.WorkspaceId,
-            WorkspaceName = w.WorkspaceName,
-            OwnerId = w.OwnerId
-        })
-        .ToList();
-
-        return Ok(userWorkspacesDtos);
+        return Ok(mapper.Map<List<WorkspaceDTO>>(userWorkspaces));
     }
 
     [HttpPost]
     public async Task<IActionResult> CreateWorkspace([FromBody] CreateWorkspaceDTO createWorkspaceDTO)
     {
-        var newWorkspace = new Workspace()
-        {
-            WorkspaceId = Guid.NewGuid(),
-            WorkspaceName = createWorkspaceDTO.WorkspaceName,
-            OwnerId = createWorkspaceDTO.OwnerId
-        };
+        var newWorkspace = mapper.Map<Workspace>(createWorkspaceDTO);
 
         newWorkspace = await workspaceRepository.CreateWorkspaceAsync(newWorkspace);
 
@@ -55,12 +44,7 @@ public class WorkspaceController : ControllerBase
             return NotFound("User doesn't exist");
         }
 
-        var returnWorkspaceDto = new WorkspaceDTO()
-        {
-            WorkspaceId = newWorkspace.WorkspaceId,
-            WorkspaceName = newWorkspace.WorkspaceName,
-            OwnerId = newWorkspace.OwnerId
-        };
+        var returnWorkspaceDto = mapper.Map<WorkspaceDTO>(newWorkspace);
 
         return CreatedAtAction(nameof(GetWorkspacesByUserId), new { userId = returnWorkspaceDto.OwnerId }, returnWorkspaceDto);
     }
@@ -69,10 +53,7 @@ public class WorkspaceController : ControllerBase
     [Route("{workspaceId:guid}")]
     public async Task<IActionResult> UpdateWorkspace(Guid workspaceId, [FromBody] UpdateWorkspaceDTO updateWorkspaceDTO)
     {
-        var updatedWorkspace = new Workspace()
-        {
-            WorkspaceName = updateWorkspaceDTO.WorkspaceName
-        };
+        var updatedWorkspace = mapper.Map<Workspace>(updateWorkspaceDTO);
 
         var workspaceToUpdate = await workspaceRepository.UpdateWorkspaceAsync(workspaceId, updatedWorkspace);
 
@@ -81,14 +62,7 @@ public class WorkspaceController : ControllerBase
             return NotFound("Workspace doesn't exist!");
         }
 
-        var workspaceToReturn = new Workspace()
-        {
-            WorkspaceId = workspaceToUpdate.WorkspaceId,
-            WorkspaceName = workspaceToUpdate.WorkspaceName,
-            OwnerId = workspaceToUpdate.OwnerId
-        };
-
-        return Ok(workspaceToReturn);
+        return Ok(mapper.Map<WorkspaceDTO>(workspaceToUpdate));
     }
 
     [HttpDelete]

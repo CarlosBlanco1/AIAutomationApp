@@ -1,4 +1,5 @@
 using app_api.Models;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -7,10 +8,12 @@ using Microsoft.EntityFrameworkCore;
 public class AutomationController : Controller
 {
     private readonly IAutomationRepository automationRepository;
+    private readonly IMapper mapper;
 
-    public AutomationController(IAutomationRepository automationRepository)
+    public AutomationController(IAutomationRepository automationRepository, IMapper mapper)
     {
         this.automationRepository = automationRepository;
+        this.mapper = mapper;
     }
 
     [HttpGet]
@@ -24,35 +27,13 @@ public class AutomationController : Controller
             return NotFound("Workspace not found!");
         }
 
-        var workspaceAutomationsDtos = workspaceAutomations
-        .Select(a => new AutomationDTO()
-        {
-            AutomationId = a.AutomationId,
-            WorkspaceId = a.WorkspaceId,
-            AutomationName = a.AutomationName,
-            TriggerType = a.TriggerType,
-            ActionType = a.ActionType,
-            WebhookUrl = a.WebhookUrl,
-            IsActive = a.IsActive
-        })
-        .ToList();
-
-        return Ok(workspaceAutomationsDtos);
+        return Ok(mapper.Map<List<AutomationDTO>>(workspaceAutomations));
     }
 
     [HttpPost]
     public async Task<IActionResult> CreateAutomation([FromBody] CreateAutomationDTO createAutomationDTO)
     {
-        var newAutomation = new Automation()
-        {
-            AutomationId = Guid.NewGuid(),
-            WorkspaceId = createAutomationDTO.WorkspaceId,
-            AutomationName = createAutomationDTO.AutomationName,
-            TriggerType = createAutomationDTO.TriggerType,
-            ActionType = createAutomationDTO.ActionType,
-            WebhookUrl = createAutomationDTO.WebhookUrl,
-            IsActive = createAutomationDTO.IsActive
-        };
+        var newAutomation = mapper.Map<Automation>(createAutomationDTO);
 
         newAutomation = await automationRepository.CreateAutomationAsync(newAutomation);
 
@@ -61,16 +42,7 @@ public class AutomationController : Controller
             return NotFound("Workspace not found!");
         }
 
-        var returnAuto = new AutomationDTO()
-        {
-            AutomationId = newAutomation.AutomationId,
-            WorkspaceId = newAutomation.WorkspaceId,
-            AutomationName = newAutomation.AutomationName,
-            TriggerType = newAutomation.TriggerType,
-            ActionType = newAutomation.ActionType,
-            WebhookUrl = newAutomation.WebhookUrl,
-            IsActive = newAutomation.IsActive
-        };
+        var returnAuto = mapper.Map<AutomationDTO>(newAutomation);
 
         return CreatedAtAction(nameof(GetAutomationsByWorkspaceId), new { workspaceId = returnAuto.WorkspaceId }, returnAuto);
     }
@@ -79,14 +51,7 @@ public class AutomationController : Controller
     [Route("{automationId:guid}")]
     public async Task<IActionResult> UpdateAutomation([FromRoute] Guid automationId, [FromBody] UpdateAutomationDTO updateAutomationDTO)
     {
-        var automationToUpdate = new Automation()
-        {
-            AutomationName = updateAutomationDTO.AutomationName,
-            TriggerType = updateAutomationDTO.TriggerType,
-            ActionType = updateAutomationDTO.ActionType,
-            WebhookUrl = updateAutomationDTO.WebhookUrl,
-            IsActive = updateAutomationDTO.IsActive
-        };
+        var automationToUpdate = mapper.Map<Automation>(updateAutomationDTO);
 
         automationToUpdate = await automationRepository.UpdateAutomationAsync(automationId, automationToUpdate);
 
@@ -95,18 +60,7 @@ public class AutomationController : Controller
             return NotFound("Automation doesn't exist!");
         }
 
-        var automationToReturn = new AutomationDTO()
-        {
-            AutomationId = automationToUpdate.AutomationId,
-            WorkspaceId = automationToUpdate.WorkspaceId,
-            AutomationName = automationToUpdate.AutomationName,
-            TriggerType = automationToUpdate.TriggerType,
-            ActionType = automationToUpdate.ActionType,
-            WebhookUrl = automationToUpdate.WebhookUrl,
-            IsActive = automationToUpdate.IsActive
-        };
-
-        return Ok(automationToReturn);
+        return Ok(mapper.Map<AutomationDTO>(automationToUpdate));
     }
     [HttpDelete]
     [Route("{automationId:guid}")]

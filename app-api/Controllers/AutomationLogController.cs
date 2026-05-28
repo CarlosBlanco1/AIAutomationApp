@@ -1,4 +1,5 @@
 using app_api.Models;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -7,10 +8,12 @@ using Microsoft.EntityFrameworkCore;
 public class AutomationLogController : Controller
 {
     private readonly IAutomationLogRepository automationLogRepository;
+    private readonly IMapper mapper;
 
-    public AutomationLogController(IAutomationLogRepository automationLogRepository)
+    public AutomationLogController(IAutomationLogRepository automationLogRepository, IMapper mapper)
     {
         this.automationLogRepository = automationLogRepository;
+        this.mapper = mapper;
     }
 
     [HttpGet]
@@ -24,31 +27,13 @@ public class AutomationLogController : Controller
             return NotFound("Automation doesn't exist!");
         }
 
-        var automationLogsDtos = automationLogs
-        .Select(a => new AutomationLogDTO()
-        {
-            AutomationLogId = a.AutomationLogId,
-            AutomationId = a.AutomationId,
-            LogStatus = a.LogStatus,
-            LogMessage = a.LogMessage,
-            CreatedAt = a.CreatedAt
-        })
-        .ToList();
-
-        return Ok(automationLogsDtos);
+        return Ok(mapper.Map<List<AutomationLogDTO>>(automationLogs));
     }
 
     [HttpPost]
     public async Task<IActionResult> CreateAutomationLog([FromBody] CreateAutomationLogDTO createAutomationLogDTO)
     {
-        var newAutomationLog = new AutomationLog()
-        {
-            AutomationLogId = Guid.NewGuid(),
-            AutomationId = createAutomationLogDTO.AutomationId,
-            LogStatus = createAutomationLogDTO.LogStatus,
-            LogMessage = createAutomationLogDTO.LogMessage,
-            CreatedAt = DateTime.Now
-        };
+        var newAutomationLog = mapper.Map<AutomationLog>(createAutomationLogDTO);
 
         newAutomationLog = await automationLogRepository.CreateAutomationLogAsync(newAutomationLog);
 
@@ -57,14 +42,7 @@ public class AutomationLogController : Controller
             return NotFound("Automation doesn't exist!");
         }
 
-        var returnAutomationLog = new AutomationLogDTO()
-        {
-            AutomationLogId = newAutomationLog.AutomationLogId,
-            AutomationId = newAutomationLog.AutomationId,
-            LogStatus = newAutomationLog.LogStatus,
-            LogMessage = newAutomationLog.LogMessage,
-            CreatedAt = newAutomationLog.CreatedAt
-        };
+        var returnAutomationLog = mapper.Map<AutomationLogDTO>(newAutomationLog);
 
         return CreatedAtAction(nameof(GetAutomationLogsByAutomationId), new { automationId = returnAutomationLog.AutomationId }, returnAutomationLog);
     }
