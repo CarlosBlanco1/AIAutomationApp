@@ -6,26 +6,25 @@ using Microsoft.EntityFrameworkCore;
 [Route("/api/[controller]")]
 public class AutomationLogController : Controller
 {
-    private readonly MydbContext _dbContext;
+    private readonly IAutomationLogRepository automationLogRepository;
 
-    public AutomationLogController(MydbContext dbContext)
+    public AutomationLogController(IAutomationLogRepository automationLogRepository)
     {
-        _dbContext = dbContext;
+        this.automationLogRepository = automationLogRepository;
     }
 
     [HttpGet]
     [Route("{automationId:guid}")]
     public async Task<IActionResult> GetAutomationLogsByAutomationId([FromRoute] Guid automationId)
     {
-        var automationExists = await _dbContext.Automations.AnyAsync(a => a.AutomationId == automationId);
+        var automationLogs = await automationLogRepository.GetAutomationLogsByAutomationIdAsync(automationId);
 
-        if (!automationExists)
+        if (automationLogs == null)
         {
             return NotFound("Automation doesn't exist!");
         }
 
-        var automationLogs = await _dbContext.AutomationLogs
-        .Where(a => a.AutomationId == automationId)
+        var automationLogsDtos = automationLogs
         .Select(a => new AutomationLogDTO()
         {
             AutomationLogId = a.AutomationLogId,
@@ -34,21 +33,14 @@ public class AutomationLogController : Controller
             LogMessage = a.LogMessage,
             CreatedAt = a.CreatedAt
         })
-        .ToListAsync();
+        .ToList();
 
-        return Ok(automationLogs);
+        return Ok(automationLogsDtos);
     }
 
     [HttpPost]
     public async Task<IActionResult> CreateAutomationLog([FromBody] CreateAutomationLogDTO createAutomationLogDTO)
     {
-        var automationExists = await _dbContext.Automations.AnyAsync(a => a.AutomationId == createAutomationLogDTO.AutomationId);
-
-        if (!automationExists)
-        {
-            return NotFound("Automation doesn't exist!");
-        }
-
         var newAutomationLog = new AutomationLog()
         {
             AutomationLogId = Guid.NewGuid(),
@@ -58,8 +50,12 @@ public class AutomationLogController : Controller
             CreatedAt = DateTime.Now
         };
 
-        await _dbContext.AutomationLogs.AddAsync(newAutomationLog);
-        await _dbContext.SaveChangesAsync();
+        newAutomationLog = await automationLogRepository.CreateAutomationLogAsync(newAutomationLog);
+
+        if (newAutomationLog == null)
+        {
+            return NotFound("Automation doesn't exist!");
+        }
 
         var returnAutomationLog = new AutomationLogDTO()
         {
@@ -77,15 +73,12 @@ public class AutomationLogController : Controller
     [Route("{automationLogId:guid}")]
     public async Task<IActionResult> DeleteAutomationLog([FromRoute] Guid automationLogId)
     {
-        var automationLogToDelete = await _dbContext.AutomationLogs.FirstOrDefaultAsync(d => d.AutomationLogId == automationLogId);
+        var automationLogToDelete = await automationLogRepository.DeleteAutomationLogAsync(automationLogId);
 
         if(automationLogToDelete == null)
         {
             return NotFound("Automation Log doesn't exist!");
         }
-
-        _dbContext.AutomationLogs.Remove(automationLogToDelete);
-        await _dbContext.SaveChangesAsync();
 
         return Ok();
     }
