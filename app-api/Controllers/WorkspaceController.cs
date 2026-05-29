@@ -33,6 +33,7 @@ public class WorkspaceController : ControllerBase
     }
 
     [HttpPost]
+    [ValidateModel]
     public async Task<IActionResult> CreateWorkspace([FromBody] CreateWorkspaceDTO createWorkspaceDTO)
     {
         var newWorkspace = mapper.Map<Workspace>(createWorkspaceDTO);
@@ -50,6 +51,7 @@ public class WorkspaceController : ControllerBase
     }
 
     [HttpPut]
+    [ValidateModel]
     [Route("{workspaceId:guid}")]
     public async Task<IActionResult> UpdateWorkspace(Guid workspaceId, [FromBody] UpdateWorkspaceDTO updateWorkspaceDTO)
     {

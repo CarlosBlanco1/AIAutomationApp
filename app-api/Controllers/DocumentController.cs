@@ -31,6 +31,7 @@ public class DocumentController : Controller
     }
 
     [HttpPost]
+    [ValidateModel]
     public async Task<IActionResult> CreateDocument([FromBody] CreateDocumentDTO createDocumentDTO)
     {
         var newDoc = mapper.Map<Document>(createDocumentDTO);
@@ -48,6 +49,7 @@ public class DocumentController : Controller
     }
 
     [HttpPut]
+    [ValidateModel]
     [Route("{documentId:guid}")]
     public async Task<IActionResult> UpdateDocument([FromRoute] Guid documentId, [FromBody] UpdateDocumentDTO updateDocumentDTO)
     {

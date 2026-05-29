@@ -42,6 +42,7 @@ namespace app_api.Controllers
         }
 
         [HttpPost]
+        [ValidateModel]
         public async Task<IActionResult> CreateUser([FromBody] CreateUserDTO createUserDTO)
         {
             PasswordHasher<User> hasher = new();
@@ -59,12 +60,18 @@ namespace app_api.Controllers
 
             modelUser = await userRepository.CreateUserAsync(modelUser);
 
+            if(modelUser == null)
+            {
+                return BadRequest("Email already exists");
+            }
+
             var returnUser = mapper.Map<UserDTO>(modelUser);
 
             return CreatedAtAction(nameof(GetUserById), new { id = returnUser.UserId}, returnUser);
         }
 
         [HttpPut]
+        [ValidateModel]
         [Route("{userId:guid}")]
         public async Task<IActionResult> UpdateUser(Guid userId, [FromBody] UpdateUserDTO updateUserDTO)
         {

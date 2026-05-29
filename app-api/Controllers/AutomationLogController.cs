@@ -31,6 +31,7 @@ public class AutomationLogController : Controller
     }
 
     [HttpPost]
+    [ValidateModel]
     public async Task<IActionResult> CreateAutomationLog([FromBody] CreateAutomationLogDTO createAutomationLogDTO)
     {
         var newAutomationLog = mapper.Map<AutomationLog>(createAutomationLogDTO);

@@ -9,8 +9,15 @@ public class SQLUserRepository : IUserRepository
     {
         _dbContext = dbContext;
     }
-    public async Task<User> CreateUserAsync(User newUser)
+    public async Task<User?> CreateUserAsync(User newUser)
     {
+        var emailExists = await _dbContext.Users.AnyAsync(u => u.Email == newUser.Email);
+
+        if(emailExists)
+        {
+            return null;
+        }
+
         await _dbContext.Users.AddAsync(newUser);
         await _dbContext.SaveChangesAsync();
         return newUser;

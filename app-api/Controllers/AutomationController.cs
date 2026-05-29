@@ -31,6 +31,7 @@ public class AutomationController : Controller
     }
 
     [HttpPost]
+    [ValidateModel]
     public async Task<IActionResult> CreateAutomation([FromBody] CreateAutomationDTO createAutomationDTO)
     {
         var newAutomation = mapper.Map<Automation>(createAutomationDTO);
@@ -48,6 +49,7 @@ public class AutomationController : Controller
     }
 
     [HttpPut]
+    [ValidateModel]
     [Route("{automationId:guid}")]
     public async Task<IActionResult> UpdateAutomation([FromRoute] Guid automationId, [FromBody] UpdateAutomationDTO updateAutomationDTO)
     {
