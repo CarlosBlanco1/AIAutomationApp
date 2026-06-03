@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace app_api.Models;
 
-public partial class MydbContext : DbContext
+public partial class MydbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
 {
     public MydbContext()
     {
@@ -21,8 +23,6 @@ public partial class MydbContext : DbContext
 
     public virtual DbSet<Document> Documents { get; set; }
 
-    public virtual DbSet<User> Users { get; set; }
-
     public virtual DbSet<Workspace> Workspaces { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -31,6 +31,8 @@ public partial class MydbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        base.OnModelCreating(modelBuilder);
+
         modelBuilder.Entity<Automation>(entity =>
         {
             entity.HasKey(e => e.AutomationId).HasName("automations_pkey");
@@ -115,28 +117,15 @@ public partial class MydbContext : DbContext
 
         modelBuilder.Entity<User>(entity =>
         {
-            entity.HasKey(e => e.UserId).HasName("users_pkey");
-
-            entity.ToTable("users");
-
-            entity.HasIndex(e => e.Email, "users_email_key").IsUnique();
-
-            entity.Property(e => e.UserId)
-                .ValueGeneratedNever()
-                .HasColumnName("user_id");
             entity.Property(e => e.CreatedAt).HasColumnName("created_at");
-            entity.Property(e => e.Email)
-                .HasMaxLength(255)
-                .HasColumnName("email");
+
             entity.Property(e => e.FirstName)
                 .HasMaxLength(255)
                 .HasColumnName("first_name");
+
             entity.Property(e => e.LastName)
                 .HasMaxLength(255)
                 .HasColumnName("last_name");
-            entity.Property(e => e.PasswordHash)
-                .HasMaxLength(255)
-                .HasColumnName("password_hash");
         });
 
         modelBuilder.Entity<Workspace>(entity =>

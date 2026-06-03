@@ -1,12 +1,3 @@
-CREATE TABLE users (
-    user_id UUID PRIMARY KEY,
-    first_name varchar(255) NOT NULL,
-    last_name varchar(255) NOT NULL,
-    email varchar(255) NOT NULL UNIQUE,
-    password_hash varchar(255) NOT NULL,
-    created_at date NOT NULL
-);
-
 CREATE TABLE workspaces (
     workspace_id UUID PRIMARY KEY,
     workspace_name varchar(255) NOT NULL,

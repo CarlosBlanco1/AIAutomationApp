@@ -1,7 +1,5 @@
 FROM postgres:latest
 
-COPY seed.sql /docker-entrypoint-initdb.d/
-
 ENV POSTGRES_USER=myuser
 ENV POSTGRES_PASSWORD=mypassword
 ENV POSTGRES_DB=mydb
