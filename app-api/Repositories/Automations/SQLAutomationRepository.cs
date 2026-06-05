@@ -9,56 +9,37 @@ public class SQLAutomationRepository : IAutomationRepository
     {
         _dbContext = dbContext;
     }
-    public async Task<Automation?> CreateAutomationAsync(Automation newAutomation)
+    public async Task<Automation> CreateAutomationAsync(Automation newAutomation)
     {
-        var workspaceExists = await _dbContext.Workspaces.AnyAsync(w => w.WorkspaceId == newAutomation.WorkspaceId);
-
-        if (!workspaceExists)
-        {
-            return null;
-        }
-
         await _dbContext.Automations.AddAsync(newAutomation);
         await _dbContext.SaveChangesAsync();
 
         return newAutomation;
     }
 
-    public async Task<Automation?> DeleteAutomationAsync(Guid AutomationId)
+    public async Task DeleteAutomationAsync(Guid AutomationId)
     {
-        var automationToDelete = await _dbContext.Automations.FirstOrDefaultAsync(d => d.AutomationId == AutomationId);
-
-        if (automationToDelete == null)
-        {
-            return null;
-        }
+        var automationToDelete = await _dbContext.Automations.FirstAsync(d => d.AutomationId == AutomationId);
 
         _dbContext.Automations.Remove(automationToDelete);
         await _dbContext.SaveChangesAsync();
-
-        return automationToDelete;
     }
 
-    public async Task<List<Automation>?> GetAutomationsByWorkspaceIdAsync(Guid workspaceId)
+    public async Task<Automation?> GetAutomationByIdAsync(Guid automationId)
     {
-        var workspaceExists = await _dbContext.Workspaces.AnyAsync(w => w.WorkspaceId == workspaceId);
+        return await _dbContext.Automations
+        .Include(a => a.Workspace)
+        .FirstOrDefaultAsync(a => a.AutomationId == automationId);
+    }
 
-        if (!workspaceExists)
-        {
-            return null;
-        }
-
+    public async Task<List<Automation>> GetAutomationsByWorkspaceIdAsync(Guid workspaceId)
+    {
         return await _dbContext.Automations.Where(a => a.WorkspaceId == workspaceId).ToListAsync();
     }
 
-    public async Task<Automation?> UpdateAutomationAsync(Guid AutomationId, Automation updatedAutomation)
+    public async Task<Automation> UpdateAutomationAsync(Guid AutomationId, Automation updatedAutomation)
     {
-        var automationToUpdate = await _dbContext.Automations.FirstOrDefaultAsync(a => a.AutomationId == AutomationId);
-
-        if(automationToUpdate == null)
-        {
-            return null;
-        }
+        var automationToUpdate = await _dbContext.Automations.FirstAsync(a => a.AutomationId == AutomationId);
 
         automationToUpdate.AutomationName = updatedAutomation.AutomationName;
         automationToUpdate.TriggerType = updatedAutomation.TriggerType;

@@ -1,74 +1,69 @@
-// using app_api.Models;
-// using Microsoft.EntityFrameworkCore;
+using app_api.Models;
+using Microsoft.EntityFrameworkCore;
 
-// public class SQLWorkspaceRepository : IWorkspaceRepository
-// {
-//     private readonly MydbContext _dbContext;
+public class SQLWorkspaceRepository : IWorkspaceRepository
+{
+    private readonly MydbContext _dbContext;
 
-//     public SQLWorkspaceRepository(MydbContext dbContext)
-//     {
-//         _dbContext = dbContext;
-//     }
-//     public async Task<Workspace?> CreateWorkspaceAsync(Workspace newWorkspace)
-//     {
-//         var userExists = await _dbContext.Users.AnyAsync(u => u.UserId == newWorkspace.OwnerId);
+    public SQLWorkspaceRepository(MydbContext dbContext)
+    {
+        _dbContext = dbContext;
+    }
+    public async Task<Workspace?> CreateWorkspaceAsync(Guid OwnerId, Workspace newWorkspace)
+    {
+        var userExists = await _dbContext.Users.AnyAsync(u => u.Id == OwnerId);
 
-//         if(!userExists)
-//         {
-//             return null;
-//         }
+        if(!userExists)
+        {
+            return null;
+        }
 
-//         await _dbContext.Workspaces.AddAsync(newWorkspace);
-//         await _dbContext.SaveChangesAsync();
+        newWorkspace.OwnerId = OwnerId;
+
+        await _dbContext.Workspaces.AddAsync(newWorkspace);
+        await _dbContext.SaveChangesAsync();
         
-//         return newWorkspace;
-//     }
+        return newWorkspace;
+    }
 
-//     public async Task<Workspace?> DeleteWorkspaceAsync(Guid WorkspaceId)
-//     {
-//         var WorkspaceToDelete = await _dbContext.Workspaces.FirstOrDefaultAsync(u => u.WorkspaceId == WorkspaceId);
+    public async Task DeleteWorkspaceAsync(Guid WorkspaceId)
+    {
+        var WorkspaceToDelete = await _dbContext.Workspaces.FirstAsync(u => u.WorkspaceId == WorkspaceId);
 
-//         if(WorkspaceToDelete == null)
-//         {
-//             return null;
-//         }
+        _dbContext.Workspaces.Remove(WorkspaceToDelete);
+        await _dbContext.SaveChangesAsync();
+    }
 
-//         _dbContext.Workspaces.Remove(WorkspaceToDelete);
-//         await _dbContext.SaveChangesAsync();
+    public async Task<List<Workspace>> GetAllWorkspacesAsync()
+    {
+        return await _dbContext.Workspaces.ToListAsync();
+    }
 
-//         return WorkspaceToDelete;
-//     }
+    public async Task<Workspace?> GetWorkspaceByIdAsync(Guid workspaceId)
+    {
+        return await _dbContext.Workspaces.FirstOrDefaultAsync(w => w.WorkspaceId == workspaceId);
+    }
 
-//     public async Task<List<Workspace>> GetAllWorkspacesAsync()
-//     {
-//         return await _dbContext.Workspaces.ToListAsync();
-//     }
+    public async Task<List<Workspace>?> GetWorkspacesByUserIdAsync(Guid userId)
+    {
+        var userExists = await _dbContext.Users.AnyAsync(u => u.Id == userId);
 
-//     public async Task<List<Workspace>?> GetWorkspacesByUserIdAsync(Guid userId)
-//     {
-//         var userExists = await _dbContext.Users.AnyAsync(u => u.UserId == userId);
+        if(!userExists)
+        {
+            return null;
+        }
 
-//         if(!userExists)
-//         {
-//             return null;
-//         }
+        return await _dbContext.Workspaces.Where(w => w.OwnerId == userId).ToListAsync();
+    }
 
-//         return await _dbContext.Workspaces.Where(w => w.OwnerId == userId).ToListAsync();
-//     }
+    public async Task<Workspace> UpdateWorkspaceAsync(Guid WorkspaceId, Workspace updatedWorkspace)
+    {
+        var WorkspaceToUpdate = await _dbContext.Workspaces.FirstAsync(u => u.WorkspaceId == WorkspaceId);
 
-//     public async Task<Workspace?> UpdateWorkspaceAsync(Guid WorkspaceId, Workspace updatedWorkspace)
-//     {
-//         var WorkspaceToUpdate = await _dbContext.Workspaces.FirstOrDefaultAsync(u => u.WorkspaceId == WorkspaceId);
+        WorkspaceToUpdate.WorkspaceName = updatedWorkspace.WorkspaceName;
 
-//         if(WorkspaceToUpdate == null)
-//         {
-//             return null;
-//         }
+        await _dbContext.SaveChangesAsync();
 
-//         WorkspaceToUpdate.WorkspaceName = updatedWorkspace.WorkspaceName;
-
-//         await _dbContext.SaveChangesAsync();
-
-//         return WorkspaceToUpdate;
-//     }
-// }
+        return WorkspaceToUpdate;
+    }
+}

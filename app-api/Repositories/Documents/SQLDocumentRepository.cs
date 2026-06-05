@@ -9,56 +9,37 @@ public class SQLDocumentRepository : IDocumentRepository
     {
         _dbContext = dbContext;
     }
-    public async Task<Document?> CreateDocumentAsync(Document newDocument)
+    public async Task<Document> CreateDocumentAsync(Document newDocument)
     {
-        var workspaceExists = await _dbContext.Workspaces.AnyAsync(w => w.WorkspaceId == newDocument.WorkspaceId);
-
-        if (!workspaceExists)
-        {
-            return null;
-        }
-
         await _dbContext.Documents.AddAsync(newDocument);
         await _dbContext.SaveChangesAsync();
 
         return newDocument;
     }
 
-    public async Task<Document?> DeleteDocumentAsync(Guid DocumentId)
+    public async Task DeleteDocumentAsync(Guid DocumentId)
     {
-        var documentToDelete = await _dbContext.Documents.FirstOrDefaultAsync(d => d.DocumentId == DocumentId);
-
-        if(documentToDelete == null)
-        {
-            return null;
-        }
+        var documentToDelete = await _dbContext.Documents.FirstAsync(d => d.DocumentId == DocumentId);
 
         _dbContext.Documents.Remove(documentToDelete);
         await _dbContext.SaveChangesAsync();
-
-        return documentToDelete;
     }
 
-    public async Task<List<Document>?> GetDocumentsByWorkspaceIdAsync(Guid workspaceId)
+    public async Task<Document?> GetDocumentByIdAsync(Guid documentId)
     {
-        var workspaceExists = await _dbContext.Workspaces.AnyAsync(w => w.WorkspaceId == workspaceId);
+        return await _dbContext.Documents
+        .Include(d => d.Workspace)
+        .FirstOrDefaultAsync(d => d.DocumentId == documentId);
+    }
 
-        if (!workspaceExists)
-        {
-            return null;
-        }
-
+    public async Task<List<Document>> GetDocumentsByWorkspaceIdAsync(Guid workspaceId)
+    {
         return await _dbContext.Documents.Where(d => d.WorkspaceId == workspaceId).ToListAsync();
     }
 
-    public async Task<Document?> UpdateDocumentAsync(Guid DocumentId, Document updatedDocument)
+    public async Task<Document> UpdateDocumentAsync(Guid DocumentId, Document updatedDocument)
     {
-        var documentToUpdate = await _dbContext.Documents.FirstOrDefaultAsync(d => d.DocumentId == DocumentId);
-
-        if(documentToUpdate == null)
-        {
-            return null;
-        }
+        var documentToUpdate = await _dbContext.Documents.FirstAsync(d => d.DocumentId == DocumentId);
 
         documentToUpdate.FileName = updatedDocument.FileName;
         

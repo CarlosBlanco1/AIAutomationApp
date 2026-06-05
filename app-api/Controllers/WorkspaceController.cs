@@ -1,5 +1,7 @@
+using System.Security.Claims;
 using app_api.Models;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,10 +21,11 @@ public class WorkspaceController : ControllerBase
     }
 
     [HttpGet]
-    [Route("{userId:guid}")]
-    public async Task<IActionResult> GetWorkspacesByUserId(Guid userId)
+    [Authorize]
+    public async Task<IActionResult> GetWorkspacesByUserId()
     {
-        var userWorkspaces = await workspaceRepository.GetWorkspacesByUserIdAsync(userId);
+        var idInToken = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        var userWorkspaces = await workspaceRepository.GetWorkspacesByUserIdAsync(idInToken);
 
         if (userWorkspaces == null)
         {
@@ -34,11 +37,14 @@ public class WorkspaceController : ControllerBase
 
     [HttpPost]
     [ValidateModel]
+    [Authorize]
     public async Task<IActionResult> CreateWorkspace([FromBody] CreateWorkspaceDTO createWorkspaceDTO)
     {
+        var idInToken = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+
         var newWorkspace = mapper.Map<Workspace>(createWorkspaceDTO);
 
-        newWorkspace = await workspaceRepository.CreateWorkspaceAsync(newWorkspace);
+        newWorkspace = await workspaceRepository.CreateWorkspaceAsync(idInToken, newWorkspace);
 
         if (newWorkspace == null)
         {
@@ -53,30 +59,50 @@ public class WorkspaceController : ControllerBase
     [HttpPut]
     [ValidateModel]
     [Route("{workspaceId:guid}")]
+    [Authorize]
     public async Task<IActionResult> UpdateWorkspace(Guid workspaceId, [FromBody] UpdateWorkspaceDTO updateWorkspaceDTO)
     {
-        var updatedWorkspace = mapper.Map<Workspace>(updateWorkspaceDTO);
+        var idInToken = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
-        var workspaceToUpdate = await workspaceRepository.UpdateWorkspaceAsync(workspaceId, updatedWorkspace);
+        var workspaceToUpdate = await workspaceRepository.GetWorkspaceByIdAsync(workspaceId);
 
         if (workspaceToUpdate == null)
         {
             return NotFound("Workspace doesn't exist!");
         }
 
+        if(workspaceToUpdate.OwnerId != idInToken)
+        {
+            return Forbid();
+        }
+        
+        var updatedWorkspace = mapper.Map<Workspace>(updateWorkspaceDTO);
+
+        workspaceToUpdate = await workspaceRepository.UpdateWorkspaceAsync(workspaceId, updatedWorkspace);
+
         return Ok(mapper.Map<WorkspaceDTO>(workspaceToUpdate));
     }
 
     [HttpDelete]
     [Route("{workspaceId:guid}")]
+    [Authorize]
     public async Task<IActionResult> DeleteWorkspace([FromRoute] Guid workspaceId)
     {
-        var workspaceToDelete = await workspaceRepository.DeleteWorkspaceAsync(workspaceId);
+        var idInToken = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
-        if (workspaceToDelete == null)
+        var workspaceToUpdate = await workspaceRepository.GetWorkspaceByIdAsync(workspaceId);
+
+        if (workspaceToUpdate == null)
         {
             return NotFound("Workspace doesn't exist!");
         }
+
+        if(workspaceToUpdate.OwnerId != idInToken)
+        {
+            return Forbid();
+        }
+
+        await workspaceRepository.DeleteWorkspaceAsync(workspaceId);
 
         return Ok();
     }

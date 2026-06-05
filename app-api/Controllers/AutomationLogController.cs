@@ -1,5 +1,7 @@
+using System.Security.Claims;
 using app_api.Models;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,39 +11,59 @@ public class AutomationLogController : Controller
 {
     private readonly IAutomationLogRepository automationLogRepository;
     private readonly IMapper mapper;
+    private readonly IAutomationRepository automationRepository;
 
-    public AutomationLogController(IAutomationLogRepository automationLogRepository, IMapper mapper)
+    public AutomationLogController(IAutomationLogRepository automationLogRepository, IMapper mapper, IAutomationRepository automationRepository)
     {
         this.automationLogRepository = automationLogRepository;
         this.mapper = mapper;
+        this.automationRepository = automationRepository;
     }
 
     [HttpGet]
     [Route("{automationId:guid}")]
+    [Authorize]
     public async Task<IActionResult> GetAutomationLogsByAutomationId([FromRoute] Guid automationId)
     {
-        var automationLogs = await automationLogRepository.GetAutomationLogsByAutomationIdAsync(automationId);
+        var idInToken = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
-        if (automationLogs == null)
+        var automation = await automationRepository.GetAutomationByIdAsync(automationId);
+
+        if(automation == null)
         {
             return NotFound("Automation doesn't exist!");
         }
+        else if(automation.Workspace.OwnerId != idInToken)
+        {
+            return Forbid();
+        }
+
+        var automationLogs = await automationLogRepository.GetAutomationLogsByAutomationIdAsync(automationId);
 
         return Ok(mapper.Map<List<AutomationLogDTO>>(automationLogs));
     }
 
     [HttpPost]
     [ValidateModel]
+    [Authorize]
     public async Task<IActionResult> CreateAutomationLog([FromBody] CreateAutomationLogDTO createAutomationLogDTO)
     {
-        var newAutomationLog = mapper.Map<AutomationLog>(createAutomationLogDTO);
+        var idInToken = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
-        newAutomationLog = await automationLogRepository.CreateAutomationLogAsync(newAutomationLog);
+        var automation = await automationRepository.GetAutomationByIdAsync(createAutomationLogDTO.AutomationId);
 
-        if (newAutomationLog == null)
+        if(automation == null)
         {
             return NotFound("Automation doesn't exist!");
         }
+        else if(automation.Workspace.OwnerId != idInToken)
+        {
+            return Forbid();
+        }
+
+        var newAutomationLog = mapper.Map<AutomationLog>(createAutomationLogDTO);
+
+        newAutomationLog = await automationLogRepository.CreateAutomationLogAsync(newAutomationLog);
 
         var returnAutomationLog = mapper.Map<AutomationLogDTO>(newAutomationLog);
 
@@ -50,14 +72,23 @@ public class AutomationLogController : Controller
 
     [HttpDelete]
     [Route("{automationLogId:guid}")]
+    [Authorize]
     public async Task<IActionResult> DeleteAutomationLog([FromRoute] Guid automationLogId)
     {
-        var automationLogToDelete = await automationLogRepository.DeleteAutomationLogAsync(automationLogId);
+        var idInToken = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
-        if(automationLogToDelete == null)
+        var automationLog = await automationLogRepository.GetAutomationLogByIdAsync(automationLogId);
+
+        if(automationLog == null)
         {
             return NotFound("Automation Log doesn't exist!");
         }
+        else if(automationLog.Automation.Workspace.OwnerId != idInToken)
+        {
+            return Forbid();
+        }
+
+        await automationLogRepository.DeleteAutomationLogAsync(automationLogId);
 
         return Ok();
     }

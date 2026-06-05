@@ -1,104 +1,83 @@
-// using app_api.Models;
-// using AutoMapper;
-// using Microsoft.AspNetCore.Identity;
-// using Microsoft.AspNetCore.Mvc;
-// using Microsoft.EntityFrameworkCore;
-// using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.Security.Claims;
+using app_api.Models;
+using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
-// namespace app_api.Controllers
-// {
-//     [ApiController]
-//     [Route("api/[controller]")]
-//     public class UserController : ControllerBase
-//     {
-//         private readonly IUserRepository userRepository;
-//         private readonly IMapper mapper;
+namespace app_api.Controllers
+{
+    [ApiController]
+    [Route("api/[controller]")]
+    public class UserController : ControllerBase
+    {
+        private readonly IUserRepository userRepository;
+        private readonly IMapper mapper;
+        public UserController(IUserRepository userRepository, IMapper mapper)
+        {
+            this.userRepository = userRepository;
+            this.mapper = mapper;
+        }
+        [HttpGet]
+        [Authorize(Roles = "Admin")] // TO BE IMPLEMENTED
+        public async Task<IActionResult> GetAllUsers()
+        {
+            var users = await userRepository.GetAllUsersAsync();
 
-//         public UserController(IUserRepository userRepository, IMapper mapper)
-//         {
-//             this.userRepository = userRepository;
-//             this.mapper = mapper;
-//         }
-//         [HttpGet]
-//         public async Task<IActionResult> GetAllUsers()
-//         {
-//             var users = await userRepository.GetAllUsersAsync();
+            return Ok(mapper.Map<List<UserDTO>>(users));
+        }
 
-//             return Ok(mapper.Map<List<UserDTO>>(users));
-//         }
+        [HttpGet("me")]
+        [Authorize]
+        public async Task<IActionResult> GetMe()
+        {
+            var idInToken = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
-//         [HttpGet]
-//         [Route("{id:guid}")]
-//         public async Task<IActionResult> GetUserById(Guid id)
-//         {
-//             var userToFind = await userRepository.GetUserByIdAsync(id);
+            var userToFind = await userRepository.GetUserByIdAsync(idInToken);
 
-//             if(userToFind == null)
-//             {
-//                 return NotFound();
-//             }
+            if(userToFind == null)
+            {
+                return NotFound();
+            }
 
-//             return Ok(mapper.Map<UserDTO>(userToFind));
-//         }
+            return Ok(mapper.Map<UserDTO>(userToFind));
+        }
 
-//         [HttpPost]
-//         [ValidateModel]
-//         public async Task<IActionResult> CreateUser([FromBody] CreateUserDTO createUserDTO)
-//         {
-//             PasswordHasher<User> hasher = new();
+        [HttpPut("me")]
+        [ValidateModel]
+        [Authorize]
+        public async Task<IActionResult> UpdateMe([FromBody] UpdateUserDTO updateUserDTO)
+        {
+            var idInToken = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
-//             var modelUser = new User()
-//             {
-//                 UserId = Guid.NewGuid(),
-//                 FirstName = createUserDTO.FirstName,
-//                 LastName = createUserDTO.LastName,
-//                 Email = createUserDTO.Email,
-//                 CreatedAt = DateOnly.FromDateTime(DateTime.Now)
-//             };
+            var userToUpdate = mapper.Map<User>(updateUserDTO);
 
-//             modelUser.PasswordHash = hasher.HashPassword(modelUser, createUserDTO.Password);
+            userToUpdate = await userRepository.UpdateUserAsync(idInToken, userToUpdate);
 
-//             modelUser = await userRepository.CreateUserAsync(modelUser);
+            if(userToUpdate == null)
+            {
+                return NotFound("User doesn't exist!");
+            }
 
-//             if(modelUser == null)
-//             {
-//                 return BadRequest("Email already exists");
-//             }
+            return Ok(mapper.Map<UserDTO>(userToUpdate));
+        }
 
-//             var returnUser = mapper.Map<UserDTO>(modelUser);
+        [HttpDelete("me")]
+        [Authorize]
+        public async Task<IActionResult> DeleteUser()
+        {
+            var idInToken = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
-//             return CreatedAtAction(nameof(GetUserById), new { id = returnUser.UserId}, returnUser);
-//         }
+            var userToDelete = await userRepository.DeleteUserAsync(idInToken);
 
-//         [HttpPut]
-//         [ValidateModel]
-//         [Route("{userId:guid}")]
-//         public async Task<IActionResult> UpdateUser(Guid userId, [FromBody] UpdateUserDTO updateUserDTO)
-//         {
-//             var userToUpdate = mapper.Map<User>(updateUserDTO);
+            if(userToDelete == null)
+            {
+                return NotFound("User doesn't exist!");
+            }
 
-//             userToUpdate = await userRepository.UpdateUserAsync(userId, userToUpdate);
-
-//             if(userToUpdate == null)
-//             {
-//                 return NotFound("User doesn't exist!");
-//             }
-
-//             return Ok(mapper.Map<UserDTO>(userToUpdate));
-//         }
-
-//         [HttpDelete]
-//         [Route("{userId:guid}")]
-//         public async Task<IActionResult> DeleteUser([FromRoute] Guid userId)
-//         {
-//             var userToDelete = await userRepository.DeleteUserAsync(userId);
-
-//             if(userToDelete == null)
-//             {
-//                 return NotFound("User doesn't exist!");
-//             }
-
-//             return Ok();
-//         }
-//     }
-// }
+            return Ok();
+        }
+    }
+}

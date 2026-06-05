@@ -1,5 +1,7 @@
+using System.Security.Claims;
 using app_api.Models;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,40 +10,60 @@ using Microsoft.EntityFrameworkCore;
 public class DocumentController : Controller
 {
     private readonly IDocumentRepository documentRepository;
+    private readonly IWorkspaceRepository workspaceRepository;
     private readonly IMapper mapper;
 
-    public DocumentController(IDocumentRepository documentRepository, IMapper mapper)
+    public DocumentController(IDocumentRepository documentRepository, IWorkspaceRepository workspaceRepository, IMapper mapper)
     {
         this.documentRepository = documentRepository;
+        this.workspaceRepository = workspaceRepository;
         this.mapper = mapper;
     }
 
     [HttpGet]
     [Route("{workspaceId:guid}")]
+    [Authorize]
     public async Task<IActionResult> GetDocumentsByWorkspaceId(Guid workspaceId)
     {
-        var workspaceDocs = await documentRepository.GetDocumentsByWorkspaceIdAsync(workspaceId);
+        var idInToken = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
-        if (workspaceDocs == null)
+        var workspace = await workspaceRepository.GetWorkspaceByIdAsync(workspaceId);
+
+        if (workspace == null)
         {
             return NotFound("Workspace not found!");
         }
+        else if(workspace.OwnerId != idInToken)
+        {
+            return Forbid();
+        }
 
+        var workspaceDocs = await documentRepository.GetDocumentsByWorkspaceIdAsync(workspaceId);
+        
         return Ok(mapper.Map<List<DocumentDTO>>(workspaceDocs));
     }
 
     [HttpPost]
     [ValidateModel]
+    [Authorize]
     public async Task<IActionResult> CreateDocument([FromBody] CreateDocumentDTO createDocumentDTO)
     {
-        var newDoc = mapper.Map<Document>(createDocumentDTO);
+        var idInToken = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
-        newDoc = await documentRepository.CreateDocumentAsync(newDoc);
+        var workspace = await workspaceRepository.GetWorkspaceByIdAsync(createDocumentDTO.WorkspaceId);
 
-        if (newDoc == null)
+        if(workspace == null)
         {
             return NotFound("Workspace not found!");
         }
+        else if(workspace.OwnerId != idInToken)
+        {
+            return Forbid();
+        }
+
+        var newDoc = mapper.Map<Document>(createDocumentDTO);
+
+        newDoc = await documentRepository.CreateDocumentAsync(newDoc);
 
         var returnDocDto = mapper.Map<DocumentDTO>(newDoc);
 
@@ -51,30 +73,48 @@ public class DocumentController : Controller
     [HttpPut]
     [ValidateModel]
     [Route("{documentId:guid}")]
+    [Authorize]
     public async Task<IActionResult> UpdateDocument([FromRoute] Guid documentId, [FromBody] UpdateDocumentDTO updateDocumentDTO)
     {
-        var documentToUpdate = mapper.Map<Document>(updateDocumentDTO);
+        var idInToken = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
-        documentToUpdate = await documentRepository.UpdateDocumentAsync(documentId, documentToUpdate);
+        var document = await documentRepository.GetDocumentByIdAsync(documentId);
 
-        if(documentToUpdate == null)
+        if(document == null)
         {
             return NotFound("Document doesn't exist!");
         }
+        else if(document.Workspace.OwnerId != idInToken)
+        {
+            return Forbid();
+        }
+
+        var documentToUpdate = mapper.Map<Document>(updateDocumentDTO);
+
+        documentToUpdate = await documentRepository.UpdateDocumentAsync(documentId, documentToUpdate);
 
         return Ok(mapper.Map<DocumentDTO>(documentToUpdate));
     }
 
     [HttpDelete]
     [Route("{documentId:guid}")]
+    [Authorize]
     public async Task<IActionResult> DeleteDocument([FromRoute] Guid documentId)
     {
-        var documentToDelete = await documentRepository.DeleteDocumentAsync(documentId);
+        var idInToken = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
-        if(documentToDelete == null)
+        var document = await documentRepository.GetDocumentByIdAsync(documentId);
+
+        if(document == null)
         {
             return NotFound("Document doesn't exist!");
         }
+        else if(document.Workspace.OwnerId != idInToken)
+        {
+            return Forbid();
+        }
+
+        await documentRepository.DeleteDocumentAsync(documentId);
 
         return Ok();
     }

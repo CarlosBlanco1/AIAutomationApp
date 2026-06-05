@@ -1,67 +1,54 @@
-// using app_api.Models;
-// using Microsoft.EntityFrameworkCore;
+using app_api.Models;
+using Microsoft.EntityFrameworkCore;
 
-// public class SQLUserRepository : IUserRepository
-// {
-//     private readonly MydbContext _dbContext;
+public class SQLUserRepository : IUserRepository
+{
+    private readonly MydbContext _dbContext;
 
-//     public SQLUserRepository(MydbContext dbContext)
-//     {
-//         _dbContext = dbContext;
-//     }
-//     public async Task<User?> CreateUserAsync(User newUser)
-//     {
-//         var emailExists = await _dbContext.Users.AnyAsync(u => u.Email == newUser.Email);
+    public SQLUserRepository(MydbContext dbContext)
+    {
+        _dbContext = dbContext;
+    }
 
-//         if(emailExists)
-//         {
-//             return null;
-//         }
+    public async Task<User?> DeleteUserAsync(Guid userId)
+    {
+        var userToDelete = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
 
-//         await _dbContext.Users.AddAsync(newUser);
-//         await _dbContext.SaveChangesAsync();
-//         return newUser;
-//     }
+        if(userToDelete == null)
+        {
+            return null;
+        }
 
-//     public async Task<User?> DeleteUserAsync(Guid userId)
-//     {
-//         var userToDelete = await _dbContext.Users.FirstOrDefaultAsync(u => u.UserId == userId);
+        _dbContext.Users.Remove(userToDelete);
+        await _dbContext.SaveChangesAsync();
 
-//         if(userToDelete == null)
-//         {
-//             return null;
-//         }
+        return userToDelete;
+    }
 
-//         _dbContext.Users.Remove(userToDelete);
-//         await _dbContext.SaveChangesAsync();
+    public async Task<List<User>> GetAllUsersAsync()
+    {
+        return await _dbContext.Users.ToListAsync();
+    }
 
-//         return userToDelete;
-//     }
+    public async Task<User?> GetUserByIdAsync(Guid userId)
+    {
+        return await _dbContext.Users.FindAsync(userId);
+    }
 
-//     public async Task<List<User>> GetAllUsersAsync()
-//     {
-//         return await _dbContext.Users.ToListAsync();
-//     }
+    public async Task<User?> UpdateUserAsync(Guid userId, User updatedUser)
+    {
+        var userToUpdate = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
 
-//     public async Task<User?> GetUserByIdAsync(Guid userId)
-//     {
-//         return await _dbContext.Users.FindAsync(userId);
-//     }
+        if(userToUpdate == null)
+        {
+            return null;
+        }
 
-//     public async Task<User?> UpdateUserAsync(Guid userId, User updatedUser)
-//     {
-//         var userToUpdate = await _dbContext.Users.FirstOrDefaultAsync(u => u.UserId == userId);
+        userToUpdate.FirstName = updatedUser.FirstName;
+        userToUpdate.LastName = updatedUser.LastName;
 
-//         if(userToUpdate == null)
-//         {
-//             return null;
-//         }
+        await _dbContext.SaveChangesAsync();
 
-//         userToUpdate.FirstName = updatedUser.FirstName;
-//         userToUpdate.LastName = updatedUser.LastName;
-
-//         await _dbContext.SaveChangesAsync();
-
-//         return userToUpdate;
-//     }
-// }
+        return userToUpdate;
+    }
+}

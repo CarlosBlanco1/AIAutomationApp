@@ -2,6 +2,7 @@
 using System.Text;
 using app_api.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 // using app_api.Controllers;
@@ -16,20 +17,35 @@ builder.Services.AddDbContext<MydbContext>(options =>
 {
     options.UseNpgsql(builder.Configuration.GetConnectionString("ConnectionString"));
 });
-// builder.Services.AddScoped<IUserRepository, SQLUserRepository>();
-// builder.Services.AddScoped<IWorkspaceRepository, SQLWorkspaceRepository>();
+builder.Services.AddScoped<IUserRepository, SQLUserRepository>();
+builder.Services.AddScoped<IWorkspaceRepository, SQLWorkspaceRepository>();
 builder.Services.AddScoped<IDocumentRepository, SQLDocumentRepository>();
 builder.Services.AddScoped<IAutomationRepository, SQLAutomationRepository>();
 builder.Services.AddScoped<IAutomationLogRepository, SQLAutomationLogRepository>();
 
-builder.Services.AddAutoMapper(cfg => {}, typeof(UserProfiles), 
-typeof(DocumentProfiles), 
-typeof(WorkspaceProfiles), 
-typeof(AutomationProfiles), 
+builder.Services.AddScoped<ITokenRepository, TokenRepository>();
+
+builder.Services.AddAutoMapper(cfg => { }, typeof(UserProfiles),
+typeof(DocumentProfiles),
+typeof(WorkspaceProfiles),
+typeof(AutomationProfiles),
 typeof(AutomationLogProfiles));
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddIdentityCore<User>()
+    .AddRoles<IdentityRole<Guid>>()
+    .AddTokenProvider<DataProtectorTokenProvider<User>>("ProviderName")
+    .AddEntityFrameworkStores<MydbContext>()
+    .AddDefaultTokenProviders();
+
+builder.Services.Configure<IdentityOptions>(options =>
+{
+    options.Password.RequireDigit = false;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequiredUniqueChars = 4;
+});
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 .AddJwtBearer(options => options.TokenValidationParameters = new TokenValidationParameters
