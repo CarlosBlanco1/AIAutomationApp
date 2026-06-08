@@ -1,0 +1,42 @@
+<div class="flex flex-col items-center p-6 bg-[#040c49] text-white rounded-xl border-gray-700 border">
+    <div class="flex flex-col pt-3">
+        <span class="text-2xl">Welcome Back</span>
+        <span class="text-sm text-gray-400">Sign in to your account</span>
+    </div>
+    <div class="flex flex-col py-3 mt-4">
+        <div class="flex flex-col">
+            <label class="text-sm mb-2">Email</label>
+            <div class="flex items-center gap-2 border-gray-600 border rounded-md py-2 px-1">
+                <app-email-icon></app-email-icon>
+                <input [value]="email"  placeholder="you@example.com">
+            </div>
+        </div>
+        <div class="flex flex-col mt-4">
+            <label class="text-sm mb-2">Password</label>
+            <div class="flex items-center gap-2 border-gray-600 border rounded-md py-2 px-1">
+                <app-lock-icon></app-lock-icon>
+                <input [value]="password" placeholder="*************">
+            </div>
+        </div>
+        <div class="flex justify-end mt-2">
+            <a href="https://youtu.be/dQw4w9WgXcQ?si=ao4sE-0dQLTjs1Rb" class="text-xs text-blue-600">Forgot Password?</a>
+        </div>
+    </div>
+    <div class="flex flex-col">
+        <div>
+            <button class="px-5 py-2 bg-linear-to-r from-purple-600 to-blue-500 w-full rounded-lg flex gap-1 justify-center">
+                <span>Sign in</span>
+                <app-arrow-icon></app-arrow-icon>
+            </button>
+        </div>
+        <div class="flex text-xs text-gray-400 my-2 items-center">
+            <hr class="w-[45%]">
+            <span class="w-[10%] text-center">or</span>
+            <hr class="w-[45%]">
+        </div>
+        <div class="flex text-xs gap-1">
+            <span class="text-gray-400">Don't have an account?</span>
+            <a href="https://youtu.be/dQw4w9WgXcQ?si=ao4sE-0dQLTjs1Rb" class="text-blue-600">Sign up</a>
+        </div>
+    </div>
+</div>
