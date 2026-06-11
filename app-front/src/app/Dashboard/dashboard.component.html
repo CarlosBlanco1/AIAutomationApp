@@ -1,0 +1,116 @@
+<div class="flex flex-col gap-4 min-h-full p-6">
+    <div class="flex flex-col gap-2">
+        <span class="text-xl text-white">Welcome back, Jhon!</span>
+        <span class="text-sm text-[var(--text-gray)]">Here's what's happening with your workspace today</span>
+    </div>
+    <div class="flex gap-4">
+        <!-- START -->
+        <div class="flex flex-col text-[var(--text-gray)] bg-[var(--color-bgsidebar)] rounded-lg">
+            <div class="flex gap-4 p-4">
+                <div>
+                    <div class="bg-[var(--color-hlpurple)] p-1.5 rounded-md text-purple-500">
+                        <app-document-icon></app-document-icon>
+                    </div>
+                </div>
+                <div class="flex flex-col gap-1">
+                    <span class="text-xs text-[var(--text-gray)]">Documents</span>
+                    <span class="text-2xl text-white">128</span>
+                </div>
+            </div>
+            <div class="flex gap-2 text-xs px-2 pb-4">
+                <span class="text-green-500">&#8593; 12.5%</span>
+                <span class="text-[var(--text-gray)]">from last month</span>
+                <span class="text-white">------------</span>
+            </div>
+        </div>
+        <!-- END -->
+    </div>
+    <div class="flex-12 grid grid-cols-9 grid-rows-8 gap-5">
+        <div class="col-span-6 row-span-5 flex flex-col bg-[var(--color-bgsidebar)] rounded-lg">
+            <div class="flex p-5">
+                <span class="flex-1 text-start text-md text-white">Activity Overview</span>
+                <div class="flex-1 flex justify-end">
+                    <span class="text-xs text-[var(--text-gray)] border border-gray-700 rounded-md flex items-center">
+                        <span class="p-2">This Week</span>
+                        <span class="pt-1 self-start pr-2">&#8964;</span>
+                    </span>
+                </div>
+            </div>
+            <div>
+                GRAPH GOES HERE XD
+            </div>
+        </div>
+        <div class="col-span-3 row-span-5 flex flex-col bg-[var(--color-bgsidebar)] rounded-lg gap-2">
+            <div class="flex p-5">
+                <span class="flex-1 text-md text-white">Recent Activity</span>
+                <div class="flex-1 flex justify-end">
+                    <span class="text-sm text-purple-500">View All</span>
+                </div>
+            </div>
+            <!-- START -->
+            <div class="flex gap-2 px-5">
+                <div class="flex-[5%] bg-[var(--color-hlpurple)] p-1.5 rounded-md text-purple-500">
+                    <app-document-icon></app-document-icon>
+                </div>
+                <div class="flex-[80%] flex flex-col pl-2">
+                    <span class="text-sm text-white">MarketingStrategy.pdf</span>
+                    <span class="text-sm text-[var(--text-gray)]">Uploaded by Sarah Johnson</span>
+                </div>
+                <div class="flex-[15%] text-sm text-[var(--text-gray)] text-end">2m Ago</div>
+            </div>
+            <!-- END -->
+        </div>
+        <div class="col-span-6 row-span-3 bg-[var(--color-bgsidebar)] rounded-lg">
+            <div class="flex p-5">
+                <span class="flex-1 text-md text-white">Top Documents</span>
+                <div class="flex-1 flex justify-end">
+                    <span class="text-sm text-purple-500">View All</span>
+                </div>
+            </div>
+            <!-- START -->
+            <div class="flex gap-2 px-5">
+                <div class="bg-[var(--color-hlpurple)] p-1.5 rounded-md text-purple-500">
+                    <app-document-icon></app-document-icon>
+                </div>
+                <div class="flex-[85%] flex flex-col pl-2">
+                    <span class="text-sm text-white">MarketingStrategy.pdf</span>
+                    <span class="text-sm text-[var(--text-gray)]">Uploaded 2h ago</span>
+                </div>
+                <div class="flex-[15%] flex items-center gap-2 text-sm text-[var(--text-gray)] text-end">
+                    <div class="flex-1 flex items-center gap-2">
+                        <app-eye-icon></app-eye-icon>
+                        <span class="align-middle">245</span>
+                    </div>
+                    <div class="flex-1 flex ml-3 justify-end">
+                        <app-vertical-dots></app-vertical-dots>
+                    </div>
+                </div>
+            </div>
+            <!-- END -->
+        </div>
+        <div class="col-span-3 row-span-3 flex flex-col bg-[var(--color-bgsidebar)] rounded-lg">
+            <div class="flex-2 flex p-5">
+                <span class="flex-1 text-md text-white">AI Assistant</span>
+                <div class="flex-1 flex justify-end">
+                    <span class="text-sm text-purple-500">New Chat</span>
+                </div>
+            </div>
+            <div class="flex-5 flex flex-col justify-center items-center text-white">
+                <span>COOL IMAGE GOES HERE</span>
+                <span class="text-2xl">Hi Jhon, How can I help you today?</span>
+            </div>
+            <div class="flex-2 flex border border-gray-700 rounded-md m-2">
+                <div class="flex-[90%] text-[var(--text-gray)] text-sm pl-4 flex items-center">
+                    <span>Ask me anything ...</span>
+                </div>
+                <div class="flex-[10%] flex items-center justify-center px-4">
+                    <div class="bg-[var(--color-hlpurple)] p-1 rounded-md text-purple-500">
+                        <app-pointer-right></app-pointer-right>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>

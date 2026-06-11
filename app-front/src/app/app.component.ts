@@ -4,6 +4,7 @@ import { HeaderComponent } from './Header/header.component';
 import { LoginCardComponent } from './LoginCard/logincard.component';
 import { RegisterComponent } from './Register/register.component';
 import { SideBarComponent } from './SideBar/sidebar.component';
+import { DashboardComponent } from './Dashboard/dashboard.component';
 
 @Component({
   selector: 'app-root',
@@ -13,6 +14,7 @@ import { SideBarComponent } from './SideBar/sidebar.component';
     LoginCardComponent,
     RegisterComponent,
     SideBarComponent,
+    DashboardComponent
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
