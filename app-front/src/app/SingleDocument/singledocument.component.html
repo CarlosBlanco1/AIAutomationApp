@@ -1,0 +1,153 @@
+<div class="flex flex-col min-h-full">
+  <div class="px-5 py-3">
+    <span class="text-[var(--text-gray)]"
+      >Workspaces > Marketing Campaign > Documents > Marketing Strategy Q2</span
+    >
+  </div>
+  <div class="flex px-5">
+    <div class="flex-3 flex gap-4">
+      <div class="flex items-center justify-center">
+        <div class="bg-blue-800 text-blue-300 p-3 rounded-lg">
+          <app-document-icon></app-document-icon>
+        </div>
+      </div>
+      <div class="flex flex-col gap-2 justify-center">
+        <div class="flex gap-4 text-xl">
+          <div class="text-white">Marketing Strategy Q2</div>
+          <div class="text-purple-500 flex items-center">
+            <app-star-icon></app-star-icon>
+          </div>
+        </div>
+        <div class="flex gap-4">
+          <span class="text-sm p-1 text-[var(--text-gray)] bg-gray-700 rounded-md"
+            >Created May 14, 2026 * 10:24 AM</span
+          >
+          <span class="text-sm p-1 text-[var(--text-gray)] bg-gray-700 rounded-md"
+            >Updated May 15, 2026 * 03:45 PM</span
+          >
+          <span class="text-sm p-1 text-purple-600 bg-gray-700 rounded-md"
+            >Marketing Campaign</span
+          >
+        </div>
+      </div>
+    </div>
+    <div class="flex-1 flex justify-end items-center">
+      <div class="flex gap-3 justify-end items-center text-sm">
+        <div
+          class="p-2 text-[var(--text-gray)] bg-gray-700 rounded-md flex gap-2 items-center"
+        >
+          <div class="size-5">
+            <app-download-icon></app-download-icon>
+          </div>
+          <span>Download</span>
+        </div>
+        <div
+          class="p-2 text-[var(--text-gray)] bg-gray-700 rounded-md flex gap-2 items-center"
+        >
+          <div class="size-5">
+            <app-users-icon></app-users-icon>
+          </div>
+          <span>Share</span>
+        </div>
+        <div
+          class="p-2 text-[var(--text-gray)] bg-gray-700 rounded-md flex justify-center"
+        >
+          <div class="size- flex justify-center">
+            <app-horizontal-dots></app-horizontal-dots>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div></div>
+  </div>
+  <div class="flex-[90%] grid grid-cols-9 grid-rows-2 gap-2 p-5">
+    <div class="col-span-6 row-span-2 max-h-full pb-2 rounded-2xl">
+      <ngx-extended-pdf-viewer
+        #pdfViewer
+        [customToolbar]="additionalButtons"
+        [src]="'/assets/example.pdf'"
+      ></ngx-extended-pdf-viewer>
+      <ng-template #additionalButtons>
+        <div id="toolbarViewer" style="background-color: #070f22" class="p-2">
+          <div id="toolbarViewerLeft">
+            <pdf-paging-area></pdf-paging-area>
+          </div>
+          <pdf-zoom-toolbar></pdf-zoom-toolbar>
+          <div id="toolbarViewerRight">
+            <pdf-presentation-mode></pdf-presentation-mode>
+            <pdf-print></pdf-print>
+          </div>
+        </div>
+      </ng-template>
+    </div>
+    <div class="col-span-3 row-span-1">
+      <div class="flex flex-col p-4">
+        <div class="flex gap-3 items-center mb-2">
+          <div class="bg-blue-800 text-blue-300 p-2 rounded-lg">
+            <app-document-icon></app-document-icon>
+          </div>
+          <span class="text-white">Summary</span>
+        </div>
+        <div class="text-[var(--text-gray)] text-sm">
+          The drug seekers would come into the emergency room and scream about
+          how much pain they were in. When you told them that you would start
+          elevating their pain with Tylenol or Advil instead of a narcotic they
+          became nasty and combative. They would start telling you what drug and
+          dose they had to have to make their pain tolerable. After dealing with
+          the same drug seekers several times a month it gets old. Some of the
+          doctors would give in and give them a dose of morphine and send them
+          away. Sure that was faster, but ethically she still couldn’t do it.
+          Perhaps that’s why she had longer care times than the other doctors.
+        </div>
+      </div>
+      <div class="flex flex-col px-4 text-sm justify-center">
+        <div class="flex border-b-gray-700 border-b py-2 items-center">
+          <div
+            class="flex-1 flex gap-2 justify-start text-[var(--text-gray)] items-center"
+          >
+            <app-document-icon></app-document-icon>
+            <span>File Name</span>
+          </div>
+          <div class="flex-1 flex justify-end text-gray-300">
+            <span>Marketing_Strategy_Q2.docx</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="col-span-3 row-span-1 px-4 py-2 text-[var(--text-gray)] flex flex-col"
+    >
+      <div class="flex">
+        <div class="flex-1 flex flex-col">
+          <div class="flex gap-3">
+            <div>
+              <app-sparkle-icon></app-sparkle-icon>
+            </div>
+            <span class="text-lg text-white">AI Chat</span>
+          </div>
+          <span class="text-xs">Ask questions about this document</span>
+        </div>
+        <div class="size-5">
+          <app-refresh-icon></app-refresh-icon>
+        </div>
+      </div>
+      <div class="flex-[90%] text-white flex items-center justify-center">
+        <span>AI CHATBOT</span>
+      </div>
+      <div class="flex border border-gray-700 rounded-md p-2">
+        <div
+          class="flex-[90%] text-[var(--text-gray)] text-sm pl-4 flex items-center"
+        >
+          <span>Ask anything about this document ...</span>
+        </div>
+        <div class="flex-[10%] flex items-center justify-center">
+          <div
+            class="bg-[var(--color-hlpurple)] p-1 rounded-md text-purple-500"
+          >
+            <app-pointer-right></app-pointer-right>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

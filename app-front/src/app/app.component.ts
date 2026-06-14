@@ -6,6 +6,8 @@ import { RegisterComponent } from './Register/register.component';
 import { SideBarComponent } from './SideBar/sidebar.component';
 import { DashboardComponent } from './Dashboard/dashboard.component';
 import { WorkspacesComponent } from './Workspaces/workspaces.component';
+import { DocumentsComponent } from './Documents/documents.component';
+import { SingleDocumentComponent } from './SingleDocument/singledocument.component';
 
 @Component({
   selector: 'app-root',
@@ -16,7 +18,9 @@ import { WorkspacesComponent } from './Workspaces/workspaces.component';
     RegisterComponent,
     SideBarComponent,
     DashboardComponent,
-    WorkspacesComponent
+    WorkspacesComponent,
+    DocumentsComponent,
+    SingleDocumentComponent
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',

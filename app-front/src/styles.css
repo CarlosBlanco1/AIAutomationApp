@@ -3,8 +3,71 @@
 
 :root {
     --color-bgcard : #040c49;
-    --text-gray : #9ca3af;
+    --text-gray : #b4b4b5;
     --color-bgsidebar : #190826;
     --color-bgmain : #000422;
     --color-hlpurple : #3E036B;
+}
+
+#pageNumber {
+    background-color : #070f22;
+    color: #b4b4b5;
+    text-align : center;
+}
+
+#primaryLastPage {
+    display : none;
+}
+
+#primaryFirstPage {
+    display : none;
+}
+
+#numPages {
+    display : none !important;
+}
+
+#scaleSelect {
+    background-color : #070f22 !important;
+    color : #b4b4b5;
+    border : none;
+}
+#toolbarViewerMiddle {
+    display : flex !important;
+    gap: 1em !important;
+}
+
+#toolbarViewerMiddle svg{
+    color : #b4b4b5;
+}
+
+#toolbarViewerRight svg {
+    color : #b4b4b5; 
+}
+
+#viewer {
+        background-color : #070f22 !important;
+}
+
+#viewerContainer {
+        background-color : #070f22 !important;
+        scrollbar-color : #b4b4b5 #070f22 !important;
+        border-radius : 0 0 0.5em 0.5em !important;
+
+}
+
+#mainContainer > pdf-toolbar > div {
+    border: none;
+}
+
+#toolbarViewer {
+    border : 1px solid #070f22 !important;
+    border-radius : 0.5em 0.5em 0 0 !important;
+}
+
+#toolbarContainer {
+    border-radius : 0.5em 0.5em 0 0 !important;
+    border : 1px solid #070f22 !important;
+    background-color : #070f22 !important;
+
 }
