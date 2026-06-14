@@ -1,166 +1,183 @@
 <div class="bg-[var(color-bgmain)] flex flex-col gap-3 min-h-full">
-    <div class="flex flex-col p-4 gap-3">
-        <div class="flex">
-            <div class="flex-1 flex flex-col gap-2">
-                <span class="text-white text-2xl">Documents</span>
-                <span class="text-[var(--text-gray)] text-sm">All your documents in one place. Create, organize and collaborate</span>
+  <div class="flex flex-col p-4 gap-3">
+    <div class="flex">
+      <div class="flex-1 flex flex-col gap-2">
+        <span class="text-white text-2xl">Documents</span>
+        <span class="text-[var(--text-gray)] text-sm"
+          >All your documents in one place. Create, organize and
+          collaborate</span
+        >
+      </div>
+      <div class="flex-1 flex justify-end items-center text-sm">
+        <div class="flex items-start gap-2">
+          <div
+            class="flex text-[var(--text-gray)] gap-2 items-center border border-gray-700 p-3 rounded-lg pr-10"
+          >
+            <div class="flex items-center">
+              <app-search-icon></app-search-icon>
             </div>
-            <div class="flex-1 flex justify-end items-center text-sm">
-                <div class="flex items-start gap-2">
-                    <div class="flex text-[var(--text-gray)] gap-2 items-center border border-gray-700 p-3 rounded-lg pr-10">
-                        <div class="flex items-center">
-                            <app-search-icon></app-search-icon>
-                        </div>
-                        <div class="flex items-center">
-                            <span>Search documents ...</span>
-                        </div>
-                    </div>
-                    <div class="bg-purple-600 text-white flex items-center gap-2 p-3 rounded-lg">
-                        <div>
-                            <app-plus-icon></app-plus-icon>
-                        </div>
-                        <div>
-                            <span>New Document</span>
-                        </div>
-                    </div>
-                </div>
+            <div class="flex items-center">
+              <span>Search documents ...</span>
             </div>
+          </div>
+          <div
+            class="bg-purple-600 text-white flex items-center gap-2 p-3 rounded-lg"
+          >
+            <div>
+              <app-plus-icon></app-plus-icon>
+            </div>
+            <div>
+              <span>New Document</span>
+            </div>
+          </div>
         </div>
-        <div>
-            <div class="flex flex-row gap-4">
-                <div class="flex-1 bg-[var(--color-hlpurple)] flex gap-2 p-4 rounded-lg">
-                    <div class="rounded-lg p-3 text-purple-500 bg-[var(--color-bgcard)]">
-                        <app-house-icon></app-house-icon>
-                    </div>
-                    <div class="flex flex-col">
-                        <span class="text-white text-xl">128</span>
-                        <span class="text-[var(--text-gray)] text-sm">Total Documents</span>
-                    </div>
-                </div>
-                <div class="flex-1 bg-[var(--color-hlpurple)] flex gap-2 p-4 rounded-lg">
-                    <div class="rounded-lg p-3 text-purple-500 bg-[var(--color-bgcard)]">
-                        <app-house-icon></app-house-icon>
-                    </div>
-                    <div class="flex flex-col">
-                        <span class="text-white text-xl">128</span>
-                        <span class="text-[var(--text-gray)] text-sm">Total Documents</span>
-                    </div>
-                </div>
-                <div class="flex-1 bg-[var(--color-hlpurple)] flex gap-2 p-4 rounded-lg">
-                    <div class="rounded-lg p-3 text-purple-500 bg-[var(--color-bgcard)]">
-                        <app-house-icon></app-house-icon>
-                    </div>
-                    <div class="flex flex-col">
-                        <span class="text-white text-xl">128</span>
-                        <span class="text-[var(--text-gray)] text-sm">Total Documents</span>
-                    </div>
-                </div>
-                <div class="flex-1 bg-[var(--color-hlpurple)] flex gap-2 p-4 rounded-lg">
-                    <div class="rounded-lg p-3 text-purple-500 bg-[var(--color-bgcard)]">
-                        <app-house-icon></app-house-icon>
-                    </div>
-                    <div class="flex flex-col">
-                        <span class="text-white text-xl">128</span>
-                        <span class="text-[var(--text-gray)] text-sm">Total Documents</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="flex-[90%] flex flex-col px-4 min-h-full">
-        <div class="flex">
-            <div class="flex-1 flex gap-3 text-[var(--text-gray)]">
-                <div class="p-4">All Documents</div>
-                <div class="p-4">Owned by me</div>
-                <div class="p-4">Shared with me</div>
-                <div class="p-4">Starred</div>
-            </div>
-            <div class="flex-1 flex justify-end items-start gap-4">
-                <div class="flex gap-3">
-                    <div class="flex justify-end">
-                        <span class="text-xs text-[var(--text-gray)] border border-gray-700 rounded-md flex items-center">
-                            <span class="p-3">Sort By: Recent</span>
-                            <span class="self-center pr-2">&#8964;</span>
-                        </span>
-                    </div>
-                    <div class="flex justify-end rounded-md bg-[var(--color-hlpurple)]">
-                        <div class="text-[var(--text-gray)] p-2">
-                            <app-grid-icon></app-grid-icon>
-                        </div>
-                        <div class="text-[var(--text-gray)] p-2">
-                            <app-baseline-icon></app-baseline-icon>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <hr class="text-gray-700">
-        <div class="flex-[90%] flex flex-col min-h-full">
-            <table class="text-sm text-[var(--text-gray)] border-separate border-spacing-y-4 min-h-full">
-                <thead>
-                    <tr>
-                        <th class="text-center px-3">
-                            <input type="checkbox" class="bg-green-400">
-                        </th>
-                        <th class="text-start">Name</th>
-                        <th class="text-start">Workspace</th>
-                        <th class="text-start">Last updated</th>
-                        <th class="text-start">Updated by</th>
-                        <th class="text-start"></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td class="text-center">
-                            <input type="checkbox" class="bg-green-400">
-                        </td>
-                        <td>
-                            <div class="flex-1 flex gap-2">
-                                <div class="rounded-lg p-3 text-purple-500 bg-[var(--color-hlpurple)]">
-                                    <app-house-icon></app-house-icon>
-                                </div>
-                                <div class="flex flex-col">
-                                    <span class="text-white">Marketing Strategy Q2</span>
-                                    <span>Marketing Campaign</span>
-                                </div>
-                            </div>
-                        </td>
-                        <td>
-                            * Marketing
-                        </td>
-                        <td>
-                            2 minutes ago
-                        </td>
-                        <td>
-                            CIRCLE you
-                        </td>
-                        <td>
-                            <app-horizontal-dots></app-horizontal-dots>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        <hr class="text-gray-700">
+      </div>
     </div>
     <div>
-        <div class="flex text-[var(--text-gray)] p-4">
-            <div class="flex-10 flex text-sm">
-                <span>Showing 1 to 8 of 128 documents</span>
-            </div>
-            <div class="flex-1 flex justify-end text-xs">
-                <div class="flex gap-2">
-                    <div class="flex-1 border border-gray-700 p-1 rounded-lg flex items-center justify-center">
-                        <app-left-arrow-icon></app-left-arrow-icon>
-                    </div>
-                    <div class="flex-1 border border-gray-700 p-1 rounded-lg flex items-center justify-center">
-                        <span class="text-center px-2">1</span>
-                    </div>
-                    <div class="flex-1 border border-gray-700 p-1 rounded-lg flex items-center justify-center">
-                        <app-right-arrow-icon></app-right-arrow-icon>
-                    </div>
-                </div>
-            </div>
-        </div>
+      <div class="flex flex-row gap-4">
+        <app-document-metric-block
+          class="flex-1"
+          [metricNumber]="128"
+          metricName="Total Documents"
+        >
+          <app-house-icon></app-house-icon>
+        </app-document-metric-block>
+        <app-document-metric-block
+          class="flex-1"
+          [metricNumber]="700"
+          metricName="Total Documents Made"
+        >
+          <app-house-icon></app-house-icon>
+        </app-document-metric-block>
+        <app-document-metric-block
+          class="flex-1"
+          [metricNumber]="128"
+          metricName="Total Documents"
+        >
+          <app-house-icon></app-house-icon>
+        </app-document-metric-block>
+        <app-document-metric-block
+          class="flex-1"
+          [metricNumber]="128"
+          metricName="Total Documents"
+        >
+          <app-house-icon></app-house-icon>
+        </app-document-metric-block>
+      </div>
     </div>
+  </div>
+  <div class="flex-[90%] flex flex-col px-4 min-h-full">
+    <div class="flex">
+      <div class="flex-1 flex gap-3 text-[var(--text-gray)]">
+        <div class="p-4">All Documents</div>
+        <div class="p-4">Owned by me</div>
+        <div class="p-4">Shared with me</div>
+        <div class="p-4">Starred</div>
+      </div>
+      <div class="flex-1 flex justify-end items-start gap-4">
+        <div class="flex gap-3">
+          <div class="flex justify-end">
+            <span
+              class="text-xs text-[var(--text-gray)] border border-gray-700 rounded-md flex items-center"
+            >
+              <span class="p-3">Sort By: Recent</span>
+              <span class="self-center pr-2">&#8964;</span>
+            </span>
+          </div>
+          <div class="flex justify-end rounded-md bg-[var(--color-hlpurple)]">
+            <div class="text-[var(--text-gray)] p-2">
+              <app-grid-icon></app-grid-icon>
+            </div>
+            <div class="text-[var(--text-gray)] p-2">
+              <app-baseline-icon></app-baseline-icon>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <hr class="text-gray-700" />
+    <div class="flex-[90%] flex flex-col min-h-full">
+      <table
+        class="text-sm text-[var(--text-gray)] border-separate border-spacing-y-4 min-h-full"
+      >
+        <thead>
+          <tr>
+            <th class="text-center px-3">
+              <input type="checkbox" class="bg-green-400" />
+            </th>
+            <th class="text-start">Name</th>
+            <th class="text-start">Workspace</th>
+            <th class="text-start">Last updated</th>
+            <th class="text-start">Updated by</th>
+            <th class="text-start"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            app-document-table-row
+            [documentName]="'Marketing Strategy Q2'"
+            [documentSubtitle]="'Marketing Campaign'"
+            [documentCategory]="'Marketing'"
+            [minutesAgoEdited]="2"
+          >
+            <app-house-icon></app-house-icon>
+          </tr>
+          <tr
+            app-document-table-row
+            [documentName]="'Marketing Strategy Q2'"
+            [documentSubtitle]="'Marketing Campaign'"
+            [documentCategory]="'Marketing'"
+            [minutesAgoEdited]="2"
+          >
+            <app-house-icon></app-house-icon>
+          </tr>
+          <tr
+            app-document-table-row
+            [documentName]="'Marketing Strategy Q2'"
+            [documentSubtitle]="'Marketing Campaign'"
+            [documentCategory]="'Marketing'"
+            [minutesAgoEdited]="2"
+          >
+            <app-house-icon></app-house-icon>
+          </tr>
+          <tr
+            app-document-table-row
+            [documentName]="'Marketing Strategy Q2'"
+            [documentSubtitle]="'Marketing Campaign'"
+            [documentCategory]="'Marketing'"
+            [minutesAgoEdited]="2"
+          >
+            <app-house-icon></app-house-icon>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <hr class="text-gray-700" />
+  </div>
+  <div>
+    <div class="flex text-[var(--text-gray)] p-4">
+      <div class="flex-10 flex text-sm">
+        <span>Showing 1 to 8 of 128 documents</span>
+      </div>
+      <div class="flex-1 flex justify-end text-xs">
+        <div class="flex gap-2">
+          <div
+            class="flex-1 border border-gray-700 p-1 rounded-lg flex items-center justify-center"
+          >
+            <app-left-arrow-icon></app-left-arrow-icon>
+          </div>
+          <div
+            class="flex-1 border border-gray-700 p-1 rounded-lg flex items-center justify-center"
+          >
+            <span class="text-center px-2">1</span>
+          </div>
+          <div
+            class="flex-1 border border-gray-700 p-1 rounded-lg flex items-center justify-center"
+          >
+            <app-right-arrow-icon></app-right-arrow-icon>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
