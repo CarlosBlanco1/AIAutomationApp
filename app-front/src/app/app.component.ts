@@ -20,7 +20,7 @@ import { SingleDocumentComponent } from './SingleDocument/singledocument.compone
     DashboardComponent,
     WorkspacesComponent,
     DocumentsComponent,
-    SingleDocumentComponent
+    SingleDocumentComponent,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',

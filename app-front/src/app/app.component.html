@@ -1,23 +1,20 @@
 <div class="min-h-screen grid grid-rows-[7%_93%] overflow-hidden">
-    <div class="h-full min-h-0 overflow-hidden">
-        <app-header></app-header>
+  <div class="h-full min-h-0 overflow-hidden">
+    <app-header></app-header>
+  </div>
+  <div class="main-body bg-[var(--color-bgmain)] flex">
+    <div class="flex-1">
+      <app-sidebar></app-sidebar>
     </div>
-    <div class="main-body bg-[var(--color-bgmain)] flex">
-        <div class="flex-1">
-            <app-sidebar></app-sidebar>
-        </div>
-        <!-- <div class="flex-1 grid items-center min-h-0">
-            <app-login></app-login>
-             <app-register></app-register>
-        </div> -->
-        <div class="flex-7">
-            <!-- <app-dashboard></app-dashboard> -->
-            <!-- <app-workspaces></app-workspaces> -->
-            <app-documents></app-documents>
-            <!-- <app-single-document></app-single-document> -->
-        </div>
+    <div class="flex-7 items-start justify-center">
+      <!-- <app-login></app-login> -->
+      <app-register></app-register>
+      <!-- <app-dashboard></app-dashboard> -->
+      <!-- <app-workspaces></app-workspaces> -->
+      <!-- <app-documents></app-documents> -->
+      <!-- <app-single-document></app-single-document> -->
     </div>
+  </div>
 </div>
-
 
 <router-outlet />
