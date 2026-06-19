@@ -47,10 +47,12 @@ export class RegisterComponent {
     firstName: new FormControl(this.registerRequest.firstName, [
       Validators.required,
       Validators.minLength(2),
+      Validators.maxLength(20)
     ]),
     lastName: new FormControl(this.registerRequest.lastName, [
       Validators.required,
       Validators.minLength(2),
+      Validators.maxLength(20)
     ]),
     email: new FormControl(this.registerRequest.email, [
       Validators.required,
@@ -59,6 +61,7 @@ export class RegisterComponent {
     password: new FormControl(this.registerRequest.password, [
       Validators.required,
       Validators.minLength(12),
+      Validators.maxLength(128),
       securePasswordValidator()
     ]),
   });
@@ -89,6 +92,10 @@ export class RegisterComponent {
         validationRule: 'minlength',
         errorMessage: `${inputName} must be at least 2 characters long.`,
       },
+      {
+        validationRule: 'maxlength',
+        errorMessage: `${inputName} must be no longer than 20 characters long.`,
+      }
     ];
   }
 
@@ -114,6 +121,10 @@ export class RegisterComponent {
       {
         validationRule: 'minlength',
         errorMessage: `Password must be at least 12 characters long.`,
+      },
+      {
+        validationRule: 'maxlength',
+        errorMessage: `Password must be no longer than 128 characters long.`,
       },
       {
         validationRule: 'notContainsSymbol',

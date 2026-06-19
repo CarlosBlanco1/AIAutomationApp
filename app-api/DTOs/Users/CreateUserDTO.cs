@@ -13,6 +13,8 @@ public class CreateUserDTO
     [EmailAddress]
     public string Email { get; set; } = null!;
     [Required]
+    [StringLength(128, MinimumLength = 12)]
+    [Password]
     public string Password { get; set; } = null!;
 
 }
