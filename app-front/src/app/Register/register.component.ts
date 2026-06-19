@@ -13,6 +13,7 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { InputValidatorComponent } from './input-validator/input-validator.component';
+import { securePasswordValidator } from '../Directives/Validation/password-validation.directive';
 
 @Component({
   selector: 'app-register',
@@ -25,7 +26,7 @@ import { InputValidatorComponent } from './input-validator/input-validator.compo
     UserIconComponent,
     FormsModule,
     ReactiveFormsModule,
-    InputValidatorComponent,
+    InputValidatorComponent
   ],
 })
 export class RegisterComponent {
@@ -57,7 +58,8 @@ export class RegisterComponent {
     ]),
     password: new FormControl(this.registerRequest.password, [
       Validators.required,
-      Validators.minLength(2),
+      Validators.minLength(12),
+      securePasswordValidator()
     ]),
   });
 
@@ -100,6 +102,31 @@ export class RegisterComponent {
         validationRule: 'email',
         errorMessage: `Invalid email format.`,
       },
+    ];
+  }
+
+  getRuleToMessagePassword() {
+    return [
+      {
+        validationRule: 'required',
+        errorMessage: `Password is required.`,
+      },
+      {
+        validationRule: 'minlength',
+        errorMessage: `Password must be at least 12 characters long.`,
+      },
+      {
+        validationRule: 'notContainsSymbol',
+        errorMessage: `Password must contain at least 1 symbol.`,
+      },
+      {
+        validationRule: 'notContainsUpperAndLowerCase',
+        errorMessage: `Password must contain at least 1 upper case and 1 lower case letter.`,
+      },
+      {
+        validationRule: 'notContainsNumber',
+        errorMessage: `Password must contain at least 1 number.`,
+      }
     ];
   }
 }
