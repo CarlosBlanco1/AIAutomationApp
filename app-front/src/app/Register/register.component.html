@@ -1,82 +1,132 @@
-<div class="flex-1 flex items-center justify-center min-h-full">
+<div class="flex-1 flex justify-center min-h-full">
+  @if (registrationSucess === undefined) {
   <div
-    class="min-w-[50%] grid grid-rows-[auto_1fr_auto] bg-[var(--color-bgcard)] rounded-xl border-purple-900 border p-7"
-  >
+    class="min-w-[50%] grid grid-rows-[auto_1fr_auto] bg-[var(--color-bgcard)] rounded-xl border-purple-900 border p-7">
     <div>
       <app-logo></app-logo>
     </div>
     <div class="flex flex-col my-6">
       <div class="flex flex-col">
         <span class="text-2xl text-white">Create your account</span>
-        <span class="text-sm text-[var(--text-gray)]"
-          >Start your Journey with Workspace AI</span
-        >
+        <span class="text-sm text-[var(--text-gray)]">Start your Journey with Workspace AI</span>
       </div>
       <form (ngSubmit)="onSubmitForm()" [formGroup]="registerForm">
         <div class="flex flex-col gap-2 text-white mt-5">
           <div>
-            <app-input-validator
-              labelText="First Name"
-              placeholderText="Enter your first name"
-              [controlObject]="firstName"
-              [ruleToMessage]="getRuleToMessageText('First Name')"
-            >
+            <app-input-validator labelText="First Name" placeholderText="Enter your first name"
+              [controlObject]="firstName" [ruleToMessage]="getRuleToMessageText('First Name')">
               <app-user-icon></app-user-icon>
             </app-input-validator>
           </div>
           <div>
-            <app-input-validator
-              labelText="Last Name"
-              placeholderText="Enter your last name"
-              [controlObject]="lastName"
-              [ruleToMessage]="getRuleToMessageText('Last Name')"
-            >
+            <app-input-validator labelText="Last Name" placeholderText="Enter your last name" [controlObject]="lastName"
+              [ruleToMessage]="getRuleToMessageText('Last Name')">
               <app-user-icon></app-user-icon>
             </app-input-validator>
           </div>
           <div>
-            <app-input-validator
-              labelText="Email"
-              placeholderText="you@example.com"
-              [controlObject]="email"
-              [ruleToMessage]="getRuleToMessageEmail()"
-            >
+            <app-input-validator labelText="Email" placeholderText="you@example.com" [controlObject]="email"
+              [ruleToMessage]="getRuleToMessageEmail()">
               <app-email-icon></app-email-icon>
             </app-input-validator>
           </div>
           <div>
-            <app-input-validator
-              labelText="Password"
-              placeholderText="Create a password"
-              [controlObject]="password"
-              [ruleToMessage]="getRuleToMessagePassword()"
-            >
+            <app-input-validator labelText="Password" placeholderText="Create a password" [controlObject]="password"
+              [ruleToMessage]="getRuleToMessagePassword()">
               <app-lock-icon></app-lock-icon>
             </app-input-validator>
           </div>
         </div>
         <div>
-          <button
-            type="submit"
-            class="px-5 py-2 bg-linear-to-r from-purple-600 to-blue-500 w-full rounded-lg justify-center mt-5"
-          >
+          <button type="submit"
+            class="px-5 py-2 bg-linear-to-r from-purple-600 to-blue-500 w-full rounded-lg justify-center mt-5">
             <span class="text-white">Create Account</span>
           </button>
         </div>
       </form>
       <div class="flex justify-center text-xs gap-1 mt-4">
         <span class="text-[var(--text-gray)]">Already have an account?</span>
-        <a
-          href="https://youtu.be/dQw4w9WgXcQ?si=ao4sE-0dQLTjs1Rb"
-          class="text-blue-600"
-          >Sign in</a
-        >
+        <a href="https://youtu.be/dQw4w9WgXcQ?si=ao4sE-0dQLTjs1Rb" class="text-blue-600">Sign in</a>
       </div>
     </div>
     <div class="flex">
-      <span class="text-[var(--text-gray)] text-sm"
-        >&#64;2026 Workspace AI. All rights reserved</span
-      >
+      <span class="text-[var(--text-gray)] text-sm">&#64;2026 Workspace AI. All rights reserved</span>
+      <button (click)="registrationSucess = false">AA</button>
     </div>
   </div>
+  } @else {
+  <div class="flex items-center justify-center bg-gray-400 min-w-full min-h-full">
+    <div class="flex flex-col gap-8 rounded-lg bg-white p-8">
+      @if (registrationSucess === true) {
+      <div class="flex-4 flex flex-col gap-3 items-center">
+        <div class="size-[7em] text-green-600">
+          <app-check-icon></app-check-icon>
+        </div>
+        <div class="flex flex-col gap-1 items-center">
+          <span class="font-bold text-2xl">Registration Succesful</span>
+          <span class="text-md">Your account has been created succesfully.</span>
+          <span class="text-md"> You can now log in to access your account</span>
+        </div>
+      </div>
+      <div class="flex-3 flex flex-col gap-3">
+        <div class="flex justify-center">
+          <button class="flex gap-2 justify-center text-white bg-green-600 p-4 rounded-lg w-[60%]">
+            <app-login-icon></app-login-icon>
+            <span class="text-nowrap">Go to login</span>
+          </button>
+        </div>
+        <div class="flex gap-1 items-center">
+          <hr class="flex-3 text-gray-400">
+          <span class="text-center">or</span>
+          <hr class="flex-3 text-gray-400">
+        </div>
+        <div class="flex justify-center">
+          <button class="flex gap-2 justify-center text-gray-500 border-gray-500 border-1 p-4 rounded-lg w-[60%]">
+            <app-house-icon></app-house-icon>
+            <span class="text-nowrap">Go to home</span>
+          </button>
+        </div>
+      </div>
+      <div class="flex-1 flex gap-2 text-gray-500 text-sm items-center justify-center">
+        <app-lock-icon class="fill-white"></app-lock-icon>
+        <span>Your information is secure</span>
+      </div>
+      }
+      @else {
+      <div class="flex-4 flex flex-col gap-3 items-center">
+        <div class="size-[7em] text-red-600">
+          <app-failure-icon></app-failure-icon>
+        </div>
+        <div class="flex flex-col gap-1 items-center">
+          <span class="font-bold text-2xl">Failed to Register</span>
+          <span class="text-md">We couldn't create your account.</span>
+          <span class="text-md"> {{errorMessage}}</span>
+        </div>
+      </div>
+      <div class="flex-3 flex flex-col gap-3">
+        <div class="flex justify-center">
+          <button class="flex gap-2 justify-center text-white bg-red-600 p-4 rounded-lg w-[60%]">
+            <span class="text-nowrap">Try again</span>
+          </button>
+        </div>
+        <div class="flex gap-1 items-center">
+          <hr class="flex-3 text-gray-400">
+          <span class="text-center">or</span>
+          <hr class="flex-3 text-gray-400">
+        </div>
+        <div class="flex justify-center">
+          <button class="flex gap-2 justify-center text-gray-500 border-gray-500 border-1 p-4 rounded-lg w-[60%]">
+            <app-login-icon></app-login-icon>
+            <span class="text-nowrap">Go to login</span>
+          </button>
+        </div>
+      </div>
+      <div class="flex-1 flex gap-2 text-gray-500 text-sm items-center justify-center">
+        <app-lock-icon class="fill-white"></app-lock-icon>
+        <span>Your information is secure</span>
+      </div>
+      }
+    </div>
+  </div>
+  }
 </div>

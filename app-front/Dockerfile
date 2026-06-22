@@ -1,8 +1,18 @@
-FROM node:latest
+FROM node:22-alpine as build
+
+WORKDIR /app
+
+COPY package*.json .
+
+RUN npm ci
 
 COPY . .
 
-RUN npm install
+RUN npm run build
 
-CMD ["ng server run"]
+FROM nginx:alpine
+
+COPY --from=build /app/dist/app-front/browser /usr/share/nginx/html
+
+EXPOSE 80
 

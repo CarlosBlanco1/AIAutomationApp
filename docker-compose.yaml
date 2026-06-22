@@ -1,0 +1,37 @@
+services:
+  db:
+    image: postgres:latest
+    container_name: myapp-db
+    environment:
+      POSTGRES_DB: mydb
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+    ports:
+      - "5432:5432"
+    # volumes:
+    #   - postgres_data:/var/lib/postgresql/data
+
+  api:
+    build:
+      context: ./app-api
+      dockerfile: Dockerfile
+    container_name: myapp-api
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: "http://+:8080"
+      # ConnectionStrings__DefaultConnection: "Host=db;Port=5432;Database=mydb;Username=myuser;Password=mypassword"
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+
+  angular:
+    build:
+      context: ./app-front
+      dockerfile: Dockerfile
+    container_name: myapp-angular
+    ports:
+      - "4200:80"
+
+# volumes:
+#   postgres_data:

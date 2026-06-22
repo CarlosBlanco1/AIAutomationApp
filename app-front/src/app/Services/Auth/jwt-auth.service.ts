@@ -11,15 +11,15 @@ export class JwtAuthService implements AuthService{
     private httpClient = inject(HttpClient);
 
     register(request: CreateUserRequest): Observable<void> {
-        return this.httpClient.post<void>('/api/Auth/Register',
+        console.log(request)
+        return this.httpClient.post<void>('http://localhost/api/Auth/Register',
             request
         );
     }
     
     login(request: LoginRequest): Observable<LoginResponse> {
-        return this.httpClient.post<LoginResponse>('/api/Auth/Login',
+        return this.httpClient.post<LoginResponse>('http://localhost/api/Auth/Login',
             request
         );
     }
-
 }

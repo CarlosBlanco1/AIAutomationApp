@@ -1,9 +1,16 @@
-FROM mcr.microsoft.com/dotnet/sdk:latest
+FROM mcr.microsoft.com/dotnet/sdk:10.0 as build
+
+WORKDIR /src
 
 COPY . .
 
-EXPOSE 5257
-
 RUN dotnet restore
+RUN dotnet publish -c Release -o ./app/publish
 
-CMD [ "dotnet run" ]
+FROM mcr.microsoft.com/dotnet/runtime:10.0 as final
+
+COPY --from=build /app/publish .
+
+EXPOSE 8080
+
+ENTRYPOINT [ "dotnet", "app-api.dll" ]

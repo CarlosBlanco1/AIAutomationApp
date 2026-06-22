@@ -14,6 +14,10 @@ import {
 } from '@angular/forms';
 import { InputValidatorComponent } from './input-validator/input-validator.component';
 import { securePasswordValidator } from '../Directives/Validation/password-validation.directive';
+import { CheckIconComponent } from '../Icons/check-icon.component';
+import { LoginIconComponent } from '../Icons/login-icon.component';
+import { HouseIconComponent } from '../Icons/house-icon.component';
+import { FailureIconComponent } from '../Icons/failure-icon.component';
 
 @Component({
   selector: 'app-register',
@@ -26,7 +30,12 @@ import { securePasswordValidator } from '../Directives/Validation/password-valid
     UserIconComponent,
     FormsModule,
     ReactiveFormsModule,
-    InputValidatorComponent
+    InputValidatorComponent,
+    CheckIconComponent,
+    LoginIconComponent,
+    HouseIconComponent,
+    LockIconComponent,
+    FailureIconComponent
   ],
 })
 export class RegisterComponent {
@@ -39,47 +48,66 @@ export class RegisterComponent {
     password: '',
   };
 
+  registrationSucess : boolean | undefined = undefined
+  errorMessage = 'failure'
+
   onSubmitForm() {
-    this.authService.register(this.registerRequest);
+    if (this.registerForm.invalid) {
+      return;
+    }
+
+    this.authService
+      .register({
+        firstName: this.registerForm.get('firstName')!.value!,
+        lastName: this.registerForm.get('lastName')!.value!,
+        email: this.registerForm.get('email')!.value!,
+        password: this.registerForm.get('password')!.value!,
+      })
+      .subscribe({
+        next: () => {
+          this.registrationSucess = true;
+        },
+        error: () => {
+          this.registrationSucess = false;
+          this.errorMessage = "failed"
+        },
+      });
   }
 
   registerForm = new FormGroup({
-    firstName: new FormControl(this.registerRequest.firstName, [
+    firstName: new FormControl('', [
       Validators.required,
       Validators.minLength(2),
-      Validators.maxLength(20)
+      Validators.maxLength(20),
     ]),
-    lastName: new FormControl(this.registerRequest.lastName, [
+    lastName: new FormControl('', [
       Validators.required,
       Validators.minLength(2),
-      Validators.maxLength(20)
+      Validators.maxLength(20),
     ]),
-    email: new FormControl(this.registerRequest.email, [
-      Validators.required,
-      Validators.email,
-    ]),
-    password: new FormControl(this.registerRequest.password, [
+    email: new FormControl('', [Validators.required, Validators.email]),
+    password: new FormControl('', [
       Validators.required,
       Validators.minLength(12),
       Validators.maxLength(128),
-      securePasswordValidator()
+      securePasswordValidator(),
     ]),
   });
 
   get firstName() {
-    return this.registerForm.get('firstName') as FormControl<string|null>;
+    return this.registerForm.get('firstName') as FormControl<string | null>;
   }
 
   get lastName() {
-    return this.registerForm.get('lastName') as FormControl<string|null>;
+    return this.registerForm.get('lastName') as FormControl<string | null>;
   }
 
   get email() {
-    return this.registerForm.get('email') as FormControl<string|null>;
+    return this.registerForm.get('email') as FormControl<string | null>;
   }
 
   get password() {
-    return this.registerForm.get('password') as FormControl<string|null>;
+    return this.registerForm.get('password') as FormControl<string | null>;
   }
 
   getRuleToMessageText(inputName: string) {
@@ -95,7 +123,7 @@ export class RegisterComponent {
       {
         validationRule: 'maxlength',
         errorMessage: `${inputName} must be no longer than 20 characters long.`,
-      }
+      },
     ];
   }
 
@@ -137,7 +165,7 @@ export class RegisterComponent {
       {
         validationRule: 'notContainsNumber',
         errorMessage: `Password must contain at least 1 number.`,
-      }
+      },
     ];
   }
 }
