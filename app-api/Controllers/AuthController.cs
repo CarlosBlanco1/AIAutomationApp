@@ -1,3 +1,4 @@
+using System.Text;
 using app_api.Models;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
@@ -39,7 +40,14 @@ public class AuthController : ControllerBase
         }
         else
         {
-            return BadRequest("Something went wrong!");
+            StringBuilder errorString = new StringBuilder();
+
+            foreach (var error in identityResult.Errors)
+            {
+                errorString.Append(error.Description);
+            }
+
+            return BadRequest(errorString.ToString());
         }
     }
 

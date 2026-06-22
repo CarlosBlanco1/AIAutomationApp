@@ -14,13 +14,8 @@ import { SingleDocumentComponent } from './SingleDocument/singledocument.compone
   imports: [
     RouterOutlet,
     HeaderComponent,
-    LoginCardComponent,
-    RegisterComponent,
     SideBarComponent,
-    DashboardComponent,
-    WorkspacesComponent,
-    DocumentsComponent,
-    SingleDocumentComponent,
+    RouterOutlet
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',

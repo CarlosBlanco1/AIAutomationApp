@@ -10,9 +10,9 @@ import { HttpClient } from "@angular/common/http";
 export class JwtAuthService implements AuthService{
     private httpClient = inject(HttpClient);
 
-    register(request: CreateUserRequest): Observable<void> {
+    register(request: CreateUserRequest): Observable<string> {
         console.log(request)
-        return this.httpClient.post<void>('http://localhost/api/Auth/Register',
+        return this.httpClient.post<string>('http://localhost/api/Auth/Register',
             request
         );
     }

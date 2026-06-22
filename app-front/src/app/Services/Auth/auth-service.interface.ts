@@ -6,6 +6,6 @@ import { LoginRequest } from "../../Models/Auth/login-request";
 
 export interface AuthService
 {
-    register(request : CreateUserRequest) : Observable<void>;
+    register(request : CreateUserRequest) : Observable<string>;
     login(request : LoginRequest) : Observable<LoginResponse>;
 }

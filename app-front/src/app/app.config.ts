@@ -12,5 +12,6 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideHttpClient(),
     { provide: AUTH_SERVICE, useClass: JwtAuthService },
+    provideRouter(routes)
   ],
 };
