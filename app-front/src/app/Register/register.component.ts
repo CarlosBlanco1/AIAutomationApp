@@ -4,7 +4,6 @@ import { EmailIconComponent } from '../Icons/email-icon.component';
 import { LockIconComponent } from '../Icons/lock-icon.component';
 import { UserIconComponent } from '../Icons/user-icon.component';
 import { AUTH_SERVICE } from '../Services/Auth/auth-service.token';
-import { type CreateUserRequest } from '../Models/Users/create-user-request';
 import {
   FormControl,
   FormGroup,
@@ -17,14 +16,15 @@ import { securePasswordValidator } from '../Directives/Validation/password-valid
 import { CheckIconComponent } from '../Icons/check-icon.component';
 import { LoginIconComponent } from '../Icons/login-icon.component';
 import { HouseIconComponent } from '../Icons/house-icon.component';
-import { FailureIconComponent } from '../Icons/failure-icon.component';
-import { getRuleToMessageEmail, getRuleToMessagePassword, getRuleToMessageText } from '../Dictionaries/validation-messages';
+import { getRuleToMessageEmail, getRuleToMessageNewPassword, getRuleToMessageText } from '../Dictionaries/validation-messages';
 import { RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
+import { FailureCardComponent } from '../StateCards/failure-card/failure-card.component';
 
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
+  styleUrl : './register.component.css',
   standalone: true,
   imports: [
     LogoComponent,
@@ -38,66 +38,24 @@ import { HttpErrorResponse } from '@angular/common/http';
     LoginIconComponent,
     HouseIconComponent,
     LockIconComponent,
-    FailureIconComponent,
-    RouterLink
-  ],
+    RouterLink,
+    FailureCardComponent
+],
 })
 export class RegisterComponent {
   private authService = inject(AUTH_SERVICE);
 
   formState: RegistrationState = 'form'
 
-  registerRequest: CreateUserRequest = {
-    firstName: '',
-    lastName: '',
-    email: '',
-    password: '',
-  };
-
-  errorMessage = 'failure'
+  errorMessage = ''
   isLoading = false
 
-  passwordValidationMessages = getRuleToMessagePassword();
+  passwordValidationMessages = getRuleToMessageNewPassword();
   emailValidationMessages = getRuleToMessageEmail();
   fnValidationMessages = getRuleToMessageText('First Name')
   lnValidationMessages = getRuleToMessageText('Last Name')
 
-  tryAgain() {
-    this.registerForm.reset();
-    this.registerForm.markAsPristine();
-    this.registerForm.markAsUntouched();
-    this.formState = 'form';
-  }
-
-  onSubmitForm() {
-    if (this.registerForm.invalid) {
-      return;
-    }
-
-    this.formState = 'loading'
-
-    this.authService
-      .register({
-        firstName: this.firstName!.value!,
-        lastName: this.lastName!.value!,
-        email: this.email!.value!,
-        password: this.password!.value!,
-      })
-      .subscribe({
-        next: () => {
-          this.formState = 'success'
-        },
-        error: (err: HttpErrorResponse) => {
-          this.formState = 'failure'
-          if (err.error && typeof err.error === 'object') {
-            this.errorMessage = err.error.message || 'An error occurred';
-          } else {
-            this.errorMessage = err.error
-          }
-        },
-      });
-  }
-
+  
   registerForm = new FormGroup({
     firstName: new FormControl('', [
       Validators.required,
@@ -117,21 +75,57 @@ export class RegisterComponent {
       securePasswordValidator(),
     ]),
   });
-
+  
   get firstName() {
     return this.registerForm.get('firstName') as FormControl<string | null>;
   }
-
+  
   get lastName() {
     return this.registerForm.get('lastName') as FormControl<string | null>;
   }
-
+  
   get email() {
     return this.registerForm.get('email') as FormControl<string | null>;
   }
-
+  
   get password() {
     return this.registerForm.get('password') as FormControl<string | null>;
+  }
+
+  onSubmitForm() {
+    if (this.registerForm.invalid) {
+      return;
+    }
+    
+    this.formState = 'loading'
+    
+    this.authService
+    .register({
+      firstName: this.firstName.value!,
+      lastName: this.lastName.value!,
+      email: this.email.value!,
+      password: this.password.value!,
+    })
+    .subscribe({
+      next: () => {
+        this.formState = 'success'
+      },
+      error: (err: HttpErrorResponse) => {
+        this.formState = 'failure'
+        if (err.error && typeof err.error === 'object') {
+          this.errorMessage = err.error.message || 'An error occurred';
+        } else {
+          this.errorMessage = err.error
+        }
+      }
+    });
+  }
+
+  tryAgain() {
+    this.registerForm.reset();
+    this.registerForm.markAsPristine();
+    this.registerForm.markAsUntouched();
+    this.formState = 'form';
   }
 }
 

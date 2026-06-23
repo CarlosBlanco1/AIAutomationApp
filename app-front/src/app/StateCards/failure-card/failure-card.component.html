@@ -1,0 +1,35 @@
+<div class="flex flex-col gap-8 rounded-lg bg-white p-8 min-w-full">
+    <div class="flex-4 flex flex-col gap-3 items-center">
+        <div class="size-[7em] text-red-600">
+            <app-failure-icon></app-failure-icon>
+        </div>
+        <div class="flex flex-col gap-1 items-center">
+            <span class="font-bold text-2xl">{{primaryText}}</span>
+            <span class="text-md"> {{errorMessage}}</span>
+        </div>
+    </div>
+    <div class="flex-3 flex flex-col gap-3">
+        <div class="flex justify-center">
+            <button type="button" (click)="tryAgainMethod()"
+                class="flex gap-2 justify-center text-white bg-red-600 p-4 rounded-lg w-[60%]">
+                <span class="text-nowrap">Try again</span>
+            </button>
+        </div>
+        <div class="flex gap-1 items-center">
+            <hr class="flex-3 text-gray-400">
+            <span class="text-center">or</span>
+            <hr class="flex-3 text-gray-400">
+        </div>
+        <div class="flex justify-center">
+            <a routerLink="secondaryUrl"
+                class="flex gap-2 justify-center text-gray-500 border-gray-500 border p-4 rounded-lg w-[60%]">
+                <ng-content></ng-content>
+                <span class="text-nowrap">{{secondaryText}}</span>
+            </a>
+        </div>
+    </div>
+    <div class="flex-1 flex gap-2 text-gray-500 text-sm items-center justify-center">
+        <app-lock-icon class="fill-white"></app-lock-icon>
+        <span>Your information is secure</span>
+    </div>
+</div>

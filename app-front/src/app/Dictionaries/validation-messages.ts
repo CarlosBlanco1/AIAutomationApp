@@ -28,7 +28,7 @@ export function getRuleToMessageEmail() {
     ];
 }
 
-export function getRuleToMessagePassword() {
+export function getRuleToMessageNewPassword() {
     return [
         {
             validationRule: 'required',
@@ -54,5 +54,14 @@ export function getRuleToMessagePassword() {
             validationRule: 'notContainsNumber',
             errorMessage: `Password must contain at least 1 number.`,
         },
+    ];
+}
+
+export function getRuleToMessageExistingPassword() {
+    return [
+        {
+            validationRule: 'required',
+            errorMessage: `Password is required.`,
+        }
     ];
 }
