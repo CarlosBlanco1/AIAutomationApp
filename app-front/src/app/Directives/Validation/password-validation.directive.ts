@@ -5,6 +5,11 @@ export function securePasswordValidator() : ValidatorFn {
 
     const value = control.value;
 
+    if(value === null)
+    {
+        return null;
+    }
+
     if(value.length < 12 || value.length > 128)
     {
         return null

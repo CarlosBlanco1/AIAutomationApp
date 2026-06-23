@@ -13,7 +13,7 @@ class PasswordAttribute : ValidationAttribute
         {
             return new ValidationResult("Password must contain a symbol.");
         }
-        if(!(Regex.IsMatch(password, "[A-Z]") && Regex.IsMatch(value as string, "a-z")))
+        if(!(Regex.IsMatch(password, "[A-Z]") && Regex.IsMatch(value as string, "[a-z]")))
         {
             return new ValidationResult("Password must contain upper and lower case.");
         }

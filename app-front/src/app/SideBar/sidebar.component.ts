@@ -7,6 +7,7 @@ import { AnalyticsIconComponent } from '../Icons/analytics-icon.component';
 import { UserIconComponent } from '../Icons/user-icon.component';
 import { AccountIconComponent } from '../Icons/account-icon.component';
 import { DropdownIconComponent } from '../Icons/dropdown-icon.component';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-sidebar',
@@ -20,7 +21,8 @@ import { DropdownIconComponent } from '../Icons/dropdown-icon.component';
     AnalyticsIconComponent,
     UserIconComponent,
     AccountIconComponent,
-    DropdownIconComponent
+    DropdownIconComponent,
+    RouterLink
   ],
 })
 export class SideBarComponent {}

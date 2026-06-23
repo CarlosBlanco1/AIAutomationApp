@@ -19,6 +19,8 @@ import { LoginIconComponent } from '../Icons/login-icon.component';
 import { HouseIconComponent } from '../Icons/house-icon.component';
 import { FailureIconComponent } from '../Icons/failure-icon.component';
 import { getRuleToMessageEmail, getRuleToMessagePassword, getRuleToMessageText } from '../Dictionaries/validation-messages';
+import { RouterLink } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-register',
@@ -36,13 +38,14 @@ import { getRuleToMessageEmail, getRuleToMessagePassword, getRuleToMessageText }
     LoginIconComponent,
     HouseIconComponent,
     LockIconComponent,
-    FailureIconComponent
+    FailureIconComponent,
+    RouterLink
   ],
 })
 export class RegisterComponent {
   private authService = inject(AUTH_SERVICE);
 
-  formState : RegistrationState = 'form'
+  formState: RegistrationState = 'form'
 
   registerRequest: CreateUserRequest = {
     firstName: '',
@@ -58,6 +61,13 @@ export class RegisterComponent {
   emailValidationMessages = getRuleToMessageEmail();
   fnValidationMessages = getRuleToMessageText('First Name')
   lnValidationMessages = getRuleToMessageText('Last Name')
+
+  tryAgain() {
+    this.registerForm.reset();
+    this.registerForm.markAsPristine();
+    this.registerForm.markAsUntouched();
+    this.formState = 'form';
+  }
 
   onSubmitForm() {
     if (this.registerForm.invalid) {
@@ -77,9 +87,13 @@ export class RegisterComponent {
         next: () => {
           this.formState = 'success'
         },
-        error: (err) => {
+        error: (err: HttpErrorResponse) => {
           this.formState = 'failure'
-          this.errorMessage = err
+          if (err.error && typeof err.error === 'object') {
+            this.errorMessage = err.error.message || 'An error occurred';
+          } else {
+            this.errorMessage = err.error
+          }
         },
       });
   }

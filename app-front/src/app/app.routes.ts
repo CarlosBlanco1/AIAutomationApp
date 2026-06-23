@@ -1,11 +1,9 @@
 import { Routes } from '@angular/router';
-import { AppComponent } from './app.component';
 import { LoginCardComponent } from './LoginCard/logincard.component';
 import { RegisterComponent } from './Register/register.component';
 import { DashboardComponent } from './Dashboard/dashboard.component';
 import { WorkspacesComponent } from './Workspaces/workspaces.component';
 import { DocumentsComponent } from './Documents/documents.component';
-import { SingleDocumentComponent } from './SingleDocument/singledocument.component';
 
 export const routes: Routes = [
 
@@ -31,7 +29,9 @@ export const routes: Routes = [
     },
     {
         path: 'singledocument',
-        component: SingleDocumentComponent,
+        loadComponent: () =>
+            import('./SingleDocument/singledocument.component')
+                .then(m => m.SingleDocumentComponent),
     },
 
 ];

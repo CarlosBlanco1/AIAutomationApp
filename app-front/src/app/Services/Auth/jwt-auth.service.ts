@@ -6,19 +6,18 @@ import { LoginResponse } from "../../Models/Auth/login-response";
 import { CreateUserRequest } from "../../Models/Users/create-user-request";
 import { HttpClient } from "@angular/common/http";
 
-@Injectable({providedIn : 'root'})
-export class JwtAuthService implements AuthService{
+@Injectable({ providedIn: 'root' })
+export class JwtAuthService implements AuthService {
     private httpClient = inject(HttpClient);
 
     register(request: CreateUserRequest): Observable<string> {
-        console.log(request)
-        return this.httpClient.post<string>('http://localhost/api/Auth/Register',
-            request
-        );
+        return this.httpClient.post( 'http://localhost:8080/api/Auth/Register', 
+            request, 
+            { responseType: 'text' });
     }
-    
+
     login(request: LoginRequest): Observable<LoginResponse> {
-        return this.httpClient.post<LoginResponse>('http://localhost/api/Auth/Login',
+        return this.httpClient.post<LoginResponse>('http://localhost:8080/api/Auth/Login',
             request
         );
     }
