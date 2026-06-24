@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
-import { FailureIconComponent } from '../../Icons/failure-icon.component';
-import { LockIconComponent } from '../../Icons/lock-icon.component';
+import { FailureIconComponent } from '../../../icons/failure-icon.component';
+import { LockIconComponent } from '../../../icons/lock-icon.component';
 
 @Component({
   selector: 'app-failure-card',

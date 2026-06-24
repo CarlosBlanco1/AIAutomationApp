@@ -1,9 +1,9 @@
 import { Component, inject } from '@angular/core';
-import { LogoComponent } from '../Logo/logo.component';
-import { EmailIconComponent } from '../Icons/email-icon.component';
-import { LockIconComponent } from '../Icons/lock-icon.component';
-import { UserIconComponent } from '../Icons/user-icon.component';
-import { AUTH_SERVICE } from '../Services/Auth/auth-service.token';
+import { LogoComponent } from '../../logo/logo.component';
+import { EmailIconComponent } from '../../icons/email-icon.component';
+import { LockIconComponent } from '../../icons/lock-icon.component';
+import { UserIconComponent } from '../../icons/user-icon.component';
+import { AUTH_SERVICE } from '../../services/auth/auth-service.token';
 import {
   FormControl,
   FormGroup,
@@ -12,14 +12,14 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { InputValidatorComponent } from './input-validator/input-validator.component';
-import { securePasswordValidator } from '../Directives/Validation/password-validation.directive';
-import { CheckIconComponent } from '../Icons/check-icon.component';
-import { LoginIconComponent } from '../Icons/login-icon.component';
-import { HouseIconComponent } from '../Icons/house-icon.component';
-import { getRuleToMessageEmail, getRuleToMessageNewPassword, getRuleToMessageText } from '../Dictionaries/validation-messages';
+import { securePasswordValidator } from '../../directives/Validation/password-validation.directive';
+import { CheckIconComponent } from '../../icons/check-icon.component';
+import { LoginIconComponent } from '../../icons/login-icon.component';
+import { HouseIconComponent } from '../../icons/house-icon.component';
+import { getRuleToMessageEmail, getRuleToMessageNewPassword, getRuleToMessageText } from '../../dictionaries/validation-messages';
 import { RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
-import { FailureCardComponent } from '../StateCards/failure-card/failure-card.component';
+import { FailureCardComponent } from '../state-cards/failure-card/failure-card.component';
 
 @Component({
   selector: 'app-register',

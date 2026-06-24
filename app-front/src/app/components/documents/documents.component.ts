@@ -1,14 +1,13 @@
 import { Component } from '@angular/core';
-import { HorizontalDotsIconComponent } from '../Icons/horizontal-dots-icon.component';
-import { HouseIconComponent } from '../Icons/house-icon.component';
-import { SearchIconComponent } from '../Icons/search-icon.component';
-import { PlusIconComponent } from '../Icons/plus-icon.component';
-import { LeftArrowIcon } from '../Icons/left-arrow-icon.component';
-import { RightArrowIcon } from '../Icons/right-arrow-icon.component';
-import { BaselineIconComponent } from '../Icons/baseline-icon.component';
-import { GridIconComponent } from '../Icons/grid-icon.component';
 import { DocumentMetricBlockComponent } from './document-metric-block.component';
 import { DocumentTableRowComponent } from './document-table-row.component';
+import { BaselineIconComponent } from '../../icons/baseline-icon.component';
+import { GridIconComponent } from '../../icons/grid-icon.component';
+import { HouseIconComponent } from '../../icons/house-icon.component';
+import { LeftArrowIcon } from '../../icons/left-arrow-icon.component';
+import { PlusIconComponent } from '../../icons/plus-icon.component';
+import { RightArrowIcon } from '../../icons/right-arrow-icon.component';
+import { SearchIconComponent } from '../../icons/search-icon.component';
 
 @Component({
   selector: 'app-documents',

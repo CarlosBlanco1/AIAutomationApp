@@ -1,15 +1,15 @@
 import { Component, inject } from "@angular/core";
-import { EmailIconComponent } from "../Icons/email-icon.component";
-import { LockIconComponent } from "../Icons/lock-icon.component";
-import { ArrowIconComponent } from "../Icons/arrow-icon.component";
-import { AUTH_SERVICE } from "../Services/Auth/auth-service.token";
-import { getRuleToMessageEmail, getRuleToMessageExistingPassword } from "../Dictionaries/validation-messages";
 import { FormControl, FormGroup, Validators, ReactiveFormsModule } from "@angular/forms";
-import { InputValidatorComponent } from "../Register/input-validator/input-validator.component";
+import { InputValidatorComponent } from "../register/input-validator/input-validator.component";
 import { HttpErrorResponse } from "@angular/common/http";
-import { FailureCardComponent } from "../StateCards/failure-card/failure-card.component";
-import { HouseIconComponent } from "../Icons/house-icon.component";
+import { FailureCardComponent } from "../state-cards/failure-card/failure-card.component";
 import { Router } from "@angular/router";
+import { ArrowIconComponent } from "../../icons/arrow-icon.component";
+import { EmailIconComponent } from "../../icons/email-icon.component";
+import { HouseIconComponent } from "../../icons/house-icon.component";
+import { LockIconComponent } from "../../icons/lock-icon.component";
+import { AUTH_SERVICE } from "../../services/auth/auth-service.token";
+import { getRuleToMessageEmail, getRuleToMessageExistingPassword } from "../../dictionaries/validation-messages";
 
 @Component({
     selector: 'app-login',
@@ -60,9 +60,7 @@ export class LoginCardComponent {
             email: this.email.value!,
             password: this.password.value!
         }).subscribe({
-            next: (res) => {
-                //Store token in local storage
-                console.log(res.jwtToken)
+            next: () => {
                 this.router.navigateByUrl('/')
             },
             error: (err: HttpErrorResponse) => {

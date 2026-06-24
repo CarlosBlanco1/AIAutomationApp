@@ -1,5 +1,5 @@
 import { Component } from "@angular/core";
-import { SparkleIconComponent } from "../Icons/sparkle-icon.component";
+import { SparkleIconComponent } from "../icons/sparkle-icon.component";
 
 @Component({
     selector : 'app-logo',

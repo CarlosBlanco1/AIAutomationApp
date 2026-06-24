@@ -1,5 +1,5 @@
 import { Component, Input } from "@angular/core";
-import { HorizontalDotsIconComponent } from "../Icons/horizontal-dots-icon.component";
+import { HorizontalDotsIconComponent } from "../../icons/horizontal-dots-icon.component";
 
 @Component({
     selector : 'tr[app-document-table-row]',
