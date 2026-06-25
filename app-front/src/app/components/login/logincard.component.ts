@@ -10,19 +10,20 @@ import { HouseIconComponent } from "../../icons/house-icon.component";
 import { LockIconComponent } from "../../icons/lock-icon.component";
 import { AUTH_SERVICE } from "../../services/auth/auth-service.token";
 import { getRuleToMessageEmail, getRuleToMessageExistingPassword } from "../../dictionaries/validation-messages";
+import { LoadingAnimationComponent } from "../../animations/loading-animation/loading-animation.component";
 
 @Component({
     selector: 'app-login',
     standalone: true,
     templateUrl: './logincard.component.html',
-    imports: [EmailIconComponent, LockIconComponent, ArrowIconComponent, InputValidatorComponent, ReactiveFormsModule, FailureCardComponent, HouseIconComponent]
+    imports: [EmailIconComponent, LockIconComponent, ArrowIconComponent, InputValidatorComponent, ReactiveFormsModule, FailureCardComponent, HouseIconComponent, LoadingAnimationComponent]
 })
 
 export class LoginCardComponent {
     private authService = inject(AUTH_SERVICE)
     private router = inject(Router);
 
-    isInFormState = true
+    formState : loginFormState = 'form';
 
     errorMessage = ''
     isLoading = false
@@ -54,7 +55,7 @@ export class LoginCardComponent {
             return;
         }
 
-        this.isInFormState = false;
+        this.formState = 'loading';
 
         this.authService.login({
             email: this.email.value!,
@@ -64,7 +65,7 @@ export class LoginCardComponent {
                 this.router.navigateByUrl('/')
             },
             error: (err: HttpErrorResponse) => {
-                this.isInFormState = false;
+                this.formState = 'failure';
                 if (err.error && typeof err.error === 'object') {
                     this.errorMessage = err.error.message || 'An error occurred';
                 } else {
@@ -78,7 +79,8 @@ export class LoginCardComponent {
         this.loginForm.reset();
         this.loginForm.markAsPristine();
         this.loginForm.markAsUntouched();
-        this.isInFormState = true;
+        this.formState = 'form';
     }
-
 }
+
+type loginFormState = 'form' | 'failure' | 'loading'

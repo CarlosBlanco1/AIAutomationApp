@@ -3,12 +3,13 @@
         <app-logo></app-logo>
     </div>
     <div>
-
         <div class="flex flex-col">
             <a routerLink="/" class="flex-1 flex gap-5 text-md text-(--text-gray) p-4 pl-6">
                 <app-house-icon></app-house-icon>
                 <span>Dashboard</span>
             </a>
+            @if(authService.isAuthenticated())
+            {
             <a routerLink="/documents" class="flex-1 flex gap-5 text-md text-(--text-gray) p-4 pl-6">
                 <app-document-icon></app-document-icon>
                 <span>Documents</span>
@@ -21,22 +22,26 @@
                 <app-user-icon></app-user-icon>
                 <span>Account</span>
             </a>
+            }
         </div>
     </div>
     <div>
         <div class="grid grid-cols-[20%_80%]">
+            @if(authService.isAuthenticated())
+            {
             <div class="flex items-center justify-center text-2xl">
                 <app-account-icon></app-account-icon>
             </div>
             <div class="grid grid-cols-[90%_10%]">
                 <div class="flex flex-col gap-2">
-                    <span class="text-sm text-white"> Jhon Doe</span>
-                    <span class="text-xs text-(--text-gray)"> jhon&#64;example.com</span>
+                    <span class="text-sm text-white">{{userService.currentUser()?.firstName! + ' ' +userService.currentUser()?.lastName!}}</span>
+                    <span class="text-xs text-(--text-gray)">{{userService.currentUser()?.email}}</span>
                 </div>
                 <div class="flex items-center">
                     <app-dropdown-icon></app-dropdown-icon>
                 </div>
             </div>
+            }
         </div>
-    </div> 
+    </div>
 </div>

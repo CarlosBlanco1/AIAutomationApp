@@ -21,7 +21,7 @@
             <hr class="flex-3 text-gray-400">
         </div>
         <div class="flex justify-center">
-            <a routerLink="secondaryUrl"
+            <a [routerLink]="secondaryUrl"
                 class="flex gap-2 justify-center text-gray-500 border-gray-500 border p-4 rounded-lg w-[60%]">
                 <ng-content></ng-content>
                 <span class="text-nowrap">{{secondaryText}}</span>

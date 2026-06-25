@@ -20,11 +20,11 @@ import { getRuleToMessageEmail, getRuleToMessageNewPassword, getRuleToMessageTex
 import { RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { FailureCardComponent } from '../state-cards/failure-card/failure-card.component';
+import { LoadingAnimationComponent } from "../../animations/loading-animation/loading-animation.component";
 
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
-  styleUrl : './register.component.css',
   standalone: true,
   imports: [
     LogoComponent,
@@ -39,11 +39,12 @@ import { FailureCardComponent } from '../state-cards/failure-card/failure-card.c
     HouseIconComponent,
     LockIconComponent,
     RouterLink,
-    FailureCardComponent
+    FailureCardComponent,
+    LoadingAnimationComponent
 ],
 })
 export class RegisterComponent {
-  private authService = inject(AUTH_SERVICE);
+  private readonly authService = inject(AUTH_SERVICE);
 
   formState: RegistrationState = 'form'
 
