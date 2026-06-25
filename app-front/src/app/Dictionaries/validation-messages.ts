@@ -1,4 +1,4 @@
-export function getRuleToMessageText(inputName: string) {
+export function getRuleToMessageText(inputName: string, minLength : number, maxlength : number) {
     return [
         {
             validationRule: 'required',
@@ -6,11 +6,11 @@ export function getRuleToMessageText(inputName: string) {
         },
         {
             validationRule: 'minlength',
-            errorMessage: `${inputName} must be at least 2 characters long.`,
+            errorMessage: `${inputName} must be at least ${minLength} characters long.`,
         },
         {
             validationRule: 'maxlength',
-            errorMessage: `${inputName} must be no longer than 20 characters long.`,
+            errorMessage: `${inputName} must be no longer than ${maxlength} characters long.`,
         },
     ];
 }

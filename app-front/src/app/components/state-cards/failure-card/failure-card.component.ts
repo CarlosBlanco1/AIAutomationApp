@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FailureIconComponent } from '../../../icons/failure-icon.component';
 import { LockIconComponent } from '../../../icons/lock-icon.component';
 import { RouterLink } from '@angular/router';
@@ -11,7 +11,12 @@ import { RouterLink } from '@angular/router';
 export class FailureCardComponent {
   @Input({ required : true}) primaryText! : string;
   @Input({ required : true}) errorMessage! : string;
-  @Input({ required : true}) tryAgainMethod! : () => void;
+  @Output() tryAgain = new EventEmitter();
   @Input({ required : true}) secondaryText! : string;
   @Input({ required : true}) secondaryUrl! : string;
+
+  onTryAgain()
+  {
+    this.tryAgain.emit();
+  }
 }

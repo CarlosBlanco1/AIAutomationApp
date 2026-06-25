@@ -1,11 +1,11 @@
-<div class="flex flex-col gap-4 bg-[var(--color-bgmain)] min-h-full">
+<div class="flex flex-col gap-4 bg-(--color-bgmain) min-h-full">
     <div class="flex gap-3 p-4">
         <div class="flex-1 flex flex-col gap-2">
             <span class="text-3xl text-white">Your workspaces</span>
-            <span class="text-sm text-[var(--text-gray)]">Organize your project and collaborate with your team.</span>
+            <span class="text-sm text-(--text-gray)">Organize your project and collaborate with your team.</span>
         </div>
         <div class="flex-1 flex gap-3 items-center rounded-lg text-sm justify-end">
-            <div class="flex text-[var(--text-gray)] gap-2 items-center border border-gray-700 p-3 rounded-lg pr-10">
+            <div class="flex text-(--text-gray) gap-2 items-center border border-gray-700 p-3 rounded-lg pr-10">
                 <div class="flex items-center text-xs">
                     <app-search-icon></app-search-icon>
                 </div>
@@ -13,14 +13,14 @@
                     <span>Search workspaces ...</span>
                 </div>
             </div>
-            <div class="bg-purple-600 text-white flex items-center gap-2 p-3 rounded-lg">
+            <button (click)="onOpenModal()" class="bg-(--button-purple) text-white flex items-center gap-2 p-3 rounded-lg">
                 <div class="text-xs">
                     <app-plus-icon></app-plus-icon>
                 </div>
                 <div>
                     <span>Create Workspace</span>
                 </div>
-            </div>
+            </button>
         </div>
     </div>
     <div class="flex-[90%] flex flex-col m-4 gap-4">
@@ -31,16 +31,16 @@
             <div class="flex-1 flex justify-end gap-4">
                 <div class="flex gap-3">
                     <div class="flex justify-end">
-                        <span class="text-xs text-[var(--text-gray)] border border-gray-700 rounded-md flex items-center">
+                        <span class="text-xs text-(--text-gray) border border-gray-700 rounded-md flex items-center">
                             <span class="p-3">Sort By: Recent</span>
                             <span class="self-center pr-2">&#8964;</span>
                         </span>
                     </div>
-                    <div class="flex justify-end rounded-md bg-[var(--color-hlpurple)]">
-                        <div class="text-[var(--text-gray)] p-2">
+                    <div class="flex justify-end rounded-md bg-(--color-hlpurple)">
+                        <div class="text-(--text-gray) p-2">
                             <app-grid-icon></app-grid-icon>
                         </div>
-                        <div class="text-[var(--text-gray)] p-2">
+                        <div class="text-(--text-gray) p-2">
                             <app-baseline-icon></app-baseline-icon>
                         </div>
                     </div>
@@ -48,14 +48,14 @@
             </div>
         </div>
         <div class="grid grid-cols-9 grid-rows-6 gap-4">
-            <div class="bg-[var(--color-hlpurple)] col-span-2 row-span-3 flex flex-col gap-3 p-4 rounded-lg">
+            <div class="bg-(--color-hlpurple) col-span-2 row-span-3 flex flex-col gap-3 p-4 rounded-lg">
                 <div class="flex-2 flex">
                     <div class="flex-1 flex justify-start">
                         <div class="flex items-center justify-center bg-purple-600 text-white p-2 rounded-lg">
                             <app-house-icon></app-house-icon>
                         </div>
                     </div>
-                    <div class="flex-1 flex justify-end text-[var(--text-gray)] gap-3">
+                    <div class="flex-1 flex justify-end text-(--text-gray) gap-3">
                         <div>
                             <app-star-icon></app-star-icon>
                         </div>
@@ -66,10 +66,10 @@
                 </div>
                 <div class="flex-5 flex flex-col gap-4">
                     <span class="text-white text-2xl">Marketing Campaign</span>
-                    <span class="text-[var(--text-gray)] text-sm">Updated 2 hours ago</span>
-                    <span class="text-[var(--text-gray)] text-sm">Assets, documents and insights for Q2 marketing campaign.</span>
+                    <span class="text-(--text-gray) text-sm">Updated 2 hours ago</span>
+                    <span class="text-(--text-gray) text-sm">Assets, documents and insights for Q2 marketing campaign.</span>
                 </div>
-                <div class="flex-1 flex text-sm text-[var(--text-gray)]">
+                <div class="flex-1 flex text-sm text-(--text-gray)">
                     <div class="flex-1 flex justify-start">
                         <div>FACES</div>
                     </div>
@@ -80,41 +80,41 @@
             </div>
         </div>
     </div>
-    <div class="flex justify-center gap-3 px-3 py-5 bg-[var(--color-hlpurple)] m-4 rounded-lg">
+    <div class="flex justify-center gap-3 px-3 py-5 bg-(--color-hlpurple) m-4 rounded-lg">
         <div class="flex-1 flex gap-2">
-            <div class="rounded-lg p-3 text-purple-500 bg-[var(--color-bgcard)]">
+            <div class="rounded-lg p-3 text-purple-500 bg-(--color-bgcard)">
                 <app-house-icon></app-house-icon>
             </div>
             <div class="flex flex-col">
                 <span class="text-white text-xl">6</span>
-                <span class="text-[var(--text-gray)] text-sm">Total Workspaces</span>
+                <span class="text-(--text-gray) text-sm">Total Workspaces</span>
             </div>
         </div>
         <div class="flex-1 flex gap-2">
-            <div class="rounded-lg p-3 text-purple-500 bg-[var(--color-bgcard)]">
+            <div class="rounded-lg p-3 text-purple-500 bg-(--color-bgcard)">
                 <app-house-icon></app-house-icon>
             </div>
             <div class="flex flex-col">
                 <span class="text-white text-xl">6</span>
-                <span class="text-[var(--text-gray)] text-sm">Total Workspaces</span>
+                <span class="text-(--text-gray) text-sm">Total Workspaces</span>
             </div>
         </div>
         <div class="flex-1 flex gap-2">
-            <div class="rounded-lg p-3 text-purple-500 bg-[var(--color-bgcard)]">
+            <div class="rounded-lg p-3 text-purple-500 bg-(--color-bgcard)">
                 <app-house-icon></app-house-icon>
             </div>
             <div class="flex flex-col">
                 <span class="text-white text-xl">6</span>
-                <span class="text-[var(--text-gray)] text-sm">Total Workspaces</span>
+                <span class="text-(--text-gray) text-sm">Total Workspaces</span>
             </div>
         </div>
         <div class="flex-1 flex gap-2">
-            <div class="rounded-lg p-3 text-purple-500 bg-[var(--color-bgcard)]">
+            <div class="rounded-lg p-3 text-purple-500 bg-(--color-bgcard)">
                 <app-house-icon></app-house-icon>
             </div>
             <div class="flex flex-col">
                 <span class="text-white text-xl">6</span>
-                <span class="text-[var(--text-gray)] text-sm">Total Workspaces</span>
+                <span class="text-(--text-gray) text-sm">Total Workspaces</span>
             </div>
         </div>
     </div>

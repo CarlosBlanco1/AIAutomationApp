@@ -53,8 +53,8 @@ export class RegisterComponent {
 
   passwordValidationMessages = getRuleToMessageNewPassword();
   emailValidationMessages = getRuleToMessageEmail();
-  fnValidationMessages = getRuleToMessageText('First Name')
-  lnValidationMessages = getRuleToMessageText('Last Name')
+  fnValidationMessages = getRuleToMessageText('First Name', 2, 20)
+  lnValidationMessages = getRuleToMessageText('Last Name', 2, 20)
 
   
   registerForm = new FormGroup({

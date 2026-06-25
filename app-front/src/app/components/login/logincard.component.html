@@ -43,7 +43,7 @@
             </div>
             <div class="flex text-xs gap-1">
                 <span class="text-(--text-gray)">Don't have an account?</span>
-                <a href="https://youtu.be/dQw4w9WgXcQ?si=ao4sE-0dQLTjs1Rb" class="text-blue-600">Sign up</a>
+                <a routerLink="/register" class="text-blue-600">Sign up</a>
             </div>
         </div>
     </form>
@@ -55,8 +55,8 @@
 }
 @else if (formState === 'failure'){
 <div class="flex items-center justify-center bg-gray-400 min-w-full min-h-full">
-    <app-failure-card primaryText="Failed to Login" [errorMessage]="errorMessage" [tryAgainMethod]="tryAgain"
-        secondaryText="Go to home" secondaryUrl="/">
+    <app-failure-card primaryText="Failed to Login" [errorMessage]="errorMessage" (tryAgain)="tryAgain()"
+        secondaryText="Go to home" secondaryUrl="">
         <app-house-icon></app-house-icon>
     </app-failure-card>
 </div>

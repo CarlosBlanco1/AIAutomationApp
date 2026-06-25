@@ -23,6 +23,7 @@
     "embla-carousel-autoplay": "^8.6.0",
     "embla-carousel-reactive-utils": "^8.6.0",
     "ngx-extended-pdf-viewer": "^28.0.0",
+    "ngx-smart-modal": "^14.1.0",
     "postcss": "^8.5.15",
     "rxjs": "~7.8.0",
     "tailwindcss": "^4.3.0",

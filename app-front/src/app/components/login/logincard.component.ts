@@ -3,7 +3,7 @@ import { FormControl, FormGroup, Validators, ReactiveFormsModule } from "@angula
 import { InputValidatorComponent } from "../register/input-validator/input-validator.component";
 import { HttpErrorResponse } from "@angular/common/http";
 import { FailureCardComponent } from "../state-cards/failure-card/failure-card.component";
-import { Router } from "@angular/router";
+import { Router, RouterLink } from "@angular/router";
 import { ArrowIconComponent } from "../../icons/arrow-icon.component";
 import { EmailIconComponent } from "../../icons/email-icon.component";
 import { HouseIconComponent } from "../../icons/house-icon.component";
@@ -16,14 +16,14 @@ import { LoadingAnimationComponent } from "../../animations/loading-animation/lo
     selector: 'app-login',
     standalone: true,
     templateUrl: './logincard.component.html',
-    imports: [EmailIconComponent, LockIconComponent, ArrowIconComponent, InputValidatorComponent, ReactiveFormsModule, FailureCardComponent, HouseIconComponent, LoadingAnimationComponent]
+    imports: [EmailIconComponent, LockIconComponent, ArrowIconComponent, InputValidatorComponent, ReactiveFormsModule, FailureCardComponent, HouseIconComponent, LoadingAnimationComponent, RouterLink]
 })
 
 export class LoginCardComponent {
     private authService = inject(AUTH_SERVICE)
     private router = inject(Router);
 
-    formState : loginFormState = 'form';
+    protected formState : loginFormState = 'form';
 
     errorMessage = ''
     isLoading = false
@@ -31,7 +31,7 @@ export class LoginCardComponent {
     emailValidationMessages = getRuleToMessageEmail();
     passwordValidationMessages = getRuleToMessageExistingPassword();
 
-    loginForm = new FormGroup({
+    protected loginForm = new FormGroup({
         email: new FormControl('', [
             Validators.required,
             Validators.email
@@ -62,7 +62,7 @@ export class LoginCardComponent {
             password: this.password.value!
         }).subscribe({
             next: () => {
-                this.router.navigateByUrl('/')
+                this.router.navigateByUrl('/dashboard')
             },
             error: (err: HttpErrorResponse) => {
                 this.formState = 'failure';

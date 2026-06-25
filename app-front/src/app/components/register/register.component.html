@@ -100,7 +100,7 @@
   @else if(formState === 'failure')
   {
   <div class="flex items-center justify-center bg-gray-400 min-w-full min-h-full">
-    <app-failure-card primaryText="Failed to Register" [errorMessage]="errorMessage" [tryAgainMethod]="tryAgain"
+    <app-failure-card primaryText="Failed to Register" [errorMessage]="errorMessage" (tryAgain)="tryAgain()"
       secondaryText="Go to login" secondaryUrl="/login">
       <app-login-icon></app-login-icon>
     </app-failure-card>
