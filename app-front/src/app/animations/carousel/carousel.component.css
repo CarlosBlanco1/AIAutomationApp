@@ -1,0 +1,25 @@
+:host {
+  min-width: 100%;
+}
+
+.embla {
+  overflow: hidden;
+  min-height: 100%;
+  min-width: 100%;
+}
+.embla__container {
+  display: flex;
+  min-height: 100%;
+  min-width: 100%;
+}
+.embla__slide {
+  flex: 0 0 100%;
+  min-width: 100%;
+  min-height: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.embla__slide img {
+    max-height: 100%;
+}

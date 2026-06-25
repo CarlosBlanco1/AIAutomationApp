@@ -1,7 +1,7 @@
 import { map, Observable, tap } from "rxjs";
 import { UserDto } from "../../models/Users/user-dto";
 import { UserService } from "./user-service.interface";
-import { inject, Injectable, signal, Signal, WritableSignal } from "@angular/core";
+import { inject, Injectable, signal, WritableSignal } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 
 @Injectable({providedIn : 'root'})
@@ -18,6 +18,5 @@ export class ApiUserService implements UserService {
 
     clearCurrentUser(): void {
         this.currentUser.set(null);
-    }
-    
+    }  
 }

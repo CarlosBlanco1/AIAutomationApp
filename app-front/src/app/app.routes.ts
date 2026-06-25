@@ -5,11 +5,12 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { DocumentsComponent } from './components/documents/documents.component';
 import { LoginCardComponent } from './components/login/logincard.component';
 import { AuthGuard } from './guards/auth-guard';
+import { HomeComponent } from './components/home/home.component';
 
 export const routes: Routes = [
     {
         path: '',
-        component: DashboardComponent,
+        component: HomeComponent,
     },
     {
         path: 'login',
@@ -18,6 +19,11 @@ export const routes: Routes = [
     {
         path: 'register',
         component: RegisterComponent,
+    },
+    {
+        path: 'dashboard',
+        component: DashboardComponent,
+        canActivate : [AuthGuard]
     },
     {
         path: 'workspaces',
