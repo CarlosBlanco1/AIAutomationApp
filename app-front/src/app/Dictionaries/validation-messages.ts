@@ -65,3 +65,16 @@ export function getRuleToMessageExistingPassword() {
         }
     ];
 }
+
+export function getRuleToMessageFile() {
+    return [
+        {
+            validationRule : 'required',
+            errorMessage : 'File is required.',
+        },
+        {
+            validationRule : 'exceededSize',
+            errorMessage : 'File can be no more than 5MB.',
+        }
+    ]
+}

@@ -8,15 +8,15 @@
                 <app-house-icon></app-house-icon>
                 <span>Home</span>
             </a>
+            <a routerLink="/documents" class="flex-1 flex gap-5 text-md text-(--text-gray) p-4 pl-6">
+                <app-document-icon></app-document-icon>
+                <span>Documents</span>
+            </a>
             @if(authService.isAuthenticated())
             {
             <a routerLink="/dashboard" class="flex-1 flex gap-5 text-md text-(--text-gray) p-4 pl-6">
                 <app-house-icon></app-house-icon>
                 <span>Dashboard</span>
-            </a>
-            <a routerLink="/documents" class="flex-1 flex gap-5 text-md text-(--text-gray) p-4 pl-6">
-                <app-document-icon></app-document-icon>
-                <span>Documents</span>
             </a>
             <a routerLink="/workspaces" class="flex-1 flex gap-5 text-md text-(--text-gray) p-4 pl-6">
                 <app-analytics-icon></app-analytics-icon>
