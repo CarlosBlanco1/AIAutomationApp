@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
 using Serilog;
+using Amazon.S3;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,8 +32,21 @@ builder.Services.AddScoped<IWorkspaceRepository, SQLWorkspaceRepository>();
 builder.Services.AddScoped<IDocumentRepository, SQLDocumentRepository>();
 builder.Services.AddScoped<IAutomationRepository, SQLAutomationRepository>();
 builder.Services.AddScoped<IAutomationLogRepository, SQLAutomationLogRepository>();
+builder.Services.AddScoped<IFileStorageService, R2StorageService>();
 
 builder.Services.AddScoped<ITokenRepository, TokenRepository>();
+
+var accessKey = builder.Configuration["ACCESS_KEY"];
+var secretKey = builder.Configuration["SECRET_KEY"];
+var serviceUrl = builder.Configuration["SERVICE_URL"];
+
+var s3Config = new AmazonS3Config
+{
+    ServiceURL = serviceUrl
+};
+
+builder.Services.AddSingleton<IAmazonS3>(sp =>
+    new AmazonS3Client(accessKey, secretKey, s3Config));
 
 builder.Services.AddAutoMapper(cfg => { }, typeof(UserProfiles),
 typeof(DocumentProfiles),

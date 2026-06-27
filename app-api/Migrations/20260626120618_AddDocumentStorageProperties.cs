@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace app_api.Migrations
 {
     /// <inheritdoc />
-    public partial class AddAspNetIdentity : Migration
+    public partial class AddDocumentStorageProperties : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -207,8 +207,10 @@ namespace app_api.Migrations
                 {
                     document_id = table.Column<Guid>(type: "uuid", nullable: false),
                     workspace_id = table.Column<Guid>(type: "uuid", nullable: false),
-                    file_name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
-                    file_path = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
+                    file_name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    blob_key = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
+                    file_size_bytes = table.Column<long>(type: "bigint", nullable: false),
+                    description = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     file_text = table.Column<string>(type: "text", nullable: false),
                     summary = table.Column<string>(type: "text", nullable: false),
                     created_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)

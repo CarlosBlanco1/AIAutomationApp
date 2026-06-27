@@ -11,6 +11,8 @@ import { authInterceptor } from './interceptors/auth.interceptor';
 import { WORKSPACE_SERVICE } from './services/workspace/workspace-service.token';
 import { ApiWorkspaceService } from './services/workspace/api-workspace-service';
 import { NgxSmartModalModule } from 'ngx-smart-modal';
+import { ApiDocumentService } from './services/document/api-document.service';
+import { DOCUMENT_SERVICE } from './services/document/document-service.token';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -20,6 +22,7 @@ export const appConfig: ApplicationConfig = {
     { provide: AUTH_SERVICE, useClass: JwtAuthService },
     { provide: USER_SERVICE, useClass: ApiUserService },
     { provide: WORKSPACE_SERVICE, useClass: ApiWorkspaceService },
+    { provide: DOCUMENT_SERVICE, useClass: ApiDocumentService },
     importProvidersFrom(NgxSmartModalModule.forRoot())
   ],
 };

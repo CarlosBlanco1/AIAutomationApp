@@ -6,14 +6,15 @@ public class CreateDocumentDTO
     [NotEmptyGuid(ErrorMessage = "Workspace Id is required")]
     public Guid WorkspaceId { get; set; }
     [Required]
-    [StringLength(255, MinimumLength = 2)]
+    [StringLength(50, MinimumLength = 2)]
     public string FileName { get; set; } = null!;
+
     [Required]
-    [StringLength(2048, MinimumLength = 2)]
-    public string FilePath { get; set; } = null!;
+    [StringLength(50, MinimumLength = 2)]
+    public string Description { get; set; } = null!;
+
     [Required]
-    public string FileText { get; set; } = null!;
-    [Required]
-    [StringLength(2000, MinimumLength = 2)]
-    public string Summary { get; set; } = null!;
+    [MaxFileSize]
+    [AllowedExtensions]
+    public IFormFile File {get; set;} = null!;
 }

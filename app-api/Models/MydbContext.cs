@@ -100,11 +100,15 @@ public partial class MydbContext : IdentityDbContext<User, IdentityRole<Guid>, G
                 .HasColumnType("timestamp without time zone")
                 .HasColumnName("created_at");
             entity.Property(e => e.FileName)
-                .HasMaxLength(255)
+                .HasMaxLength(50)
                 .HasColumnName("file_name");
-            entity.Property(e => e.FilePath)
-                .HasMaxLength(255)
-                .HasColumnName("file_path");
+            entity.Property(e => e.BlobKey)
+                .HasMaxLength(500)
+                .HasColumnName("blob_key");
+            entity.Property(e => e.FileSizeBytes).HasColumnName("file_size_bytes");
+            entity.Property(e => e.Description)
+                .HasMaxLength(50)
+                .HasColumnName("description");
             entity.Property(e => e.FileText).HasColumnName("file_text");
             entity.Property(e => e.Summary).HasColumnName("summary");
             entity.Property(e => e.WorkspaceId).HasColumnName("workspace_id");

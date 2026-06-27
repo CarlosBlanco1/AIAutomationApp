@@ -33,7 +33,7 @@ export const routes: Routes = [
     {
         path: 'documents',
         component: DocumentsComponent,
-        canActivate: [AuthGuard]
+        // canActivate: [AuthGuard]
     },
     {
         path: 'singledocument',

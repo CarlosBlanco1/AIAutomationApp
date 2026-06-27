@@ -1,3 +1,5 @@
+
+
 <div class="flex flex-col gap-4 bg-(--color-bgmain) min-h-full">
     <div class="flex gap-3 p-4">
         <div class="flex-1 flex flex-col gap-2">
@@ -48,73 +50,77 @@
             </div>
         </div>
         <div class="grid grid-cols-9 grid-rows-6 gap-4">
-            <div class="bg-(--color-hlpurple) col-span-2 row-span-3 flex flex-col gap-3 p-4 rounded-lg">
-                <div class="flex-2 flex">
-                    <div class="flex-1 flex justify-start">
-                        <div class="flex items-center justify-center bg-purple-600 text-white p-2 rounded-lg">
-                            <app-house-icon></app-house-icon>
+
+            @for(workspace of workspaceService.userWorkspaces(); track workspace.workspaceId)
+            {
+                <div class="bg-(--color-bgsidebar) col-span-2 row-span-3 flex flex-col gap-3 p-4 rounded-lg">
+                    <div class="flex-2 flex">
+                        <div class="flex-1 flex justify-start">
+                            <div class="flex items-center justify-center bg-purple-600 text-white p-2 rounded-lg">
+                                <app-house-icon></app-house-icon>
+                            </div>
+                        </div>
+                        <div class="flex-1 flex justify-end text-(--text-gray) gap-3">
+                            <div>
+                                <app-star-icon></app-star-icon>
+                            </div>
+                            <div>
+                                <app-vertical-dots></app-vertical-dots>
+                            </div>
                         </div>
                     </div>
-                    <div class="flex-1 flex justify-end text-(--text-gray) gap-3">
-                        <div>
-                            <app-star-icon></app-star-icon>
+                    <div class="flex-5 flex flex-col gap-4">
+                        <span class="text-white text-2xl">{{ workspace.workspaceName }}</span>
+                        <span class="text-(--text-gray) text-sm">Updated 2 hours ago</span>
+                        <span class="text-(--text-gray) text-sm">Assets, documents and insights for Q2 marketing campaign.</span>
+                    </div>
+                    <div class="flex-1 flex text-sm text-(--text-gray)">
+                        <div class="flex-1 flex justify-start">
+                            <div>FACES</div>
                         </div>
-                        <div>
-                            <app-vertical-dots></app-vertical-dots>
+                        <div class="flex-1 flex justify-end">
+                            <span>1 member</span>
                         </div>
                     </div>
                 </div>
-                <div class="flex-5 flex flex-col gap-4">
-                    <span class="text-white text-2xl">Marketing Campaign</span>
-                    <span class="text-(--text-gray) text-sm">Updated 2 hours ago</span>
-                    <span class="text-(--text-gray) text-sm">Assets, documents and insights for Q2 marketing campaign.</span>
-                </div>
-                <div class="flex-1 flex text-sm text-(--text-gray)">
-                    <div class="flex-1 flex justify-start">
-                        <div>FACES</div>
-                    </div>
-                    <div class="flex-1 flex justify-end">
-                        <span>12 members</span>
-                    </div>
-                </div>
-            </div>
+            }
         </div>
     </div>
-    <div class="flex justify-center gap-3 px-3 py-5 bg-(--color-hlpurple) m-4 rounded-lg">
+    <div class="flex justify-center gap-3 px-3 py-5 bg-(--color-bgsidebar) m-4 rounded-lg">
         <div class="flex-1 flex gap-2">
             <div class="rounded-lg p-3 text-purple-500 bg-(--color-bgcard)">
                 <app-house-icon></app-house-icon>
             </div>
             <div class="flex flex-col">
-                <span class="text-white text-xl">6</span>
+                <span class="text-white text-xl">{{workspaceService.userWorkspaces().length}}</span>
                 <span class="text-(--text-gray) text-sm">Total Workspaces</span>
             </div>
         </div>
         <div class="flex-1 flex gap-2">
-            <div class="rounded-lg p-3 text-purple-500 bg-(--color-bgcard)">
-                <app-house-icon></app-house-icon>
+            <div class="rounded-lg p-3 text-purple-800 bg-(--color-bgcard)">
+                <app-users-icon></app-users-icon>
             </div>
             <div class="flex flex-col">
-                <span class="text-white text-xl">6</span>
-                <span class="text-(--text-gray) text-sm">Total Workspaces</span>
+                <span class="text-white text-xl">1</span>
+                <span class="text-(--text-gray) text-sm">Total Members</span>
             </div>
         </div>
         <div class="flex-1 flex gap-2">
-            <div class="rounded-lg p-3 text-purple-500 bg-(--color-bgcard)">
-                <app-house-icon></app-house-icon>
+            <div class="rounded-lg p-3 text-blue-400 bg-(--color-bgcard)">
+                <app-document-icon></app-document-icon>
             </div>
             <div class="flex flex-col">
-                <span class="text-white text-xl">6</span>
-                <span class="text-(--text-gray) text-sm">Total Workspaces</span>
+                <span class="text-white text-xl">0</span>
+                <span class="text-(--text-gray) text-sm">Total Documents</span>
             </div>
         </div>
         <div class="flex-1 flex gap-2">
-            <div class="rounded-lg p-3 text-purple-500 bg-(--color-bgcard)">
-                <app-house-icon></app-house-icon>
+            <div class="rounded-lg p-3 text-green-400 bg-(--color-bgcard)">
+                <app-database-icon></app-database-icon>
             </div>
             <div class="flex flex-col">
-                <span class="text-white text-xl">6</span>
-                <span class="text-(--text-gray) text-sm">Total Workspaces</span>
+                <span class="text-white text-xl">0</span>
+                <span class="text-(--text-gray) text-sm">Storage used</span>
             </div>
         </div>
     </div>

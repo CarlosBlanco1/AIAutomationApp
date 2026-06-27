@@ -1,4 +1,4 @@
-import { Component, ViewContainerRef } from '@angular/core';
+import { Component, inject, ViewContainerRef } from '@angular/core';
 import { SearchIconComponent } from '../../icons/search-icon.component';
 import { GridIconComponent } from '../../icons/grid-icon.component';
 import { BaselineIconComponent } from '../../icons/baseline-icon.component';
@@ -8,6 +8,10 @@ import { StarIconComponent } from '../../icons/start-icon.component';
 import { PlusIconComponent } from '../../icons/plus-icon.component';
 import { NgxSmartModalService } from 'ngx-smart-modal';
 import { CreateWorkspaceComponent } from './create-workspace/create-workspace.component';
+import { WORKSPACE_SERVICE } from '../../services/workspace/workspace-service.token';
+import { UsersIconComponent } from "../../icons/users-icon.component";
+import { DocumentIconComponent } from "../../icons/document-icon.component";
+import { DatabaseIconComponent } from "../../icons/database-icon.component";
 
 @Component({
   selector: 'app-workspaces',
@@ -20,15 +24,22 @@ import { CreateWorkspaceComponent } from './create-workspace/create-workspace.co
     HouseIconComponent,
     VerticalDotsIconComponent,
     StarIconComponent,
-    PlusIconComponent
-  ],
+    PlusIconComponent,
+    UsersIconComponent,
+    DocumentIconComponent,
+    DatabaseIconComponent
+],
 })
 export class WorkspacesComponent {
 
+  workspaceService = inject(WORKSPACE_SERVICE);
+
   constructor(private ngxSmartModalService: NgxSmartModalService, private vcr: ViewContainerRef) {
+    this.workspaceService.getUserWorkspaces().subscribe();
   }
-  
-  onOpenModal(){
+
+  onOpenModal() {
     this.ngxSmartModalService.create('createWorkspace', CreateWorkspaceComponent, this.vcr).open();
   }
+
 }

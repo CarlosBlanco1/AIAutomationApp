@@ -11,13 +11,27 @@ public class DocumentController : Controller
 {
     private readonly IDocumentRepository documentRepository;
     private readonly IWorkspaceRepository workspaceRepository;
+    private readonly IFileStorageService storageService;
     private readonly IMapper mapper;
 
-    public DocumentController(IDocumentRepository documentRepository, IWorkspaceRepository workspaceRepository, IMapper mapper)
+    public DocumentController(IDocumentRepository documentRepository, IWorkspaceRepository workspaceRepository, IFileStorageService storageService, IMapper mapper)
     {
         this.documentRepository = documentRepository;
         this.workspaceRepository = workspaceRepository;
+        this.storageService = storageService;
         this.mapper = mapper;
+    }
+
+    [HttpGet]
+    [Route("me")]
+    [Authorize]
+    public async Task<IActionResult> GetMyDocuments()
+    {
+        var idInToken = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+
+        var documents = await documentRepository.GetDocumentsByUserIdAsync(idInToken);
+        
+        return Ok(mapper.Map<List<DocumentDTO>>(documents));
     }
 
     [HttpGet]
@@ -62,6 +76,21 @@ public class DocumentController : Controller
         }
 
         var newDoc = mapper.Map<Document>(createDocumentDTO);
+
+        var blobKey = $"users/{idInToken}/workspaces/{createDocumentDTO.WorkspaceId}/documents/{newDoc.DocumentId}.pdf";
+
+        newDoc.BlobKey = blobKey;
+
+        //STORE IT IN R2
+        var uploadFileResult = await storageService.UploadAsync(createDocumentDTO.File, blobKey);
+
+        if(!uploadFileResult.Succeeded)
+        {
+            return BadRequest(uploadFileResult.Error);
+        }
+        
+        //CALL AI TO GET SUMMARY
+
 
         newDoc = await documentRepository.CreateDocumentAsync(newDoc);
 

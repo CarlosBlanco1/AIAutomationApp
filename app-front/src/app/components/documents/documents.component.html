@@ -1,9 +1,9 @@
-<div class="bg-[var(color-bgmain)] flex flex-col gap-3 min-h-full">
+<div class="bg-(color-bgmain) flex flex-col gap-3 min-h-full">
   <div class="flex flex-col p-4 gap-3">
     <div class="flex">
       <div class="flex-1 flex flex-col gap-2">
         <span class="text-white text-2xl">Documents</span>
-        <span class="text-[var(--text-gray)] text-sm"
+        <span class="text-(--text-gray) text-sm"
           >All your documents in one place. Create, organize and
           collaborate</span
         >
@@ -11,7 +11,7 @@
       <div class="flex-1 flex justify-end items-center text-sm">
         <div class="flex items-start gap-2">
           <div
-            class="flex text-[var(--text-gray)] gap-2 items-center border border-gray-700 p-3 rounded-lg pr-10"
+            class="flex text-(--text-gray) gap-2 items-center border border-gray-700 p-3 rounded-lg pr-10"
           >
             <div class="flex items-center">
               <app-search-icon></app-search-icon>
@@ -22,6 +22,7 @@
           </div>
           <div
             class="bg-purple-600 text-white flex items-center gap-2 p-3 rounded-lg"
+            (click)="onAddDocument()"
           >
             <div>
               <app-plus-icon></app-plus-icon>
@@ -68,7 +69,7 @@
   </div>
   <div class="flex-[90%] flex flex-col px-4 min-h-full">
     <div class="flex">
-      <div class="flex-1 flex gap-3 text-[var(--text-gray)]">
+      <div class="flex-1 flex gap-3 text-(--text-gray)">
         <div class="p-4">All Documents</div>
         <div class="p-4">Owned by me</div>
         <div class="p-4">Shared with me</div>
@@ -78,17 +79,17 @@
         <div class="flex gap-3">
           <div class="flex justify-end">
             <span
-              class="text-xs text-[var(--text-gray)] border border-gray-700 rounded-md flex items-center"
+              class="text-xs text-(--text-gray) border border-gray-700 rounded-md flex items-center"
             >
               <span class="p-3">Sort By: Recent</span>
               <span class="self-center pr-2">&#8964;</span>
             </span>
           </div>
-          <div class="flex justify-end rounded-md bg-[var(--color-hlpurple)]">
-            <div class="text-[var(--text-gray)] p-2">
+          <div class="flex justify-end rounded-md bg-(--color-hlpurple)">
+            <div class="text-(--text-gray) p-2">
               <app-grid-icon></app-grid-icon>
             </div>
-            <div class="text-[var(--text-gray)] p-2">
+            <div class="text-(--text-gray) p-2">
               <app-baseline-icon></app-baseline-icon>
             </div>
           </div>
@@ -98,7 +99,7 @@
     <hr class="text-gray-700" />
     <div class="flex-[90%] flex flex-col min-h-full">
       <table
-        class="text-sm text-[var(--text-gray)] border-separate border-spacing-y-4 min-h-full"
+        class="text-sm text-(--text-gray) border-separate border-spacing-y-4 min-h-full"
       >
         <thead>
           <tr>
@@ -113,49 +114,25 @@
           </tr>
         </thead>
         <tbody>
-          <tr
-            app-document-table-row
-            [documentName]="'Marketing Strategy Q2'"
-            [documentSubtitle]="'Marketing Campaign'"
-            [documentCategory]="'Marketing'"
-            [minutesAgoEdited]="2"
-          >
-            <app-house-icon></app-house-icon>
-          </tr>
-          <tr
-            app-document-table-row
-            [documentName]="'Marketing Strategy Q2'"
-            [documentSubtitle]="'Marketing Campaign'"
-            [documentCategory]="'Marketing'"
-            [minutesAgoEdited]="2"
-          >
-            <app-house-icon></app-house-icon>
-          </tr>
-          <tr
-            app-document-table-row
-            [documentName]="'Marketing Strategy Q2'"
-            [documentSubtitle]="'Marketing Campaign'"
-            [documentCategory]="'Marketing'"
-            [minutesAgoEdited]="2"
-          >
-            <app-house-icon></app-house-icon>
-          </tr>
-          <tr
-            app-document-table-row
-            [documentName]="'Marketing Strategy Q2'"
-            [documentSubtitle]="'Marketing Campaign'"
-            [documentCategory]="'Marketing'"
-            [minutesAgoEdited]="2"
-          >
-            <app-house-icon></app-house-icon>
-          </tr>
+          @for (document of documentService.userDocuments(); track document.documentId)
+          {
+            <tr
+              app-document-table-row
+              [documentName]="document.fileName"
+              [documentSubtitle]="document.documentId"
+              [documentCategory]="document.workspaceName"
+              [minutesAgoEdited]="2"
+            >
+              <app-house-icon></app-house-icon>
+            </tr>
+          }
         </tbody>
       </table>
     </div>
     <hr class="text-gray-700" />
   </div>
   <div>
-    <div class="flex text-[var(--text-gray)] p-4">
+    <div class="flex text-(--text-gray) p-4">
       <div class="flex-10 flex text-sm">
         <span>Showing 1 to 8 of 128 documents</span>
       </div>
