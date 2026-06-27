@@ -3,21 +3,25 @@ import { NgxSmartModalService } from 'ngx-smart-modal';
 import { DOCUMENT_SERVICE } from '../../../services/document/document-service.token';
 import { getRuleToMessageFile, getRuleToMessageText } from '../../../dictionaries/validation-messages';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { SparkleIconComponent } from "../../../icons/sparkle-icon.component";
 import { InputValidatorComponent } from "../../register/input-validator/input-validator.component";
 import { LoadingAnimationComponent } from "../../../animations/loading-animation/loading-animation.component";
 import { FailureCardComponent } from "../../state-cards/failure-card/failure-card.component";
 import { fileValidator } from '../../../directives/Validation/file-validation.directive';
+import { CloudIconComponent } from '../../../icons/cloud-icon.component';
+import { UploadIconComponent } from '../../../icons/upload-icon.component';
+import { WORKSPACE_SERVICE } from '../../../services/workspace/workspace-service.token';
 
 @Component({
   selector: 'app-create-document',
-  imports: [ReactiveFormsModule, InputValidatorComponent, LoadingAnimationComponent, FailureCardComponent],
+  imports: [ReactiveFormsModule, InputValidatorComponent, LoadingAnimationComponent, FailureCardComponent, CloudIconComponent, UploadIconComponent],
   templateUrl: './create-document.component.html'
 })
 export class CreateDocumentComponent {
   constructor(private modalService: NgxSmartModalService) { }
 
   isDragging = false;
+
+  protected workspaceService = inject(WORKSPACE_SERVICE)
 
   onDragOver(event: DragEvent) {
     event.preventDefault();
@@ -56,12 +60,6 @@ export class CreateDocumentComponent {
     {
       this.file.setValue(files[0])
     }
-
-    console.log(this.file.value)
-    console.log(this.file.errors)
-    console.log(this.file.invalid)
-    console.log(this.file.dirty)
-    console.log(this.file.touched)
   }
 
   onCancel() {
@@ -81,6 +79,7 @@ export class CreateDocumentComponent {
   documentValidationMessages = getRuleToMessageText('Document Name', 2, 50);
   descriptionValidationMessages = getRuleToMessageText('Description', 2, 50);
   fileValidationMessages = getRuleToMessageFile();
+  workspaceValidationMessages = [{validationRule : 'required', errorMessage : 'Workspace is required'}]
 
   protected documentForm = new FormGroup(
     {
@@ -97,6 +96,9 @@ export class CreateDocumentComponent {
       file: new FormControl<File>(new File([], ''), [
         Validators.required,
         fileValidator()
+      ]),
+      workspaceId : new FormControl('',[
+        Validators.required
       ])
     }
   )
@@ -113,6 +115,10 @@ export class CreateDocumentComponent {
     return this.documentForm.get('file') as FormControl<File>
   }
 
+  get workspaceId () {
+    return this.documentForm.get('workspaceId') as FormControl<string | null>
+  }
+
   onSubmitForm() {
     if (this.documentForm.invalid) {
       return;
@@ -121,10 +127,10 @@ export class CreateDocumentComponent {
     this.formState = 'loading';
 
     this.documentService.createDocument({
-      workspaceId: '',
-      fileName: '',
-      description: '',
-      file: new File([], '')
+      workspaceId: this.workspaceId.value!,
+      fileName: this.documentName.value!,
+      description: this.description.value!,
+      file: this.file.value!
     }).subscribe(
       {
         next: () => {

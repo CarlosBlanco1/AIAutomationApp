@@ -71,3 +71,8 @@
     background-color : #070f22 !important;
 
 }
+
+.nsm-content {
+    padding: calc(var(--spacing) * 5) !important;
+    border-radius: var(--radius-lg) !important;
+}
