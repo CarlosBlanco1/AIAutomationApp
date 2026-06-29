@@ -13,14 +13,16 @@ public class DocumentController : Controller
     private readonly IWorkspaceRepository workspaceRepository;
     private readonly IFileStorageService storageService;
     private readonly ITextExtractorService textExtractorService;
+    private readonly ISummaryService summaryService;
     private readonly IMapper mapper;
 
-    public DocumentController(IDocumentRepository documentRepository, IWorkspaceRepository workspaceRepository, IFileStorageService storageService, ITextExtractorService textExtractorService, IMapper mapper)
+    public DocumentController(IDocumentRepository documentRepository, IWorkspaceRepository workspaceRepository, IFileStorageService storageService, ITextExtractorService textExtractorService, ISummaryService summaryService, IMapper mapper)
     {
         this.documentRepository = documentRepository;
         this.workspaceRepository = workspaceRepository;
         this.storageService = storageService;
         this.textExtractorService = textExtractorService;
+        this.summaryService = summaryService;
         this.mapper = mapper;
     }
 
@@ -97,7 +99,9 @@ public class DocumentController : Controller
 
         newDoc.FileText = fileText.text;
 
-        
+        var textSummary = await summaryService.GenerateSummary(fileText.text);
+
+
 
 
         // newDoc = await documentRepository.CreateDocumentAsync(newDoc);

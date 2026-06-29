@@ -35,6 +35,7 @@ builder.Services.AddScoped<IAutomationRepository, SQLAutomationRepository>();
 builder.Services.AddScoped<IAutomationLogRepository, SQLAutomationLogRepository>();
 builder.Services.AddScoped<IFileStorageService, R2StorageService>();
 builder.Services.AddScoped<ITextExtractorService, PythonExtractorService>();
+builder.Services.AddScoped<ISummaryService, OllamaSummaryService>();
 builder.Services.AddScoped<ITokenRepository, TokenRepository>();
 builder.Services.AddHttpClient();
 
