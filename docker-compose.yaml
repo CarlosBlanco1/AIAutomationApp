@@ -33,5 +33,34 @@ services:
     ports:
       - "4200:80"
 
+  # ollama:
+  #   image: ollama/ollama
+  #   container_name: ollama
+  #   ports:
+  #     - "11434:11434"
+
+  # ollama-init:
+  #   image: ollama/ollama
+  #   depends_on:
+  #     - ollama
+  #   entrypoint: >
+  #     sh -c "
+  #     sleep 5 &&
+  #     ollama pull llama3.2:1b
+  #     "
+  #   environment:
+  #     - OLLAMA_HOST=http://ollama:11434
+
+  text-server:
+    build:
+      context: ./app-text-server
+      dockerfile: Dockerfile
+    container_name: myapp-text-server
+    ports:
+      - "8000:8000"
+    depends_on:
+      - api
+
+
 # volumes:
 #   postgres_data:

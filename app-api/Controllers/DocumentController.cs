@@ -12,13 +12,15 @@ public class DocumentController : Controller
     private readonly IDocumentRepository documentRepository;
     private readonly IWorkspaceRepository workspaceRepository;
     private readonly IFileStorageService storageService;
+    private readonly ITextExtractorService textExtractorService;
     private readonly IMapper mapper;
 
-    public DocumentController(IDocumentRepository documentRepository, IWorkspaceRepository workspaceRepository, IFileStorageService storageService, IMapper mapper)
+    public DocumentController(IDocumentRepository documentRepository, IWorkspaceRepository workspaceRepository, IFileStorageService storageService, ITextExtractorService textExtractorService, IMapper mapper)
     {
         this.documentRepository = documentRepository;
         this.workspaceRepository = workspaceRepository;
         this.storageService = storageService;
+        this.textExtractorService = textExtractorService;
         this.mapper = mapper;
     }
 
@@ -60,7 +62,7 @@ public class DocumentController : Controller
     [HttpPost]
     [ValidateModel]
     [Authorize]
-    public async Task<IActionResult> CreateDocument([FromBody] CreateDocumentDTO createDocumentDTO)
+    public async Task<IActionResult> CreateDocument([FromForm] CreateDocumentDTO createDocumentDTO)
     {
         var idInToken = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
@@ -82,21 +84,29 @@ public class DocumentController : Controller
         newDoc.BlobKey = blobKey;
 
         //STORE IT IN R2
-        var uploadFileResult = await storageService.UploadAsync(createDocumentDTO.File, blobKey);
+        // var uploadFileResult = await storageService.UploadAsync(createDocumentDTO.File, blobKey);
 
-        if(!uploadFileResult.Succeeded)
-        {
-            return BadRequest(uploadFileResult.Error);
-        }
+        // if(!uploadFileResult.Succeeded)
+        // {
+        //     return BadRequest(uploadFileResult.Error);
+        // }
         
         //CALL AI TO GET SUMMARY
 
+        var fileText = await textExtractorService.GetTextExtractedAsync(createDocumentDTO.File, createDocumentDTO.File.FileName);
 
-        newDoc = await documentRepository.CreateDocumentAsync(newDoc);
+        newDoc.FileText = fileText.text;
 
-        var returnDocDto = mapper.Map<DocumentDTO>(newDoc);
+        
 
-        return CreatedAtAction(nameof(GetDocumentsByWorkspaceId), new {workspaceId = newDoc.WorkspaceId}, newDoc);
+
+        // newDoc = await documentRepository.CreateDocumentAsync(newDoc);
+
+        // var returnDocDto = mapper.Map<DocumentDTO>(newDoc);
+
+        // return CreatedAtAction(nameof(GetDocumentsByWorkspaceId), new {workspaceId = newDoc.WorkspaceId}, newDoc);
+
+        return Ok(fileText);
     }
 
     [HttpPut]

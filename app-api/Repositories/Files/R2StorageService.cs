@@ -15,20 +15,7 @@ public class R2StorageService : IFileStorageService
     public async Task<string> CreateDownloadUrlAsync(string objectKey)
     {
         // AWSConfigsS3.UseSignatureVersion4 = true;
-
-        var serviceUrl = _configuration["SERVICE_URL"];
-        var _accessKey = _configuration["ACESS_KEY"];
-        var _secretKey = _configuration["SECRET_KEY"];
         var _bucketName = _configuration["BUCKET_NAME"];
-
-        var config = new AmazonS3Config
-        {
-            ServiceURL = serviceUrl,
-            // SignatureVersion = "v4",
-            ForcePathStyle = true
-        };
-
-        using var s3Client = new AmazonS3Client(_accessKey, _secretKey, config);
 
         var request = new GetPreSignedUrlRequest
         {
@@ -38,7 +25,7 @@ public class R2StorageService : IFileStorageService
             Expires = DateTime.UtcNow.AddMinutes(15)
         };
 
-        return s3Client.GetPreSignedURL(request);
+        return _s3Client.GetPreSignedURL(request);
     }
 
     public Task DeleteAsync(string objectKey)

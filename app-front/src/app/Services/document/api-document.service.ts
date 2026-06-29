@@ -11,12 +11,20 @@ export class ApiDocumentService implements DocumentService {
     userDocuments = signal<DocumentDto[]>([])
 
     getUserDocuments(): Observable<DocumentDto[]> {
-        return this.httpClient.get<DocumentDto[]>("http://localhost:8080/api/Documents/me")
+        return this.httpClient.get<DocumentDto[]>("http://localhost:8080/api/Document/me")
             .pipe(tap(res => { this.userDocuments.set(res) }))
     }
 
     createDocument(request: CreateDocumentRequest): Observable<void> {
-        return this.httpClient.post<DocumentDto[]>("http://localhost:8080/api/Documents", request)
+
+        const formData = new FormData();
+
+        formData.append('workspaceId', request.workspaceId);
+        formData.append('fileName', request.fileName);
+        formData.append('description', request.description);
+        formData.append('file', request.file, request.file.name)
+
+        return this.httpClient.post<DocumentDto[]>("http://localhost:8080/api/Document", formData)
             .pipe(map(() => void 0))
     }
 

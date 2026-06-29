@@ -7,6 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
 using Serilog;
 using Amazon.S3;
+using Amazon;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,8 +34,9 @@ builder.Services.AddScoped<IDocumentRepository, SQLDocumentRepository>();
 builder.Services.AddScoped<IAutomationRepository, SQLAutomationRepository>();
 builder.Services.AddScoped<IAutomationLogRepository, SQLAutomationLogRepository>();
 builder.Services.AddScoped<IFileStorageService, R2StorageService>();
-
+builder.Services.AddScoped<ITextExtractorService, PythonExtractorService>();
 builder.Services.AddScoped<ITokenRepository, TokenRepository>();
+builder.Services.AddHttpClient();
 
 var accessKey = builder.Configuration["ACCESS_KEY"];
 var secretKey = builder.Configuration["SECRET_KEY"];
@@ -42,7 +44,9 @@ var serviceUrl = builder.Configuration["SERVICE_URL"];
 
 var s3Config = new AmazonS3Config
 {
-    ServiceURL = serviceUrl
+    ServiceURL = serviceUrl,
+    ForcePathStyle = true,
+    RegionEndpoint = RegionEndpoint.USEast1
 };
 
 builder.Services.AddSingleton<IAmazonS3>(sp =>
