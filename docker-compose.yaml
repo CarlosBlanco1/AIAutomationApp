@@ -16,6 +16,8 @@ services:
       context: ./app-api
       dockerfile: Dockerfile
     container_name: myapp-api
+    env_file:
+      - ./app-api/.env
     environment:
       ASPNETCORE_ENVIRONMENT: Development
       ASPNETCORE_URLS: "http://+:8080"

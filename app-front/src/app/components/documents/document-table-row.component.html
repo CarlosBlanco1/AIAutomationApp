@@ -1,5 +1,5 @@
 <td class="text-center">
-  <input type="checkbox"/>
+  <input type="checkbox" />
 </td>
 <td>
   <div class="flex-1 flex gap-2">
@@ -15,6 +15,24 @@
 <td>* {{documentCategory}}</td>
 <td>{{minutesAgoEdited}} minutes ago</td>
 <td>CIRCLE You</td>
-<td>
-  <app-horizontal-dots></app-horizontal-dots>
+<td class="relative">
+  <div (click)="isHidden = !isHidden">
+    <app-horizontal-dots></app-horizontal-dots>
+  </div>
+  <div id="custom-dropdown" class="absolute flex-col gap-4 right-10 rounded-lg bg-(--color-bgcard) p-5 text-white w-auto"
+    [class.hidden]="isHidden" [class.inline-flex]="!isHidden">
+    <div class="flex gap-2">
+      <app-info-icon svgClass="size-5"></app-info-icon>
+      <span>Details</span>
+    </div>
+    <div class="flex gap-2">
+      <app-download-icon svgClass="size-5"></app-download-icon>
+      <span>Download</span>
+    </div>
+    <hr>
+    <div class="flex gap-2 text-red-700" (click)="onOpenDelete()">
+      <app-trash-icon svgClass="size-5"></app-trash-icon>
+      <span>Delete</span>
+    </div>
+  </div>
 </td>

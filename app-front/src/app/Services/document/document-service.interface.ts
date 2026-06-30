@@ -6,4 +6,5 @@ export interface DocumentService {
     userDocuments() : DocumentDto[];
     getUserDocuments() : Observable<DocumentDto[]>;
     createDocument(request : CreateDocumentRequest) : Observable<void>;
+    deleteDocument(documentId : string) : Observable<void>;
 }

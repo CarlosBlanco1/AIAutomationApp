@@ -12,12 +12,11 @@ public class OllamaSummaryService : ISummaryService
     }
     public async Task<string> GenerateSummary(string fileText)
     {
-        var client = clientFactory.CreateClient();
+        var client = clientFactory.CreateClient("ExtendedTimeoutClient");
 
         JsonSerializerOptions options = JsonSerializerOptions.Default;
 
         JsonNode schema = options.GetJsonSchemaAsNode(typeof(OllamaSummaryResponse));
-
 
         var request = new OllamaSummaryRequest
         {
@@ -39,13 +38,10 @@ public class OllamaSummaryService : ISummaryService
 
         var ollamaResult = await response.Content.ReadFromJsonAsync<OllamaGenerateResponse>();
 
-
         var summary = JsonSerializer.Deserialize<OllamaSummaryResponse>(
             ollamaResult!.Response,
             new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
         );
-
-        Console.WriteLine(summary.Summary);
 
         return summary.Summary;
     }

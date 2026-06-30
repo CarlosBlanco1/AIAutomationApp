@@ -19,13 +19,6 @@ class PythonExtractorService : ITextExtractorService
 
         content.Add(new StreamContent(fileStream), "file", fileName);
 
-        Console.WriteLine("WHAT IM ABOUT TO SEND IS:    ");
-        Console.WriteLine(JsonSerializer.Serialize(content));
-        foreach (var part in content)
-        {
-            Console.WriteLine(part.Headers);
-        }
-
         var response = await client.PostAsync(
             "http://myapp-text-server:8000/text-extractor",
             content);

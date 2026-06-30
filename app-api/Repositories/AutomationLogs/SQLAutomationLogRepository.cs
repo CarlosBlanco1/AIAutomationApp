@@ -28,9 +28,16 @@ public class SQLAutomationLogRepository : IAutomationLogRepository
     public async Task<AutomationLog?> GetAutomationLogByIdAsync(Guid automationLogId)
     {
         return await _dbContext.AutomationLogs
-        .Include(al => al.Automation)
-        .ThenInclude(a => a.Workspace)
-        .FirstOrDefaultAsync(a => a.AutomationLogId == automationLogId);
+        .Where(al => al.AutomationLogId == automationLogId)
+        .Select(a => new AutomationLog
+        {
+            AutomationLogId = a.AutomationLogId,
+            AutomationId = a.Automation.AutomationId,
+            LogStatus = a.LogStatus,
+            LogMessage = a.LogMessage,
+            CreatedAt = a.CreatedAt
+        })
+        .FirstOrDefaultAsync();
     }
 
     public async Task<List<AutomationLog>> GetAutomationLogsByAutomationIdAsync(Guid automationId)

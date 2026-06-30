@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-download-icon',
@@ -10,7 +10,7 @@ import { Component } from '@angular/core';
     stroke-width="2"
     stroke-linecap="round"
     stroke-linejoin="round"
-    class="icon icon-tabler icons-tabler-outline icon-tabler-download"
+    [class]="['icon icon-tabler icons-tabler-outline icon-tabler-download',svgClass]"
   >
     <path stroke="none" d="M0 0h24v24H0z" fill="none" />
     <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" />
@@ -19,4 +19,6 @@ import { Component } from '@angular/core';
   </svg>`,
   standalone : true
 })
-export class DownloadIconComponent {}
+export class DownloadIconComponent {
+  @Input() svgClass = ''
+}

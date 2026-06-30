@@ -73,6 +73,6 @@
 }
 
 .nsm-content {
-    padding: calc(var(--spacing) * 5) !important;
-    border-radius: var(--radius-lg) !important;
+    padding: 0 !important;
+    box-shadow: none !important;
 }

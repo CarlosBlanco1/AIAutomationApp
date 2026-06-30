@@ -1,0 +1,32 @@
+@if(formState == 'form'){
+
+<div class="flex flex-col gap-5 bg-(--color-bgcard) p-5">
+    <div class="flex justify-center">
+        <div class="text-red-700 bg-red-900 p-4 rounded-full">
+            <app-trash-icon svgClass="size-10"></app-trash-icon>
+        </div>
+    </div>
+    <div class="flex flex-col gap-2 items-center justify-center">
+        <span class="text-white text-lg text-center">Delete document?</span>
+        <div class="text-gray-400 text-sm flex flex-col items-center">
+            <span class="text-center text-nowrap">Are you sure you want to delete document "{{data.documentName}}"
+                ?</span>
+            <span class="text-center">This action cannot be undone</span>
+        </div>
+    </div>
+    <div>
+        <div class="flex gap-3 items-center justify-center text-white text-sm">
+            <button class="py-2 px-5 border border-gray-400 rounded-lg" (click)="onClickCancel()">Cancel</button>
+            <button class="py-2 px-5 rounded-lg bg-red-700" (click)="onClickDelete()">Delete</button>
+        </div>
+    </div>
+</div>
+}
+@else if (formState === 'loading')
+{
+<app-loading-animation></app-loading-animation>
+}
+@else if(formState === 'failure'){
+<app-failure-card primaryText="Failed to delete document" [errorMessage]="errorMessage" (tryAgain)="tryAgain()"
+    secondaryText="Go to dashboard" secondaryUrl="/dashboard"></app-failure-card>
+}

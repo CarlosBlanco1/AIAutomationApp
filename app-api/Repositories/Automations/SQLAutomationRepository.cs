@@ -28,8 +28,18 @@ public class SQLAutomationRepository : IAutomationRepository
     public async Task<Automation?> GetAutomationByIdAsync(Guid automationId)
     {
         return await _dbContext.Automations
-        .Include(a => a.Workspace)
-        .FirstOrDefaultAsync(a => a.AutomationId == automationId);
+        .Where(a => a.AutomationId == automationId)
+        .Select(a => new Automation
+        {
+            AutomationId = a.AutomationId,
+            WorkspaceId = a.Workspace.WorkspaceId,
+            AutomationName = a.AutomationName,
+            TriggerType = a.TriggerType,
+            ActionType = a.ActionType,
+            WebhookUrl = a.WebhookUrl,
+            IsActive = a.IsActive
+        })
+        .FirstOrDefaultAsync();
     }
 
     public async Task<List<Automation>> GetAutomationsByWorkspaceIdAsync(Guid workspaceId)

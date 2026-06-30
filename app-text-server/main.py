@@ -27,11 +27,6 @@ async def extract_text(file : UploadFile):
     filename = file.filename.lower()
     content = await file.read()
 
-    print("I RECEIVED FILENAME:")
-    print(filename)
-    print("CONTENT IS TYPE:")
-    print(type(content))
-
     if filename.endswith('.pdf'):
         text = extract_text_pdf(content)
     elif filename.endswith('.docx'):

@@ -34,7 +34,7 @@ public class DocumentController : Controller
         var idInToken = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
         var documents = await documentRepository.GetDocumentsByUserIdAsync(idInToken);
-        
+
         return Ok(mapper.Map<List<DocumentDTO>>(documents));
     }
 
@@ -51,13 +51,13 @@ public class DocumentController : Controller
         {
             return NotFound("Workspace not found!");
         }
-        else if(workspace.OwnerId != idInToken)
+        else if (workspace.OwnerId != idInToken)
         {
             return Forbid();
         }
 
         var workspaceDocs = await documentRepository.GetDocumentsByWorkspaceIdAsync(workspaceId);
-        
+
         return Ok(mapper.Map<List<DocumentDTO>>(workspaceDocs));
     }
 
@@ -70,11 +70,11 @@ public class DocumentController : Controller
 
         var workspace = await workspaceRepository.GetWorkspaceByIdAsync(createDocumentDTO.WorkspaceId);
 
-        if(workspace == null)
+        if (workspace == null)
         {
             return NotFound("Workspace not found!");
         }
-        else if(workspace.OwnerId != idInToken)
+        else if (workspace.OwnerId != idInToken)
         {
             return Forbid();
         }
@@ -84,33 +84,30 @@ public class DocumentController : Controller
         var blobKey = $"users/{idInToken}/workspaces/{createDocumentDTO.WorkspaceId}/documents/{newDoc.DocumentId}.pdf";
 
         newDoc.BlobKey = blobKey;
+        var file = createDocumentDTO.File;
 
-        //STORE IT IN R2
-        // var uploadFileResult = await storageService.UploadAsync(createDocumentDTO.File, blobKey);
-
-        // if(!uploadFileResult.Succeeded)
-        // {
-        //     return BadRequest(uploadFileResult.Error);
-        // }
-        
-        //CALL AI TO GET SUMMARY
-
-        var fileText = await textExtractorService.GetTextExtractedAsync(createDocumentDTO.File, createDocumentDTO.File.FileName);
+        var fileText = await textExtractorService.GetTextExtractedAsync(file, file.FileName);
 
         newDoc.FileText = fileText.text;
 
+        //CALL AI TO GET SUMMARY
         var textSummary = await summaryService.GenerateSummary(fileText.text);
 
+        newDoc.Summary = textSummary;
 
+        //STORE IT IN R2
+        var uploadFileResult = await storageService.UploadAsync(file, blobKey);
 
+        if(!uploadFileResult.Succeeded)
+        {
+            return BadRequest(uploadFileResult.Error);
+        }
 
-        // newDoc = await documentRepository.CreateDocumentAsync(newDoc);
+        newDoc = await documentRepository.CreateDocumentAsync(newDoc);
 
-        // var returnDocDto = mapper.Map<DocumentDTO>(newDoc);
+        var returnDocDto = mapper.Map<DocumentDTO>(newDoc);
 
-        // return CreatedAtAction(nameof(GetDocumentsByWorkspaceId), new {workspaceId = newDoc.WorkspaceId}, newDoc);
-
-        return Ok(fileText);
+        return CreatedAtAction(nameof(GetDocumentsByWorkspaceId), new {workspaceId = createDocumentDTO.WorkspaceId}, newDoc);
     }
 
     [HttpPut]
@@ -123,11 +120,11 @@ public class DocumentController : Controller
 
         var document = await documentRepository.GetDocumentByIdAsync(documentId);
 
-        if(document == null)
+        if (document == null)
         {
             return NotFound("Document doesn't exist!");
         }
-        else if(document.Workspace.OwnerId != idInToken)
+        else if (document.Workspace.OwnerId != idInToken)
         {
             return Forbid();
         }
@@ -148,13 +145,20 @@ public class DocumentController : Controller
 
         var document = await documentRepository.GetDocumentByIdAsync(documentId);
 
-        if(document == null)
+        if (document == null)
         {
             return NotFound("Document doesn't exist!");
         }
-        else if(document.Workspace.OwnerId != idInToken)
+        else if (document.Workspace.OwnerId != idInToken)
         {
             return Forbid();
+        }
+
+        var response = await storageService.DeleteAsync(document.BlobKey);
+
+        if(!response.Contains("Successful deletion!"))
+        {
+            return BadRequest(response);
         }
 
         await documentRepository.DeleteDocumentAsync(documentId);

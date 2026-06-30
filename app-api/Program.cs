@@ -8,6 +8,7 @@ using Microsoft.OpenApi;
 using Serilog;
 using Amazon.S3;
 using Amazon;
+using Amazon.Runtime;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,21 +38,23 @@ builder.Services.AddScoped<IFileStorageService, R2StorageService>();
 builder.Services.AddScoped<ITextExtractorService, PythonExtractorService>();
 builder.Services.AddScoped<ISummaryService, OllamaSummaryService>();
 builder.Services.AddScoped<ITokenRepository, TokenRepository>();
-builder.Services.AddHttpClient();
+builder.Services.AddHttpClient("ExtendedTimeoutClient", client =>
+{
+    client.Timeout = TimeSpan.FromMinutes(5);
+});
 
 var accessKey = builder.Configuration["ACCESS_KEY"];
 var secretKey = builder.Configuration["SECRET_KEY"];
 var serviceUrl = builder.Configuration["SERVICE_URL"];
 
+var credentials  = new BasicAWSCredentials(accessKey, secretKey);
 var s3Config = new AmazonS3Config
 {
-    ServiceURL = serviceUrl,
-    ForcePathStyle = true,
-    RegionEndpoint = RegionEndpoint.USEast1
+    ServiceURL = serviceUrl
 };
 
 builder.Services.AddSingleton<IAmazonS3>(sp =>
-    new AmazonS3Client(accessKey, secretKey, s3Config));
+    new AmazonS3Client(credentials, s3Config));
 
 builder.Services.AddAutoMapper(cfg => { }, typeof(UserProfiles),
 typeof(DocumentProfiles),

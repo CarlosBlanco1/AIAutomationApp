@@ -36,12 +36,27 @@ public class SQLWorkspaceRepository : IWorkspaceRepository
 
     public async Task<List<Workspace>> GetAllWorkspacesAsync()
     {
-        return await _dbContext.Workspaces.ToListAsync();
+        return await _dbContext.Workspaces
+        .Select(w => new Workspace()
+        {
+            WorkspaceId = w.WorkspaceId,
+            WorkspaceName = w.WorkspaceName,
+            OwnerId = w.OwnerId
+        })
+        .ToListAsync();
     }
 
     public async Task<Workspace?> GetWorkspaceByIdAsync(Guid workspaceId)
     {
-        return await _dbContext.Workspaces.FirstOrDefaultAsync(w => w.WorkspaceId == workspaceId);
+        return await _dbContext.Workspaces.
+        Where(w => w.WorkspaceId == workspaceId)
+        .Select(w => new Workspace()
+        {
+            WorkspaceId = w.WorkspaceId,
+            WorkspaceName = w.WorkspaceName,
+            OwnerId = w.OwnerId
+        })
+        .FirstOrDefaultAsync();
     }
 
     public async Task<List<Workspace>?> GetWorkspacesByUserIdAsync(Guid userId)
@@ -53,7 +68,15 @@ public class SQLWorkspaceRepository : IWorkspaceRepository
             return null;
         }
 
-        return await _dbContext.Workspaces.Where(w => w.OwnerId == userId).ToListAsync();
+        return await _dbContext.Workspaces
+        .Where(w => w.OwnerId == userId)
+        .Select(w => new Workspace()
+        {
+            WorkspaceId = w.WorkspaceId,
+            WorkspaceName = w.WorkspaceName,
+            OwnerId = w.OwnerId
+        })
+        .ToListAsync();
     }
 
     public async Task<Workspace> UpdateWorkspaceAsync(Guid WorkspaceId, Workspace updatedWorkspace)

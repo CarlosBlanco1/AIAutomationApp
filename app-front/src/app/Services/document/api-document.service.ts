@@ -10,6 +10,12 @@ export class ApiDocumentService implements DocumentService {
 
     userDocuments = signal<DocumentDto[]>([])
 
+    deleteDocument(documentId: string): Observable<void> {
+        console.log("DELETE DOCUMENT @ SERVICE GOT CALLED")
+        console.log("Document Id is: " + documentId)
+        return this.httpClient.delete(`http://localhost:8080/api/Document/${documentId}`).pipe(map(() => void 0))
+    }
+
     getUserDocuments(): Observable<DocumentDto[]> {
         return this.httpClient.get<DocumentDto[]>("http://localhost:8080/api/Document/me")
             .pipe(tap(res => { this.userDocuments.set(res) }))
