@@ -36,7 +36,7 @@ export const routes: Routes = [
         // canActivate: [AuthGuard]
     },
     {
-        path: 'singledocument',
+        path: 'singledocument/:documentId',
         loadComponent: () =>
             import('./components/single-document/single-document.component')
                 .then(m => m.SingleDocumentComponent),

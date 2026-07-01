@@ -21,7 +21,7 @@
   </div>
   <div id="custom-dropdown" class="absolute flex-col gap-4 right-10 rounded-lg bg-(--color-bgcard) p-5 text-white w-auto"
     [class.hidden]="isHidden" [class.inline-flex]="!isHidden">
-    <div class="flex gap-2">
+    <div class="flex gap-2" [routerLink]="['/singledocument',documentId]">
       <app-info-icon svgClass="size-5"></app-info-icon>
       <span>Details</span>
     </div>

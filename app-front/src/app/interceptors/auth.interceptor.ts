@@ -7,7 +7,9 @@ export function authInterceptor(
 ): Observable<HttpEvent<unknown>> {
     const token = localStorage.getItem('token');
 
-    if (token) {
+    const isR2Request = req.url.includes('.r2.cloudflarestorage.com');
+
+    if (token && !isR2Request) {
         req = req.clone({
             headers: req.headers.set('Authorization', `Bearer ${token}`),
         });

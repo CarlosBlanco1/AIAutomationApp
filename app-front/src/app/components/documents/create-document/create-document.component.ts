@@ -67,6 +67,7 @@ export class CreateDocumentComponent {
   }
 
   onSuccess() {
+    console.log("THE ONSUCESS GOT CALLED")
     this.documentService.getUserDocuments().subscribe();
     this.modalService.get('createDocument').close();
   }

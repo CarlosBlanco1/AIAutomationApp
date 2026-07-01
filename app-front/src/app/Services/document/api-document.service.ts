@@ -9,7 +9,11 @@ export class ApiDocumentService implements DocumentService {
     httpClient = inject(HttpClient)
 
     userDocuments = signal<DocumentDto[]>([])
-
+    
+    getDownloadUrl(documentId: string): Observable<{downloadUrl : string}> {
+        return this.httpClient.get(`http://localhost:8080/api/Document/download-url/${documentId}`) as Observable<{ downloadUrl: string; }>
+    }
+    
     deleteDocument(documentId: string): Observable<void> {
         console.log("DELETE DOCUMENT @ SERVICE GOT CALLED")
         console.log("Document Id is: " + documentId)

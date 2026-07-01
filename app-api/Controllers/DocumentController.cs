@@ -98,7 +98,7 @@ public class DocumentController : Controller
         //STORE IT IN R2
         var uploadFileResult = await storageService.UploadAsync(file, blobKey);
 
-        if(!uploadFileResult.Succeeded)
+        if (!uploadFileResult.Succeeded)
         {
             return BadRequest(uploadFileResult.Error);
         }
@@ -107,7 +107,7 @@ public class DocumentController : Controller
 
         var returnDocDto = mapper.Map<DocumentDTO>(newDoc);
 
-        return CreatedAtAction(nameof(GetDocumentsByWorkspaceId), new {workspaceId = createDocumentDTO.WorkspaceId}, newDoc);
+        return CreatedAtAction(nameof(GetDocumentsByWorkspaceId), new { workspaceId = createDocumentDTO.WorkspaceId }, newDoc);
     }
 
     [HttpPut]
@@ -156,7 +156,7 @@ public class DocumentController : Controller
 
         var response = await storageService.DeleteAsync(document.BlobKey);
 
-        if(!response.Contains("Successful deletion!"))
+        if (!response.Contains("Successful deletion!"))
         {
             return BadRequest(response);
         }
@@ -164,5 +164,31 @@ public class DocumentController : Controller
         await documentRepository.DeleteDocumentAsync(documentId);
 
         return Ok();
+    }
+
+    [HttpGet]
+    [Route("download-url/{documentId:guid}")]
+    [Authorize]
+    public async Task<IActionResult> GetDocumentDownloadUrlAsync([FromRoute] Guid documentId)
+    {
+        var idInToken = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+
+        var document = await documentRepository.GetDocumentByIdAsync(documentId);
+
+        if (document == null)
+        {
+            return NotFound("Document doesn't exist!");
+        }
+        else if (document.Workspace.OwnerId != idInToken)
+        {
+            return Forbid();
+        }
+
+        var url = await storageService.CreateDownloadUrlAsync(document.BlobKey);
+
+        return Ok(new
+        {
+            downloadUrl = url
+        });
     }
 }

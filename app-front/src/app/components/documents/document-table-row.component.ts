@@ -5,11 +5,12 @@ import { TrashIconComponent } from "../../icons/trash-icon.component";
 import { DownloadIconComponent } from "../../icons/download-icon.component";
 import { NgxSmartModalService } from "ngx-smart-modal";
 import { DeleteDocumentComponent } from "./delete-document/delete-document.component";
+import { RouterLink } from "@angular/router";
 
 @Component({
     selector: 'tr[app-document-table-row]',
     templateUrl: './document-table-row.component.html',
-    imports: [HorizontalDotsIconComponent, InfoIconComponent, TrashIconComponent, DownloadIconComponent]
+    imports: [HorizontalDotsIconComponent, InfoIconComponent, TrashIconComponent, DownloadIconComponent, RouterLink]
 })
 export class DocumentTableRowComponent {
     @Input({ required: true }) documentName!: string;
