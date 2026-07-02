@@ -1,8 +1,12 @@
-import { Component } from "@angular/core";
+import { Component, inject, signal } from "@angular/core";
 import { DocumentIconComponent } from "../../icons/document-icon.component";
 import { EyeIconComponent } from "../../icons/eye-icon.component";
 import { PointerRightIconComponent } from "../../icons/pointer-right-icon.component";
 import { VerticalDotsIconComponent } from "../../icons/vertical-dots-icon.component";
+import { USER_SERVICE } from "../../services/user/user-service.token";
+import { UserDto } from "../../models/Users/user-dto";
+import { DOCUMENT_SERVICE } from "../../services/document/document-service.token";
+import { DocumentDto } from "../../models/Documents/document-dto";
 
 
 @Component({
@@ -12,4 +16,13 @@ import { VerticalDotsIconComponent } from "../../icons/vertical-dots-icon.compon
     imports : [DocumentIconComponent, EyeIconComponent, VerticalDotsIconComponent, PointerRightIconComponent]
 })
 
-export class DashboardComponent {}
+export class DashboardComponent {
+
+    userService = inject(USER_SERVICE)
+    documentService = inject(DOCUMENT_SERVICE)
+
+    constructor() {
+        this.documentService.getUserDocuments().subscribe();
+    }
+
+}

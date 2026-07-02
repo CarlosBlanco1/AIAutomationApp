@@ -1,8 +1,9 @@
-@if(pdfSrc())
+@if(pdfBlobUrl() && document())
 {
 <div class="flex flex-col min-h-full">
   <div class="px-5 py-3">
-    <span class="text-(--text-gray)">Workspaces > Marketing Campaign > Documents > Marketing Strategy Q2</span>
+    <span class="text-(--text-gray)">Workspaces > {{document()?.workspaceName}} > Documents >
+      {{document()?.fileName}}</span>
   </div>
   <div class="flex px-5">
     <div class="flex-3 flex gap-4">
@@ -13,26 +14,29 @@
       </div>
       <div class="flex flex-col gap-2 justify-center">
         <div class="flex gap-4 text-xl">
-          <div class="text-white">Marketing Strategy Q2</div>
+          <div class="text-white">{{document()?.workspaceName}}</div>
           <div class="text-purple-500 flex items-center">
             <app-star-icon></app-star-icon>
           </div>
         </div>
         <div class="flex gap-4">
-          <span class="text-sm p-1 text-(--text-gray) bg-gray-700 rounded-md">Created May 14, 2026 * 10:24 AM</span>
-          <span class="text-sm p-1 text-(--text-gray)ray-700 rounded-md">Updated May 15, 2026 * 03:45 PM</span>
-          <span class="text-sm p-1 text-purple-600 bg-gray-700 rounded-md">Marketing Campaign</span>
+          <span class="text-sm p-1 text-(--text-gray) bg-gray-700 rounded-md">Created {{document()?.createdAt}}</span>
+          <span class="text-sm p-1 text-(--text-gray) bg-gray-700 rounded-md">Updated May 15, 2026 * 03:45 PM</span>
+          <span class="text-sm p-1 text-purple-600 bg-gray-700 rounded-md">{{document()?.workspaceName}}</span>
         </div>
       </div>
     </div>
     <div class="flex-1 flex justify-end items-center">
       <div class="flex gap-3 justify-end items-center text-sm">
-        <div class="p-2 text-(--text-gray) bg-gray-700 rounded-md flex gap-2 items-center">
+        @if(pdfUrl())
+        {
+        <a [href]="pdfUrl()" class="p-2 text-(--text-gray) bg-gray-700 rounded-md flex gap-2 items-center" download>
           <div class="size-5">
             <app-download-icon></app-download-icon>
           </div>
           <span>Download</span>
-        </div>
+        </a>
+        }
         <div class="p-2 text-(--text-gray)ray-700 rounded-md flex gap-2 items-center">
           <div class="size-5">
             <app-users-icon></app-users-icon>
@@ -51,20 +55,20 @@
   <div class="flex-[90%] grid grid-cols-9 grid-rows-2 gap-2 p-5">
     <div class="col-span-6 row-span-2 max-h-full pb-2 rounded-2xl">
       @if(pdfBlobUrl()){
-        <ngx-extended-pdf-viewer #pdfViewer [src]="pdfBlobUrl()"></ngx-extended-pdf-viewer>
-        <!-- <ng-template #additionalButtons>
-          /* [customToolbar]="additionalButtons" */
-          <div id="toolbarViewer" style="background-color: #070f22" class="p-2">
-            <div id="toolbarViewerLeft">
-              <pdf-paging-area></pdf-paging-area>
-            </div>
-            <pdf-zoom-toolbar></pdf-zoom-toolbar>
-            <div id="toolbarViewerRight">
-              <pdf-presentation-mode></pdf-presentation-mode>
-              <pdf-print></pdf-print>
-            </div>
+      <ngx-extended-pdf-viewer #pdfViewer [src]="pdfBlobUrl()!"
+        [customToolbar]="additionalButtons"></ngx-extended-pdf-viewer>
+      <ng-template #additionalButtons>
+        <div id="toolbarViewer" style="background-color: #070f22" class="p-2">
+          <div id="toolbarViewerLeft">
+            <pdf-paging-area></pdf-paging-area>
           </div>
-        </ng-template> -->
+          <pdf-zoom-toolbar></pdf-zoom-toolbar>
+          <div id="toolbarViewerRight">
+            <pdf-presentation-mode></pdf-presentation-mode>
+            <pdf-print></pdf-print>
+          </div>
+        </div>
+      </ng-template>
       }
     </div>
     <div class="col-span-3 row-span-1">
@@ -76,15 +80,7 @@
           <span class="text-white">Summary</span>
         </div>
         <div class="text-(--text-gray) text-sm">
-          The drug seekers would come into the emergency room and scream about
-          how much pain they were in. When you told them that you would start
-          elevating their pain with Tylenol or Advil instead of a narcotic they
-          became nasty and combative. They would start telling you what drug and
-          dose they had to have to make their pain tolerable. After dealing with
-          the same drug seekers several times a month it gets old. Some of the
-          doctors would give in and give them a dose of morphine and send them
-          away. Sure that was faster, but ethically she still couldn’t do it.
-          Perhaps that’s why she had longer care times than the other doctors.
+          {{document()?.summary}}
         </div>
       </div>
       <div class="flex flex-col px-4 text-sm justify-center">
@@ -94,7 +90,7 @@
             <span>File Name</span>
           </div>
           <div class="flex-1 flex justify-end text-gray-300">
-            <span>Marketing_Strategy_Q2.docx</span>
+            <span>{{document()?.fileName}}</span>
           </div>
         </div>
       </div>
@@ -130,4 +126,11 @@
     </div>
   </div>
 </div>
+}
+@else if(errorMessage)
+{
+<div class="text-white">{{errorMessage}}</div>
+}
+@else {
+<app-loading-animation></app-loading-animation>
 }

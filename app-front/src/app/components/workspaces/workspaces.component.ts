@@ -39,7 +39,7 @@ export class WorkspacesComponent {
   }
 
   onOpenModal() {
-    this.ngxSmartModalService.create('createWorkspace', CreateWorkspaceComponent, this.vcr).open();
+    this.ngxSmartModalService.create('createWorkspace', CreateWorkspaceComponent, this.vcr, {customClass : 'p-8'}).open();
   }
 
 }

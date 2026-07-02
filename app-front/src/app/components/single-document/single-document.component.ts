@@ -13,6 +13,7 @@ import { DOCUMENT_SERVICE } from '../../services/document/document-service.token
 import { DocumentService } from '../../services/document/document-service.interface';
 import { LoadingAnimationComponent } from "../../animations/loading-animation/loading-animation.component";
 import { HttpClient } from '@angular/common/http';
+import { DocumentDto } from '../../models/Documents/document-dto';
 
 @Component({
   selector: 'app-single-document',
@@ -37,16 +38,26 @@ export class SingleDocumentComponent {
     route.paramMap.subscribe(params => {
       this.documentId = params.get('documentId')!;
 
+      documentService.getSingleDocument(this.documentId).subscribe({
+        next: (res) => {
+          this.document.set(res);
+        },
+        error: (err) => {
+          this.errorMessage = err
+        }
+      })
+
       documentService.getDownloadUrl(this.documentId).subscribe({
         next: (res) => {
-          this.pdfSrc.set(res.downloadUrl)
+          this.pdfUrl.set(res.downloadUrl);
 
-          this.http.get(this.pdfSrc(), { responseType: 'blob' }).subscribe({
+          this.http.get(this.pdfUrl()!, { responseType: 'blob' }).subscribe({
             next: blob => {
               this.pdfBlobUrl.set(URL.createObjectURL(blob));
-              console.log(this.pdfBlobUrl)
             },
-            error: err => console.error(err)
+            error: (err) => {
+              this.errorMessage = err;
+            }
           });
         }
       });
@@ -54,7 +65,8 @@ export class SingleDocumentComponent {
   }
 
   documentId = '';
-
-  pdfSrc = signal('');
-  pdfBlobUrl = signal('')
+  pdfUrl = signal<string | null >(null);
+  pdfBlobUrl = signal<string | null>(null)
+  document = signal<DocumentDto | null>(null)
+  errorMessage : string | null = null;
 }

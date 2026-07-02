@@ -39,6 +39,23 @@ public class DocumentController : Controller
     }
 
     [HttpGet]
+    [Route("single-doc/{documentId:guid}")]
+    [Authorize]
+    public async Task<IActionResult> GetDocumentById(Guid documentId)
+    {
+        var document = await documentRepository.GetDocumentByIdAsync(documentId);
+
+        if(document != null)
+        {
+            return Ok(mapper.Map<DocumentDTO>(document));
+        }
+        else
+        {
+            return NotFound("Document with specified Id doesn't exist");
+        }
+    }
+
+    [HttpGet]
     [Route("{workspaceId:guid}")]
     [Authorize]
     public async Task<IActionResult> GetDocumentsByWorkspaceId(Guid workspaceId)

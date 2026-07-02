@@ -3,7 +3,7 @@
 </td>
 <td>
   <div class="flex-1 flex gap-2">
-    <div class="rounded-lg p-3 text-purple-500 bg-[var(--color-hlpurple)]">
+    <div class="rounded-lg p-3 text-purple-500 bg-(--color-hlpurple)">
       <ng-content></ng-content>
     </div>
     <div class="flex flex-col">
@@ -24,10 +24,6 @@
     <div class="flex gap-2" [routerLink]="['/singledocument',documentId]">
       <app-info-icon svgClass="size-5"></app-info-icon>
       <span>Details</span>
-    </div>
-    <div class="flex gap-2">
-      <app-download-icon svgClass="size-5"></app-download-icon>
-      <span>Download</span>
     </div>
     <hr>
     <div class="flex gap-2 text-red-700" (click)="onOpenDelete()">

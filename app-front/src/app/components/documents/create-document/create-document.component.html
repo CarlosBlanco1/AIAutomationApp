@@ -20,7 +20,6 @@
         <input #fileInput type="file" style="display: none;" accept=".pdf,.docx,.txt" (change)="onFileSelected($event)"
             aria-describedby="file-help" />
         <small id="file-help">Accepted formats: PDF, DOCX, TXT (Max 5MB).</small>
-
     </div>
     <div class="row-span-1 min-h-full flex">
         @if (file.invalid) {
@@ -31,6 +30,10 @@
             }
             }
         </div>
+        }
+        @else if(file.valid)
+        {
+            <span class="text-green-700">{{file.value.name}}</span>
         }
     </div>
     <div>

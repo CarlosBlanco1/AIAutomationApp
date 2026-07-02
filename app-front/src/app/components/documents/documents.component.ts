@@ -45,7 +45,7 @@ export class DocumentsComponent {
     }
     else
     {
-      this.ngxSmartModalService.create('createDocument', CreateDocumentComponent, this.vcr).open();
+      this.ngxSmartModalService.create('createDocument', CreateDocumentComponent, this.vcr, {customClass : 'p-8'}).open();
     }
   }
 }
