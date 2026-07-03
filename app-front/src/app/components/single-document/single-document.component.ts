@@ -14,6 +14,10 @@ import { DocumentService } from '../../services/document/document-service.interf
 import { LoadingAnimationComponent } from "../../animations/loading-animation/loading-animation.component";
 import { HttpClient } from '@angular/common/http';
 import { DocumentDto } from '../../models/Documents/document-dto';
+import { FolderIconComponent } from "../../icons/folder-icon.component";
+import { CalendarIconComponent } from "../../icons/calendar-icon.component";
+import { AlphabetIconComponent } from "../../icons/alphabet-icon.component";
+import { SummaryIconComponent } from "../../icons/summary-icon.component";
 
 @Component({
   selector: 'app-single-document',
@@ -29,8 +33,12 @@ import { DocumentDto } from '../../models/Documents/document-dto';
     RefreshIconComponent,
     PointerRightIconComponent,
     NgxExtendedPdfViewerModule,
-    LoadingAnimationComponent
-  ],
+    LoadingAnimationComponent,
+    FolderIconComponent,
+    CalendarIconComponent,
+    AlphabetIconComponent,
+    SummaryIconComponent
+],
 })
 
 export class SingleDocumentComponent {
@@ -69,4 +77,21 @@ export class SingleDocumentComponent {
   pdfBlobUrl = signal<string | null>(null)
   document = signal<DocumentDto | null>(null)
   errorMessage : string | null = null;
-}
+
+  getWords () {
+    return this.document()?.fileText.split(/[\s]+/).length;
+  }
+
+  getDate () : string {
+    var date = new Date(this.document()!.createdAt)
+  
+    var dayAndMonth = date.toDateString().match(/^.{4}(.*)$/)![1]
+    var hourAndMinute = date.toLocaleTimeString("en-US", {
+      hour : 'numeric',
+      minute : '2-digit',
+      hour12 : true
+    })
+    
+    return `${dayAndMonth.slice(0,6) + ',' + dayAndMonth.slice(6)} * ${hourAndMinute}`
+  }
+ }

@@ -38,7 +38,7 @@
       <div class="flex flex-row gap-4">
         <app-document-metric-block
           class="flex-1"
-          [metricNumber]="128"
+          [metricNumber]="documentService.userDocuments().length"
           metricName="Total Documents"
         >
           <app-house-icon></app-house-icon>

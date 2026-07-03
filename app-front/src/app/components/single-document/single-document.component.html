@@ -2,8 +2,14 @@
 {
 <div class="flex flex-col min-h-full">
   <div class="px-5 py-3">
-    <span class="text-(--text-gray)">Workspaces > {{document()?.workspaceName}} > Documents >
-      {{document()?.fileName}}</span>
+    <span class="text-(--text-gray) flex gap-2">
+      <p>
+        Workspaces > {{document()?.workspaceName}} > Documents >
+      </p>
+      <p class="text-gray-300">
+        {{document()?.fileName}}
+      </p>
+    </span>
   </div>
   <div class="flex px-5">
     <div class="flex-3 flex gap-4">
@@ -14,13 +20,13 @@
       </div>
       <div class="flex flex-col gap-2 justify-center">
         <div class="flex gap-4 text-xl">
-          <div class="text-white">{{document()?.workspaceName}}</div>
+          <div class="text-white">{{document()?.fileName}}</div>
           <div class="text-purple-500 flex items-center">
             <app-star-icon></app-star-icon>
           </div>
         </div>
         <div class="flex gap-4">
-          <span class="text-sm p-1 text-(--text-gray) bg-gray-700 rounded-md">Created {{document()?.createdAt}}</span>
+          <span class="text-sm p-1 text-(--text-gray) bg-gray-700 rounded-md">Created {{getDate()}}</span>
           <span class="text-sm p-1 text-(--text-gray) bg-gray-700 rounded-md">Updated May 15, 2026 * 03:45 PM</span>
           <span class="text-sm p-1 text-purple-600 bg-gray-700 rounded-md">{{document()?.workspaceName}}</span>
         </div>
@@ -37,7 +43,7 @@
           <span>Download</span>
         </a>
         }
-        <div class="p-2 text-(--text-gray)ray-700 rounded-md flex gap-2 items-center">
+        <div class="p-2 text-(--text-gray) bg-gray-700 rounded-md flex gap-2 items-center">
           <div class="size-5">
             <app-users-icon></app-users-icon>
           </div>
@@ -75,7 +81,7 @@
       <div class="flex flex-col p-4">
         <div class="flex gap-3 items-center mb-2">
           <div class="bg-blue-800 text-blue-300 p-2 rounded-lg">
-            <app-document-icon></app-document-icon>
+            <app-summary-icon svgClass="size-5"></app-summary-icon>
           </div>
           <span class="text-white">Summary</span>
         </div>
@@ -86,11 +92,38 @@
       <div class="flex flex-col px-4 text-sm justify-center">
         <div class="flex border-b-gray-700 border-b py-2 items-center">
           <div class="flex-1 flex gap-2 justify-start text-(--text-gray) items-center">
+            <app-folder-icon svgClass="size-5"></app-folder-icon>
+            <span>Workspace</span>
+          </div>
+          <div class="flex-1 flex justify-end text-gray-300">
+            <span>{{document()?.workspaceName}}</span>
+          </div>
+        </div>
+        <div class="flex border-b-gray-700 border-b py-2 items-center">
+          <div class="flex-1 flex gap-2 justify-start text-(--text-gray) items-center">
+            <app-calendar-icon svgClass="size-5"></app-calendar-icon>
+            <span>Created At</span>
+          </div>
+          <div class="flex-1 flex justify-end text-gray-300">
+            <span>{{getDate()}}</span>
+          </div>
+        </div>
+        <div class="flex border-b-gray-700 border-b py-2 items-center">
+          <div class="flex-1 flex gap-2 justify-start text-(--text-gray) items-center">
             <app-document-icon></app-document-icon>
             <span>File Name</span>
           </div>
           <div class="flex-1 flex justify-end text-gray-300">
             <span>{{document()?.fileName}}</span>
+          </div>
+        </div>
+        <div class="flex border-b-gray-700 border-b py-2 items-center">
+          <div class="flex-1 flex gap-2 justify-start text-(--text-gray) items-center">
+            <app-alphabet-icon svgClass="size-5"></app-alphabet-icon>
+            <span>Words</span>
+          </div>
+          <div class="flex-1 flex justify-end text-gray-300">
+            <span>{{getWords()}} words</span>
           </div>
         </div>
       </div>

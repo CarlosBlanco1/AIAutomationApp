@@ -4,9 +4,7 @@ import { EyeIconComponent } from "../../icons/eye-icon.component";
 import { PointerRightIconComponent } from "../../icons/pointer-right-icon.component";
 import { VerticalDotsIconComponent } from "../../icons/vertical-dots-icon.component";
 import { USER_SERVICE } from "../../services/user/user-service.token";
-import { UserDto } from "../../models/Users/user-dto";
 import { DOCUMENT_SERVICE } from "../../services/document/document-service.token";
-import { DocumentDto } from "../../models/Documents/document-dto";
 
 
 @Component({

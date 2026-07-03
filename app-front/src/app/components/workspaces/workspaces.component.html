@@ -110,7 +110,7 @@
                 <app-document-icon></app-document-icon>
             </div>
             <div class="flex flex-col">
-                <span class="text-white text-xl">0</span>
+                <span class="text-white text-xl">{{documentService.userDocuments().length}}</span>
                 <span class="text-(--text-gray) text-sm">Total Documents</span>
             </div>
         </div>
@@ -119,7 +119,7 @@
                 <app-database-icon></app-database-icon>
             </div>
             <div class="flex flex-col">
-                <span class="text-white text-xl">0</span>
+                <span class="text-white text-xl">{{computeByteSize() }}</span>
                 <span class="text-(--text-gray) text-sm">Storage used</span>
             </div>
         </div>

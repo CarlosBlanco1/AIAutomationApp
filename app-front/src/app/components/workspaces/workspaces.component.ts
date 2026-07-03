@@ -12,6 +12,7 @@ import { WORKSPACE_SERVICE } from '../../services/workspace/workspace-service.to
 import { UsersIconComponent } from "../../icons/users-icon.component";
 import { DocumentIconComponent } from "../../icons/document-icon.component";
 import { DatabaseIconComponent } from "../../icons/database-icon.component";
+import { DOCUMENT_SERVICE } from '../../services/document/document-service.token';
 
 @Component({
   selector: 'app-workspaces',
@@ -33,13 +34,19 @@ import { DatabaseIconComponent } from "../../icons/database-icon.component";
 export class WorkspacesComponent {
 
   workspaceService = inject(WORKSPACE_SERVICE);
+  documentService = inject(DOCUMENT_SERVICE);
 
   constructor(private ngxSmartModalService: NgxSmartModalService, private vcr: ViewContainerRef) {
     this.workspaceService.getUserWorkspaces().subscribe();
+    this.documentService.getUserDocuments().subscribe();
   }
 
   onOpenModal() {
-    this.ngxSmartModalService.create('createWorkspace', CreateWorkspaceComponent, this.vcr, {customClass : 'p-8'}).open();
+    this.ngxSmartModalService.create('createWorkspace', CreateWorkspaceComponent, this.vcr, {customClass : 'bg-white rounded-lg p-5'}).open();
+  }
+
+  computeByteSize() {
+    return this.documentService.userDocuments().reduce((acc, curr) => acc + curr.fileSizeBytes, 0)
   }
 
 }
