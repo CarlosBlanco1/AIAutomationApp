@@ -23,7 +23,7 @@ export const routes: Routes = [
     {
         path: 'dashboard',
         component: DashboardComponent,
-        canActivate : [AuthGuard]
+        // canActivate : [AuthGuard]
     },
     {
         path: 'workspaces',
@@ -40,7 +40,7 @@ export const routes: Routes = [
         loadComponent: () =>
             import('./components/single-document/single-document.component')
                 .then(m => m.SingleDocumentComponent),
-        // canActivate: [AuthGuard]
+        canActivate: [AuthGuard]
     },
 
 ];

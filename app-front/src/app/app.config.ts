@@ -13,10 +13,12 @@ import { ApiWorkspaceService } from './services/workspace/api-workspace-service'
 import { NgxSmartModalModule } from 'ngx-smart-modal';
 import { ApiDocumentService } from './services/document/api-document.service';
 import { DOCUMENT_SERVICE } from './services/document/document-service.token';
+import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
+    provideCharts(withDefaultRegisterables()),
     provideRouter(routes, withComponentInputBinding()),
     provideHttpClient(withInterceptors([authInterceptor])),
     { provide: AUTH_SERVICE, useClass: JwtAuthService },

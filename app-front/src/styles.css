@@ -76,3 +76,7 @@
     padding: 0 !important;
     box-shadow: none !important;
 }
+
+div {
+  scrollbar-color: #9810fa #3E036B; 
+}
