@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { LogoComponent } from '../../logo/logo.component';
 import { HouseIconComponent } from '../../icons/house-icon.component';
 import { DocumentIconComponent } from '../../icons/document-icon.component';
@@ -27,5 +27,7 @@ import { USER_SERVICE } from '../../services/user/user-service.token';
 })
 export class SideBarComponent {
   protected readonly authService = inject(AUTH_SERVICE);
-  protected readonly userService = inject(USER_SERVICE);
+  protected readonly userService = inject(USER_SERVICE);  
+
+  
 }

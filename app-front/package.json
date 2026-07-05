@@ -10,6 +10,7 @@
   },
   "private": true,
   "dependencies": {
+    "@agnos-ui/angular-headless": "^0.8.1",
     "@angular/cdk": "^19.2.19",
     "@angular/common": "^19.2.0",
     "@angular/compiler": "^19.2.0",

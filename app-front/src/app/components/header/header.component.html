@@ -2,21 +2,24 @@
     <div class="pl-6">
         <app-logo></app-logo>
     </div>
-    <div class="grid grid-cols-4 text-(--text-gray) gap-3 flex-2 justify-center">
+    <div class="grid grid-cols-4 text-(--text-gray) gap-3 flex-2 justify-center max-sm:hidden">
         <div class="text-center">Features</div>
         <div class="text-center">Pricing</div>
         <div class="text-center">Docs</div>
         <div class="text-center">Contact</div>
     </div>
-    <div class="flex-1 flex justify-end pr-6 gap-2 text-white">
+    <div class="flex-1 flex lg:justify-end max-lg:justify-center max-lg:gap-2 lg:pr-6 lg:gap-2 text-white max-sm:text-xs">
         @if(!authService.isAuthenticated())
         {
-        <a routerLink="/login" class="px-5 py-2">Sign In</a>
-        <a routerLink="/register" class="px-5 py-2 bg-linear-to-r from-purple-600 to-blue-500 rounded-lg">Get
+        <a routerLink="/login" class="lg:px-5 px-2 py-2">Sign In</a>
+        <a routerLink="/register" class="lg:px-5 px-2 py-2 bg-linear-to-r from-purple-600 to-blue-500 rounded-lg">Get
             Started</a>
         }
         @else {
-        <button (click)="onSignOut()" class="px-5 py-2 bg-linear-to-r from-purple-600 to-blue-500 rounded-lg">Sign Out</button>
+        <button (click)="onSignOut()" class="lg:px-5 max-lg:px-2 py-2 bg-linear-to-r from-purple-600 to-blue-500 rounded-lg">Sign Out</button>
         }
+        <div (click)="bmClicked.emit()" class="lg:hidden text-purple-300 p-2 bg-purple-800 rounded-lg">
+            <app-menu-icon svgClass="size-5"></app-menu-icon>
+        </div>
     </div>
 </div>

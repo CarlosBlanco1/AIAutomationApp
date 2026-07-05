@@ -1,12 +1,18 @@
 <div class="h-screen grid grid-rows-[7%_93%] overflow-hidden">
   <div class="h-full min-h-0 overflow-hidden">
-    <app-header></app-header>
+    <app-header (bmClicked)="showMenu.set(!showMenu())"></app-header>
   </div>
-  <div class="main-body bg-(--color-bgmain) flex">
-    <div class="flex-1">
+  <div class="main-body bg-(--color-bgmain) lg:flex">
+    <div class="max-lg:hidden flex-1 w-full">
       <app-sidebar></app-sidebar>
     </div>
-    <div class="flex-7 items-start justify-center">
+    @if(showMenu())
+    {
+    <div class="w-full absolute">
+      <app-sidebar></app-sidebar>
+    </div>
+    }
+    <div class="lg:flex-7 items-start justify-center">
       <router-outlet></router-outlet>
     </div>
   </div>

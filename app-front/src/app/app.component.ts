@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { HeaderComponent } from './components/header/header.component';
 import { SideBarComponent } from './components/sidebar/sidebar.component';
@@ -31,4 +31,6 @@ export class AppComponent {
       });
     }
   }
+
+  showMenu = signal(false)
 }

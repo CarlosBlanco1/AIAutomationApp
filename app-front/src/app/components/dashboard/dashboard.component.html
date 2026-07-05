@@ -1,12 +1,12 @@
 <div class="grid grid-rows-12 p-6 h-screen">
     <div class="row-span-1 flex flex-col gap-2">
-        <span class="text-xl text-white">Welcome back, {{user.firstName}}!</span>
+        <span class="text-xl text-white">Welcome back, {{userService.currentUser()!.firstName}}!</span>
         <span class="text-sm text-(--text-gray)">Here's what's happening with your workspace today</span>
     </div>
-    <div class="row-span-2 flex gap-4 py-3">
+    <div class="row-span-2 grid grid-cols-4 gap-4 py-3">
         <!-- START -->
-        <div class="flex flex-col text-(--text-gray) bg-(--color-bgsidebar) rounded-lg">
-            <div class="flex gap-4 p-4">
+        <div class="col-span-1 flex flex-col text-(--text-gray) bg-(--color-bgsidebar) rounded-lg">
+            <div class="flex max-lg:flex-col max-lg:items-center gap-4 p-4">
                 <div>
                     <div class="bg-(--color-hlpurple)5 rounded-md text-purple-500">
                         <app-document-icon></app-document-icon>
@@ -14,10 +14,10 @@
                 </div>
                 <div class="flex flex-col gap-1">
                     <span class="text-xs text-(--text-gray)">Documents</span>
-                    <span class="text-2xl text-white">{{documents.length}}</span>
+                    <span class="max-lg:text-sm max-lg:text-center lg:text-2xl text-white">{{documentService.userDocuments().length}}</span>
                 </div>
             </div>
-            <div class="flex gap-2 text-xs px-2 pb-2">
+            <div class="flex gap-2 text-xs px-2 pb-2 max-lg:hidden">
                 <span class="text-green-500">&#8593; 12.5%</span>
                 <span class="text-(--text-gray)">from last month</span>
                 <span class="text-white">------------</span>
@@ -25,11 +25,11 @@
         </div>
         <!-- END -->
     </div>
-    <div class="row-span-9 grid grid-cols-9 grid-rows-11 gap-4 min-h-0">
+    <div class="row-span-9 grid max-lg:grid-cols-10 lg:grid-cols-9 grid-rows-11 gap-4 min-h-0">
         <div class="col-span-5 row-span-5 flex flex-col bg-(--color-bgsidebar) rounded-lg">
             <div class="flex p-5">
                 <span class="flex-1 text-start text-md text-white">Activity Overview</span>
-                <div class="flex-1 flex justify-end">
+                <div class="flex-1 flex justify-end max-lg:hidden">
                     <span class="text-xs text-(--text-gray) border border-gray-700 rounded-md flex items-center">
                         <span class="p-2">This Week</span>
                         <span class="pt-1 self-start pr-2">&#8964;</span>
@@ -44,25 +44,25 @@
                 </canvas>
             </div>
         </div>
-        <div class="col-span-4 row-span-5 flex flex-col bg-(--color-bgsidebar) rounded-lg gap-2">
+        <div class="max-lg:col-span-5 lg:col-span-4 row-span-5 flex flex-col bg-(--color-bgsidebar) rounded-lg gap-2">
             <div class="flex p-5">
                 <span class="flex-1 text-md text-white">Recent Activity</span>
-                <div class="flex-1 flex justify-end">
+                <div class="flex-1 flex justify-end max-lg:hidden">
                     <span class="text-sm text-purple-500">View All</span>
                 </div>
             </div>
             <div class="flex flex-col overflow-auto">
-                @for (document of documents; track document.documentId)
+                @for (document of documentService.userDocuments(); track document.documentId)
                 {
-                <div class="flex gap-2 px-5">
-                    <div class="flex-[5%] bg-(--color-hlpurple) p-1.5 rounded-md text-purple-500">
+                <div class="flex gap-2 px-5 lg:text-sm max-lg:text-xs">
+                    <div class="flex-[5%] bg-(--color-hlpurple) p-1.5 rounded-md text-purple-500 max-lg:hidden">
                         <app-document-icon></app-document-icon>
                     </div>
                     <div class="flex-[80%] flex flex-col pl-2">
-                        <span class="text-sm text-white">{{document.fileName}}</span>
-                        <span class="text-sm text-(--text-gray)">Uploaded by You</span>
+                        <span class=" text-white">{{document.fileName}}</span>
+                        <span class="text-(--text-gray)">Uploaded by You</span>
                     </div>
-                    <div class="flex-[15%] text-sm text-(--text-gray) text-end">2m Ago</div>
+                    <div class="flex-[15%] text-(--text-gray) text-end">2m Ago</div>
                 </div>
                 }
             </div>
@@ -70,23 +70,23 @@
         <div class="col-span-5 row-span-5 flex flex-col bg-(--color-bgsidebar) rounded-lg">
             <div class="flex p-5">
                 <span class="flex-1 text-md text-white">Top Documents</span>
-                <div class="flex-1 flex justify-end">
+                <div class="flex-1 flex justify-end max-lg:hidden">
                     <span class="text-sm text-purple-500">View All</span>
                 </div>
             </div>
-            <div class="flex flex-col overflow-auto">
-                @for (document of documents; track document.documentId)
+            <div class="flex flex-col overflow-auto lg:text-sm max-lg:text-xs">
+                @for (document of documentService.userDocuments(); track document.documentId)
                 {
                 <div class="flex gap-2 px-5">
-                    <div class="bg-(--color-hlpurple) p-1.5 rounded-md text-purple-500">
+                    <div class="bg-(--color-hlpurple) p-1.5 rounded-md text-purple-500 max-lg:hidden">
                         <app-document-icon></app-document-icon>
                     </div>
                     <div class="flex-[85%] flex flex-col pl-2">
-                        <span class="text-sm text-white">{{document.fileName}}</span>
-                        <span class="text-sm text-(--text-gray)">Uploaded {{document.createdAt}}</span>
+                        <span class="text-white">{{document.fileName}}</span>
+                        <span class="text-(--text-gray)">Uploaded {{document.createdAt}}</span>
                     </div>
-                    <div class="flex-[15%] flex items-center gap-2 text-sm text-(--text-gray) text-end">
-                        <div class="flex-1 flex items-center gap-2">
+                    <div class="flex-[15%] flex items-center gap-2 text-(--text-gray) text-end">
+                        <div class="flex-1 flex items-center gap-2 max-lg:hidden">
                             <app-eye-icon></app-eye-icon>
                             <span class="align-middle">1</span>
                         </div>
@@ -98,19 +98,19 @@
                 }
             </div>
         </div>
-        <div class="col-span-4 row-span-5 flex flex-col bg-(--color-bgsidebar) rounded-lg">
+        <div class="max-lg:col-span-5 lg:col-span-4 row-span-5 flex flex-col bg-(--color-bgsidebar) rounded-lg">
             <div class="flex-2 flex p-5">
                 <span class="flex-1 text-md text-white">AI Assistant</span>
-                <div class="flex-1 flex justify-end">
+                <div class="flex-1 flex justify-end max-lg:hidden">
                     <span class="text-sm text-purple-500">New Chat</span>
                 </div>
             </div>
             <div class="flex-5 flex flex-col justify-center items-center text-white">
-                <span>COOL IMAGE GOES HERE</span>
-                <span class="text-2xl">Hi {{user.firstName}}, How can I help you today?</span>
+                <span></span>
+                <span class="lg:text-2xl max-lg:text-xs px-2">Hi {{userService.currentUser()!.firstName}}, How can I help you today?</span>
             </div>
             <div class="flex-2 flex border border-gray-700 rounded-md m-2">
-                <div class="flex-[90%] text-(--text-gray) text-sm pl-4 flex items-center">
+                <div class="flex-[90%] text-(--text-gray) lg:text-sm max-lg:text-xs pl-4 flex items-center">
                     <span>Ask me anything ...</span>
                 </div>
                 <div class="flex-[10%] flex items-center justify-center px-4">
