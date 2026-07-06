@@ -1,9 +1,9 @@
-<td class="text-center">
+<td class="text-center col-span-1">
   <input type="checkbox" />
 </td>
-<td>
+<td class="col-span-4">
   <div class="flex-1 flex gap-2">
-    <div class="rounded-lg p-3 text-purple-500 bg-(--color-hlpurple)">
+    <div class="rounded-lg p-3 text-purple-500 bg-(--color-hlpurple) max-lg:hidden">
       <ng-content></ng-content>
     </div>
     <div class="flex flex-col">
@@ -12,10 +12,10 @@
     </div>
   </div>
 </td>
-<td>* {{documentCategory}}</td>
-<td>{{minutesAgoEdited}} minutes ago</td>
-<td>CIRCLE You</td>
-<td class="relative">
+<td class="col-span-2">* {{documentCategory}}</td>
+<td class="col-span-2 max-lg:hidden">{{minutesAgoEdited}} minutes ago</td>
+<td class="col-span-2 max-lg:hidden">CIRCLE You</td>
+<td class="col-span-1">
   <div (click)="isHidden = !isHidden">
     <app-horizontal-dots></app-horizontal-dots>
   </div>

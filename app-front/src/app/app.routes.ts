@@ -28,12 +28,12 @@ export const routes: Routes = [
     {
         path: 'workspaces',
         component: WorkspacesComponent,
-        // canActivate: [AuthGuard]
+        canActivate: [AuthGuard]
     },
     {
         path: 'documents',
         component: DocumentsComponent,
-        canActivate: [AuthGuard]
+        // canActivate: [AuthGuard]
     },
     {
         path: 'singledocument/:documentId',

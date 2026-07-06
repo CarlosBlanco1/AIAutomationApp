@@ -1,9 +1,9 @@
-<div class="bg-(--color-hlpurple) flex gap-2 p-4 rounded-lg">
-  <div class="rounded-lg p-3 text-purple-500 bg-(--color-bgcard)">
+<div class="bg-(--color-hlpurple) flex gap-2 p-4 rounded-lg min-w-0">
+  <div class="rounded-lg p-3 text-purple-500 bg-(--color-bgcard) max-lg:hidden">
     <ng-content></ng-content>
   </div>
   <div class="flex flex-col">
-    <span class="text-white text-xl">{{metricNumber}}</span>
-    <span class="text-(--text-gray) text-sm">{{metricName}}</span>
+    <span class="text-white max-lg:text-xs lg:text-xl">{{metricNumber}}</span>
+    <span class="text-(--text-gray) max-lg:text-xs lg:text-sm">{{metricName}}</span>
   </div>
 </div>
