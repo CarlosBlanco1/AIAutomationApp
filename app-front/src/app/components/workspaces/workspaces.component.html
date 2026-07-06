@@ -1,13 +1,13 @@
 
 
-<div class="flex flex-col gap-4 bg-(--color-bgmain) min-h-full">
-    <div class="flex gap-3 p-4">
-        <div class="flex-1 flex flex-col gap-2">
-            <span class="text-3xl text-white">Your workspaces</span>
-            <span class="text-sm text-(--text-gray)">Organize your project and collaborate with your team.</span>
+<div class="gap-4 bg-(--color-bgmain) h-full max-lg:w-screen grid grid-rows-12 grid-cols-1">
+    <div class="flex lg:gap-3 p-4 row-span-2 col-span-1">
+        <div class="flex flex-col gap-2 flex-1 min-w-0">
+            <span class="lg:text-3xl max-lg:text-sm text-white">Your workspaces</span>
+            <span class="lg:text-sm max-lg:text-xs text-(--text-gray)">Organize your project and collaborate with your team.</span>
         </div>
-        <div class="flex-1 flex gap-3 items-center rounded-lg text-sm justify-end">
-            <div class="flex text-(--text-gray) gap-2 items-center border border-gray-700 p-3 rounded-lg pr-10">
+        <div class="flex lg:gap-3 items-center rounded-lg text-sm justify-end flex-1 min-w-0">
+            <div class="flex text-(--text-gray) gap-2 items-center border border-gray-700 p-3 rounded-lg pr-10 max-lg:hidden">
                 <div class="flex items-center text-xs">
                     <app-search-icon></app-search-icon>
                 </div>
@@ -15,7 +15,7 @@
                     <span>Search workspaces ...</span>
                 </div>
             </div>
-            <button (click)="onOpenModal()" class="bg-(--button-purple) text-white flex items-center gap-2 p-3 rounded-lg">
+            <button (click)="onOpenModal()" class="bg-(--button-purple) text-white flex items-center gap-2 p-3 rounded-lg min-w-0">
                 <div class="text-xs">
                     <app-plus-icon></app-plus-icon>
                 </div>
@@ -25,14 +25,14 @@
             </button>
         </div>
     </div>
-    <div class="flex-[90%] flex flex-col m-4 gap-4">
-        <div class="flex">
+    <div class="flex flex-col p-4 gap-4 row-span-8 col-span-1 w-full">
+        <div class="flex w-full">
             <div class="flex-1 flex justify-start">
                 <span class="text-xl text-white">All Workspaces</span>
             </div>
             <div class="flex-1 flex justify-end gap-4">
                 <div class="flex gap-3">
-                    <div class="flex justify-end">
+                    <div class="flex justify-end max-lg:hidden">
                         <span class="text-xs text-(--text-gray) border border-gray-700 rounded-md flex items-center">
                             <span class="p-3">Sort By: Recent</span>
                             <span class="self-center pr-2">&#8964;</span>
@@ -49,15 +49,14 @@
                 </div>
             </div>
         </div>
-        <div class="grid grid-cols-9 grid-rows-6 gap-4">
-
+        <div class="lg:grid lg:grid-cols-8 max-lg:flex max-lg:flex-col gap-4 overflow-y-scroll h-full">
             @for(workspace of workspaceService.userWorkspaces(); track workspace.workspaceId)
             {
-                <div class="bg-(--color-bgsidebar) col-span-2 row-span-3 flex flex-col gap-3 p-4 rounded-lg">
+                <div class="bg-(--color-bgsidebar) lg:col-span-2 flex flex-col gap-3 lg:p-4 rounded-lg">
                     <div class="flex-2 flex">
                         <div class="flex-1 flex justify-start">
                             <div class="flex items-center justify-center bg-purple-600 text-white p-2 rounded-lg">
-                                <app-house-icon></app-house-icon>
+                                <app-house-icon svgClass="size-5"></app-house-icon>
                             </div>
                         </div>
                         <div class="flex-1 flex justify-end text-(--text-gray) gap-3">
@@ -86,41 +85,43 @@
             }
         </div>
     </div>
-    <div class="flex justify-center gap-3 px-3 py-5 bg-(--color-bgsidebar) m-4 rounded-lg">
-        <div class="flex-1 flex gap-2">
-            <div class="rounded-lg p-3 text-purple-500 bg-(--color-bgcard)">
-                <app-house-icon></app-house-icon>
+    <div class="row-span-2 col-span-1 p-4">
+        <div class="flex justify-center max-lg:gap-6 lg:gap-3 bg-(--color-bgsidebar) rounded-lg w-full p-4">
+            <div class="flex-1 flex gap-2 min-w-0">
+                <div class="rounded-lg lg:p-3 text-purple-500 bg-(--color-bgcard)">
+                    <app-house-icon svgClass="size-5"></app-house-icon>
+                </div>
+                <div class="flex flex-col">
+                    <span class="text-white max-lg:text-xs lg:text-xl">{{workspaceService.userWorkspaces().length}}</span>
+                    <span class="text-(--text-gray) max-lg:text-xs lg:text-sm">Total Workspaces</span>
+                </div>
             </div>
-            <div class="flex flex-col">
-                <span class="text-white text-xl">{{workspaceService.userWorkspaces().length}}</span>
-                <span class="text-(--text-gray) text-sm">Total Workspaces</span>
+            <div class="flex-1 flex gap-2 min-w-0">
+                <div class="rounded-lg lg:p-3 text-purple-800 bg-(--color-bgcard)">
+                    <app-users-icon svgClass="size-5"></app-users-icon>
+                </div>
+                <div class="flex flex-col">
+                    <span class="text-white max-lg:text-xs lg:text-xl">1</span>
+                    <span class="text-(--text-gray) max-lg:text-xs lg:text-sm">Total Members</span>
+                </div>
             </div>
-        </div>
-        <div class="flex-1 flex gap-2">
-            <div class="rounded-lg p-3 text-purple-800 bg-(--color-bgcard)">
-                <app-users-icon></app-users-icon>
+            <div class="flex-1 flex gap-2 min-w-0">
+                <div class="rounded-lg lg:p-3 text-blue-400 bg-(--color-bgcard)">
+                    <app-document-icon svgClass="size-5"></app-document-icon>
+                </div>
+                <div class="flex flex-col">
+                    <span class="text-white max-lg:text-xs lg:text-xl">{{documentService.userDocuments().length}}</span>
+                    <span class="text-(--text-gray) max-lg:text-xs lg:text-sm">Total Documents</span>
+                </div>
             </div>
-            <div class="flex flex-col">
-                <span class="text-white text-xl">1</span>
-                <span class="text-(--text-gray) text-sm">Total Members</span>
-            </div>
-        </div>
-        <div class="flex-1 flex gap-2">
-            <div class="rounded-lg p-3 text-blue-400 bg-(--color-bgcard)">
-                <app-document-icon></app-document-icon>
-            </div>
-            <div class="flex flex-col">
-                <span class="text-white text-xl">{{documentService.userDocuments().length}}</span>
-                <span class="text-(--text-gray) text-sm">Total Documents</span>
-            </div>
-        </div>
-        <div class="flex-1 flex gap-2">
-            <div class="rounded-lg p-3 text-green-400 bg-(--color-bgcard)">
-                <app-database-icon></app-database-icon>
-            </div>
-            <div class="flex flex-col">
-                <span class="text-white text-xl">{{computeByteSize() }}</span>
-                <span class="text-(--text-gray) text-sm">Storage used</span>
+            <div class="flex-1 flex gap-2 min-w-0">
+                <div class="rounded-lg lg:p-3 text-green-400 bg-(--color-bgcard)">
+                    <app-database-icon svgClass="size-5"></app-database-icon>
+                </div>
+                <div class="flex flex-col">
+                    <span class="text-white max-lg:text-xs lg:text-xl">{{computeByteSize() }}</span>
+                    <span class="text-(--text-gray) max-lg:text-xs lg:text-sm">Storage used</span>
+                </div>
             </div>
         </div>
     </div>

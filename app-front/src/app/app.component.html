@@ -2,7 +2,7 @@
   <div class="h-full min-h-0 overflow-hidden">
     <app-header (bmClicked)="showMenu.set(!showMenu())"></app-header>
   </div>
-  <div class="main-body bg-(--color-bgmain) lg:flex">
+  <div class="main-body bg-(--color-bgmain) flex">
     <div class="max-lg:hidden flex-1 w-full">
       <app-sidebar></app-sidebar>
     </div>
@@ -12,7 +12,7 @@
       <app-sidebar></app-sidebar>
     </div>
     }
-    <div class="lg:flex-7 items-start justify-center">
+    <div class="flex-7 items-start justify-center max-lg:max-h-full">
       <router-outlet></router-outlet>
     </div>
   </div>
