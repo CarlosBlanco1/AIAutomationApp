@@ -1,5 +1,5 @@
-<div class="bg-(color-bgmain) grid grid-rows-10 gap-3 h-full">
-  <div class="row-span-3 flex flex-col px-4 pt-4 gap-3">
+<div class="bg-(color-bgmain) grid grid-rows-20 gap-3 h-full">
+  <div class="row-span-5 flex flex-col px-4 pt-4 gap-3">
     <div class="flex">
       <div class="flex-1 flex flex-col gap-2">
         <span class="text-white text-2xl">Documents</span>
@@ -40,8 +40,8 @@
       </app-document-metric-block>
     </div>
   </div>
-  <div class="row-span-6 grid grid-rows-12 px-4 min-h-full">
-    <div class="row-span-2 flex max-lg:hidden">
+  <div class="row-span-13 grid grid-rows-12 px-4 min-h-full">
+    <div class="row-span-1 flex max-lg:hidden">
       <div class="flex-1 flex gap-3 text-(--text-gray)">
         <div class="p-4">All Documents</div>
         <div class="p-4">Owned by me</div>
@@ -68,9 +68,9 @@
       </div>
     </div>
     <hr class="text-gray-700 row-span-1" />
-    <div class="row-span-9 grid grid-rows-1 h-full">
-      <table class="text-sm text-(--text-gray) border-separate border-spacing-y-4 row-span-1 overflow-auto grid grid-cols-1">
-        <thead class="col-span-1 grid grid-cols-1 pb-6">
+    <div class="row-span-10 grid grid-rows-1 h-full">
+      <table class="text-sm text-(--text-gray) border-separate border-spacing-y-4 row-span-1 overflow-auto grid grid-cols-1 grid-rows-10">
+        <thead class="col-span-1 row-span-1 grid grid-cols-1 pb-6">
           <tr class="col-span-1 grid lg:grid-cols-12 max-lg:grid-cols-8">
             <th class="text-center px-3 col-span-1">
               <input type="checkbox" class="bg-green-400" />
@@ -82,7 +82,7 @@
             <th class="text-start col-span-1"></th>
           </tr>
         </thead>
-        <tbody class="col-span-1 overflow-y-auto grid grid-cols-1">
+        <tbody class="col-span-1 row-span-9 overflow-y-auto grid grid-cols-1">
           @for (document of documentService.userDocuments(); track document.documentId)
           {
           <tr app-document-table-row [documentId]="document.documentId" [documentName]="document.fileName"
@@ -96,7 +96,7 @@
     </div>
     <hr class="text-gray-700" />
   </div>
-  <div class="row-span-1">
+  <div class="row-span-2 h-full">
     <div class="flex text-(--text-gray) p-4">
       <div class="flex-10 flex text-sm">
         <span>Showing 1 to 8 of 128 documents</span>

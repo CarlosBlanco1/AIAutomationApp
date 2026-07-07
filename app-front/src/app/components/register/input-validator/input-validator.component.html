@@ -1,5 +1,5 @@
 <div class="grid grid-rows-4">
-    <label [for]="inputId" class="row-span-1 min-h-full text-sm mb-1">{{ labelText }}</label>
+    <label [for]="inputId" class="row-span-1 min-h-full lg:text-sm max-lg:text-xs mb-1">{{ labelText }}</label>
     <div
       class="row-span-2 min-h-full flex items-center gap-2 border-gray-600 border rounded-md p-1"
       [class.border-red-700]="controlObject.invalid && (controlObject.dirty || controlObject.touched)"
@@ -8,7 +8,7 @@
       <ng-content></ng-content>
       <input
         [type]="isPassword ? 'password' : 'text'"
-        class="text-sm"
+        class="lg:text-sm max-lg:text-xs"
         [formControl]="controlObject"
         [placeholder]="placeholderText"
         [id]="inputId"
@@ -20,7 +20,7 @@
           <div class="flex-1 h-full flex gap-5">
             @for (ruleAndMessage of ruleToMessage; track ruleAndMessage.validationRule) {
               @if (controlObject.hasError(ruleAndMessage.validationRule)) {
-                <div class="text-red-700 text-sm">{{ ruleAndMessage.errorMessage }}</div>
+                <div class="text-red-700 lg:text-sm max-lg:text-xs">{{ ruleAndMessage.errorMessage }}</div>
               }
             }
           </div>

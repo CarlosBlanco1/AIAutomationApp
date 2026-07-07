@@ -1,7 +1,7 @@
 @if(pdfBlobUrl() && document())
 {
-<div class="flex flex-col min-h-full">
-  <div class="px-5 py-3">
+<div class="grid grid-rows-20 grid-cols-1 h-full">
+  <div class="row-span-1 col-span-1 px-5 py-3 max-lg:text-xs">
     <span class="text-(--text-gray) flex gap-2">
       <p>
         Workspaces > {{document()?.workspaceName}} > Documents >
@@ -11,11 +11,11 @@
       </p>
     </span>
   </div>
-  <div class="flex px-5">
+  <div class="row-span-2 col-span-1 flex px-5">
     <div class="flex-3 flex gap-4">
       <div class="flex items-center justify-center">
         <div class="bg-blue-800 text-blue-300 p-3 rounded-lg">
-          <app-document-icon></app-document-icon>
+          <app-document-icon svgClass="size-5"></app-document-icon>
         </div>
       </div>
       <div class="flex flex-col gap-2 justify-center">
@@ -26,9 +26,9 @@
           </div>
         </div>
         <div class="flex gap-4">
-          <span class="text-sm p-1 text-(--text-gray) bg-gray-700 rounded-md">Created {{getDate()}}</span>
-          <span class="text-sm p-1 text-(--text-gray) bg-gray-700 rounded-md">Updated May 15, 2026 * 03:45 PM</span>
-          <span class="text-sm p-1 text-purple-600 bg-gray-700 rounded-md">{{document()?.workspaceName}}</span>
+          <span class="lg:text-sm max-lg:text-xs p-1 text-(--text-gray) bg-gray-700 rounded-md">Created {{getDate()}}</span>
+          <span class="text-sm p-1 text-(--text-gray) bg-gray-700 rounded-md max-lg:hidden">Updated May 15, 2026 * 03:45 PM</span>
+          <span class="text-sm p-1 text-purple-600 bg-gray-700 rounded-md max-lg:hidden">{{document()?.workspaceName}}</span>
         </div>
       </div>
     </div>
@@ -40,16 +40,16 @@
           <div class="size-5">
             <app-download-icon></app-download-icon>
           </div>
-          <span>Download</span>
+          <span class="max-lg:text-xs">Download</span>
         </a>
         }
-        <div class="p-2 text-(--text-gray) bg-gray-700 rounded-md flex gap-2 items-center">
+        <div class="p-2 text-(--text-gray) bg-gray-700 rounded-md flex gap-2 items-center max-lg:hidden">
           <div class="size-5">
             <app-users-icon></app-users-icon>
           </div>
           <span>Share</span>
         </div>
-        <div class="p-2 text-(--text-gray) bg-gray-700 rounded-md flex justify-center">
+        <div class="p-2 text-(--text-gray) bg-gray-700 rounded-md flex justify-center max-lg:hidden">
           <div class="size- flex justify-center">
             <app-horizontal-dots></app-horizontal-dots>
           </div>
@@ -58,8 +58,8 @@
     </div>
     <div></div>
   </div>
-  <div class="flex-[90%] grid grid-cols-9 grid-rows-2 gap-2 p-5">
-    <div class="col-span-6 row-span-2 max-h-full pb-2 rounded-2xl">
+  <div class="row-span-18 col-span-1 grid lg:grid-cols-9 lg:grid-rows-2 max-lg:grid-cols-1 max-lg:grid-rows-6 gap-2 p-5">
+    <div class="lg:col-span-6 lg:row-span-2 max-lg:row-span-2 max-lg:col-span-1 h-full pb-2 rounded-2xl">
       @if(pdfBlobUrl()){
       <ngx-extended-pdf-viewer #pdfViewer [src]="pdfBlobUrl()!"
         [customToolbar]="additionalButtons"></ngx-extended-pdf-viewer>
@@ -77,19 +77,19 @@
       </ng-template>
       }
     </div>
-    <div class="col-span-3 row-span-1">
-      <div class="flex flex-col p-4">
-        <div class="flex gap-3 items-center mb-2">
+    <div class="lg:col-span-3 lg:row-span-1 max-lg:row-span-4 max-lg:col-span-1 max-lg:mt-8 grid grid-rows-9">
+      <div class="p-4 row-span-4 grid grid-rows-5 gap-8">
+        <div class="flex gap-3 items-center mb-2 row-span-1">
           <div class="bg-blue-800 text-blue-300 p-2 rounded-lg">
             <app-summary-icon svgClass="size-5"></app-summary-icon>
           </div>
           <span class="text-white">Summary</span>
         </div>
-        <div class="text-(--text-gray) text-sm">
+        <div class="text-(--text-gray) text-sm row-span-4 overflow-auto">
           {{document()?.summary}}
         </div>
       </div>
-      <div class="flex flex-col px-4 text-sm justify-center">
+      <div class="flex flex-col px-4 text-sm justify-center row-span-5">
         <div class="flex border-b-gray-700 border-b py-2 items-center">
           <div class="flex-1 flex gap-2 justify-start text-(--text-gray) items-center">
             <app-folder-icon svgClass="size-5"></app-folder-icon>
@@ -110,7 +110,7 @@
         </div>
         <div class="flex border-b-gray-700 border-b py-2 items-center">
           <div class="flex-1 flex gap-2 justify-start text-(--text-gray) items-center">
-            <app-document-icon></app-document-icon>
+            <app-document-icon svgClass="size-5"></app-document-icon>
             <span>File Name</span>
           </div>
           <div class="flex-1 flex justify-end text-gray-300">
@@ -128,7 +128,7 @@
         </div>
       </div>
     </div>
-    <div class="col-span-3 row-span-1 px-4 py-2 text-(--text-gray) flex flex-col">
+    <div class="lg:col-span-3 lg:row-span-1 max-lg:hidden px-4 py-2 text-(--text-gray) flex flex-col">
       <div class="flex">
         <div class="flex-1 flex flex-col">
           <div class="flex gap-3">

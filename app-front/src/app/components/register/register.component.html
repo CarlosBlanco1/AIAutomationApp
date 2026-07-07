@@ -1,4 +1,4 @@
-<div class="flex-1 flex justify-center min-h-full">
+<div class="flex-1 flex justify-center h-full">
   @if (formState === 'form') {
   <div class="min-w-[50%] grid grid-rows-[auto_1fr_auto] bg-(--color-bgcard) rounded-xl border-purple-900 border p-7">
     <div>
@@ -6,11 +6,11 @@
     </div>
     <div class="flex flex-col my-6">
       <div class="flex flex-col">
-        <span class="text-2xl text-white">Create your account</span>
-        <span class="text-sm text-(--text-gray)">Start your Journey with Workspace AI</span>
+        <span class="lg:text-2xl max-lg:text-md text-white">Create your account</span>
+        <span class="lg:text-sm max-lg:text-xs text-(--text-gray)">Start your Journey with Workspace AI</span>
       </div>
       <form (ngSubmit)="onSubmitForm()" [formGroup]="registerForm">
-        <div class="flex flex-col gap-2 text-white mt-5">
+        <div class="flex flex-col lg:gap-2 text-white lg:mt-5 max-lg:mt-2">
           <div>
             <app-input-validator labelText="First Name" placeholderText="Enter your first name"
               [controlObject]="firstName" [ruleToMessage]="fnValidationMessages" [isPassword]="false">
@@ -49,7 +49,7 @@
       </div>
     </div>
     <div class="flex">
-      <span class="text-(--text-gray) text-sm">&#64;2026 Workspace AI. All rights reserved</span>
+      <span class="text-(--text-gray) lg:text-sm max-lg:text-xs">&#64;2026 Workspace AI. All rights reserved</span>
     </div>
   </div>
   } @else if(formState === 'loading'){

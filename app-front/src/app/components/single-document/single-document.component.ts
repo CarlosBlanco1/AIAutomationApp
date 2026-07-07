@@ -38,7 +38,7 @@ import { SummaryIconComponent } from "../../icons/summary-icon.component";
     CalendarIconComponent,
     AlphabetIconComponent,
     SummaryIconComponent
-],
+  ],
 })
 
 export class SingleDocumentComponent {
@@ -51,7 +51,11 @@ export class SingleDocumentComponent {
           this.document.set(res);
         },
         error: (err) => {
-          this.errorMessage = err
+          if (err.error && typeof err.error === 'object') {
+            this.errorMessage = err.error.message || 'An error occurred';
+          } else {
+            this.errorMessage = err.error
+          }
         }
       })
 
@@ -64,7 +68,11 @@ export class SingleDocumentComponent {
               this.pdfBlobUrl.set(URL.createObjectURL(blob));
             },
             error: (err) => {
-              this.errorMessage = err;
+              if (err.error && typeof err.error === 'object') {
+                this.errorMessage = err.error.message || 'An error occurred';
+              } else {
+                this.errorMessage = err.error
+              }
             }
           });
         }
@@ -73,25 +81,25 @@ export class SingleDocumentComponent {
   }
 
   documentId = '';
-  pdfUrl = signal<string | null >(null);
+  pdfUrl = signal<string | null>(null);
   pdfBlobUrl = signal<string | null>(null)
   document = signal<DocumentDto | null>(null)
-  errorMessage : string | null = null;
+  errorMessage: string | null = null;
 
-  getWords () {
+  getWords() {
     return this.document()?.fileText.split(/[\s]+/).length;
   }
 
-  getDate () : string {
+  getDate(): string {
     var date = new Date(this.document()!.createdAt)
-  
+
     var dayAndMonth = date.toDateString().match(/^.{4}(.*)$/)![1]
     var hourAndMinute = date.toLocaleTimeString("en-US", {
-      hour : 'numeric',
-      minute : '2-digit',
-      hour12 : true
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true
     })
-    
-    return `${dayAndMonth.slice(0,6) + ',' + dayAndMonth.slice(6)} * ${hourAndMinute}`
+
+    return `${dayAndMonth.slice(0, 6) + ',' + dayAndMonth.slice(6)} * ${hourAndMinute}`
   }
- }
+}
