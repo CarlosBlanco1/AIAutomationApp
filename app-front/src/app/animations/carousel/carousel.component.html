@@ -1,13 +1,31 @@
 <div class="embla" emblaCarousel [options]="options" [plugins]="plugins">
+
+  @if(!isMobile())
+  {
+
   <div class="embla__container">
     <div class="embla__slide">
-        <img src="assets/images/carousel1.png" alt="Description" />
+      <img src="assets/images/carousel1.png" alt="Description" />
     </div>
     <div class="embla__slide">
-        <img src="assets/images/carousel2.png" alt="Description" />
+      <img src="assets/images/carousel2.png" alt="Description" />
     </div>
     <div class="embla__slide">
-        <img src="assets/images/carousel3.png" alt="Description" />
+      <img src="assets/images/carousel3.png" alt="Description" />
     </div>
   </div>
+  }
+  @else {
+  <div class="embla__container">
+    <div class="embla__slide">
+      <img src="assets/images/vertical1.png" alt="Description" />
+    </div>
+    <div class="embla__slide">
+      <img src="assets/images/vertical2.png" alt="Description" />
+    </div>
+    <div class="embla__slide">
+      <img src="assets/images/vertical3.png" alt="Description" />
+    </div>
+  </div>
+  }
 </div>
