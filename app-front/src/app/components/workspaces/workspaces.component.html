@@ -50,7 +50,7 @@
             </div>
         </div>
         <div class="lg:grid lg:grid-cols-8 lg:auto-rows-[15rem] max-lg:flex max-lg:flex-col gap-4 overflow-y-scroll h-full">
-            @for(workspace of workspaces; track workspace.workspaceId)
+            @for(workspace of workspaceService.userWorkspaces(); track workspace.workspaceId)
             {
                 <div class="bg-(--color-bgsidebar) lg:col-span-2 grid grid-rows-9 gap-3 lg:p-4 rounded-lg">
                     <div class="row-span-2">
@@ -92,7 +92,7 @@
                     <app-house-icon svgClass="size-5"></app-house-icon>
                 </div>
                 <div class="flex flex-col">
-                    <span class="text-white max-lg:text-xs lg:text-xl">{{workspaces.length}}</span>
+                    <span class="text-white max-lg:text-xs lg:text-xl">{{workspaceService.userWorkspaces().length}}</span>
                     <span class="text-(--text-gray) max-lg:text-xs lg:text-sm">Total Workspaces</span>
                 </div>
             </div>
@@ -110,7 +110,7 @@
                     <app-document-icon svgClass="size-5"></app-document-icon>
                 </div>
                 <div class="flex flex-col">
-                    <!-- <span class="text-white max-lg:text-xs lg:text-xl">{{documentService.userDocuments().length}}</span> -->
+                    <span class="text-white max-lg:text-xs lg:text-xl">{{documentService.userDocuments().length}}</span>
                     <span class="text-white max-lg:text-xs lg:text-xl">0</span>
                     <span class="text-(--text-gray) max-lg:text-xs lg:text-sm">Total Documents</span>
                 </div>

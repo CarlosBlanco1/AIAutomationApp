@@ -37,8 +37,8 @@ export class WorkspacesComponent {
   documentService = inject(DOCUMENT_SERVICE);
 
   constructor(private ngxSmartModalService: NgxSmartModalService, private vcr: ViewContainerRef) {
-    // this.workspaceService.getUserWorkspaces().subscribe();
-    // this.documentService.getUserDocuments().subscribe();
+    this.workspaceService.getUserWorkspaces().subscribe();
+    this.documentService.getUserDocuments().subscribe();
   }
 
   onOpenModal() {
@@ -48,38 +48,7 @@ export class WorkspacesComponent {
 
 
   computeByteSize() {
-    return 2;
-    // return this.documentService.userDocuments().reduce((acc, curr) => acc + curr.fileSizeBytes, 0)
+    return this.documentService.userDocuments().reduce((acc, curr) => acc + curr.fileSizeBytes, 0)
   }
-
-  workspaces = [
-  {
-    workspaceId: "550e8400-e29b-41d4-a716-446655440001",
-    workspaceName: "Personal",
-    ownerId: "7d4d8d0e-4f5d-4d5d-9c7a-5f3b9d4e8c21"
-  },
-  {
-    workspaceId: "550e8400-e29b-41d4-a716-446655440002",
-    workspaceName: "University",
-    ownerId: "7d4d8d0e-4f5d-4d5d-9c7a-5f3b9d4e8c21"
-  },
-  {
-    workspaceId: "550e8400-e29b-41d4-a716-446655440003",
-    workspaceName: "Work",
-    ownerId: "7d4d8d0e-4f5d-4d5d-9c7a-5f3b9d4e8c21"
-  },
-  {
-    workspaceId: "550e8400-e29b-41d4-a716-446655440001",
-    workspaceName: "Personal",
-    ownerId: "7d4d8d0e-4f5d-4d5d-9c7a-5f3b9d4e8c21"
-  },
-  {
-    workspaceId: "550e8400-e29b-41d4-a716-446655440001",
-    workspaceName: "Personal",
-    ownerId: "7d4d8d0e-4f5d-4d5d-9c7a-5f3b9d4e8c21"
-  },
-
  
- 
-];
 }
