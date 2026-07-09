@@ -9,6 +9,7 @@ using Serilog;
 using Amazon.S3;
 using Amazon;
 using Amazon.Runtime;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -136,6 +137,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapGet("/health", () => {return Results.Ok();});
 
 if (app.Environment.IsDevelopment())
 {
