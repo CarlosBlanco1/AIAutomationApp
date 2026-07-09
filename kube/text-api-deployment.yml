@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+type: Deployment
+metadata: 
+    name: workspaceai-text-extractor
+    namespace: workspaceai-prod
+strategy:
+    type: RollingUpdate
+    rollingUpdate:
+        maxSurge: 1
+        maxUnavailable: 0
+spec:
+    replicas: 1
+    selector:
+        matchLabel:
+            app: workspaceai-text-extractor
+    template:
+        metadata:
+            labels:
+                app: workspaceai-text-extractor
+        spec:
+          containers:
+            - name: workspaceai-api
+              image: carlosblanco1/workspaceai-text-server:latest
+              ports:
+                - containerPort: 8000
+
+              readinessProbe:
+                httpGet:
+                  path: /
+                  port: 8000
+                initialDelaySeconds: 5
+                periodSeconds: 10
+                timeoutSeconds: 3
+              livenessProbe:
+                httpGet:
+                  path: /
+                  port: 8000
+                initialDelaySeconds: 15
+                periodSeconds: 20

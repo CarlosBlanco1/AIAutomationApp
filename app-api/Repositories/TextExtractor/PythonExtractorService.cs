@@ -4,10 +4,12 @@ using Amazon.Util.Internal;
 class PythonExtractorService : ITextExtractorService
 {
     private readonly IHttpClientFactory httpClientFactory;
+    private readonly IConfiguration configuration;
 
-    public PythonExtractorService(IHttpClientFactory httpClientFactory)
+    public PythonExtractorService(IHttpClientFactory httpClientFactory, IConfiguration configuration)
     {
         this.httpClientFactory = httpClientFactory;
+        this.configuration = configuration;
     }
     public async Task<TextResponse> GetTextExtractedAsync(IFormFile file, string fileName)
     {
@@ -19,8 +21,10 @@ class PythonExtractorService : ITextExtractorService
 
         content.Add(new StreamContent(fileStream), "file", fileName);
 
+        var textExtractorUrl = configuration["TEXT_EXTRACTOR_URL"];
+
         var response = await client.PostAsync(
-            "http://myapp-text-server:8000/text-extractor",
+            $"{textExtractorUrl}/text-extractor",
             content);
 
         return await response.Content.ReadFromJsonAsync<TextResponse>();

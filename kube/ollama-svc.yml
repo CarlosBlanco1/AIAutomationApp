@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+    name: workspaceai-ollama-svc
+    namespace: workspaceai-prod
+spec:
+    selector:
+        app: workspaceai-ollama
+    port:
+     - protocol: TCP
+       port: 11434
+       targetPort: 11434
+    type: ClusterIP

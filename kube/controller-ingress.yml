@@ -1,0 +1,18 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: workspaceai-controller-ingress
+  namespace: workspaceai-prod
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: workspaceai.carlosblancodev.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: workspaceai-front-svc
+                port:
+                  number: 80

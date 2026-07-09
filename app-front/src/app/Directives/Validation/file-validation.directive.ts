@@ -10,7 +10,7 @@ export function fileValidator() : ValidatorFn {
         return null;
     }
 
-    if(value.size > (5 * 1024 * 1024))
+    if(value.size > (1 * 1024 * 1024))
     {
         return {exceededSize : true}
     }

@@ -1,0 +1,102 @@
+name: Build and deploy on kubernetes
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: [self-hosted]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Debug Docker credential store
+        shell: bash
+        run: |
+            echo "HOME=$HOME"
+            test -f ~/.docker/config.json && cat ~/.docker/config.json || echo "No ~/.docker/config.json"
+            docker info | sed -n '1,80p'
+
+
+      - name: Use ephemeral Docker config (no credential helper)
+        shell: bash
+        run: |
+            mkdir -p "${RUNNER_TEMP}/.docker"
+            cat > "${RUNNER_TEMP}/.docker/config.json" <<'EOF'
+            {
+            "auths": {}
+            }
+            EOF
+        env:
+            RUNNER_TEMP: ${{ runner.temp }}
+
+      - name: Log into Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_TOKEN }}
+
+      - name: Build image
+        run: |
+          docker build \
+            -f app-api/Dockerfile \
+            -t carlosblanco1/workspaceai-api:latest \
+            app-api
+
+          docker push carlosblanco1/workspaceai-api --all-tags
+
+          docker build \
+            -f app-front/Dockerfile \
+            -t carlosblanco1/workspaceai-front:latest \
+            app-front
+
+          docker push carlosblanco1/workspaceai-front --all-tags
+
+          docker build \
+            -f app-text-server/Dockerfile \
+            -t carlosblanco1/workspaceai-text-server:latest \
+            app-text-server
+
+          docker push carlosblanco1/workspaceai-text-server --all-tags
+
+      - name: Deploy to Kubernetes
+        run: |
+          export PATH=$PATH:~/.nix-profile/bin:/nix/var/nix/profiles/default/bin
+
+          kubectl -n workspaceai-prod create secret generic r2-token-value \
+          --from-literal=TOKEN_VALUE="${{ secrets.TOKEN_VALUE }}" \
+          --dry-run=client -o yaml | kubectl apply -f -
+
+          kubectl -n workspaceai-prod create secret generic r2-access-key \
+          --from-literal=ACCESS_KEY="${{ secrets.ACCESS_KEY }}" \
+          --dry-run=client -o yaml | kubectl apply -f -
+
+          kubectl -n workspaceai-prod create secret generic r2-secret-key \
+          --from-literal=SECRET_KEY="${{ secrets.SECRET_KEY }}" \
+          --dry-run=client -o yaml | kubectl apply -f -
+
+          kubectl -n workspaceai-prod create secret generic r2-bucket-name \
+          --from-literal=BUCKET_NAME="${{ secrets.BUCKET_NAME }}" \
+          --dry-run=client -o yaml | kubectl apply -f -
+
+          kubectl -n workspaceai-prod create secret generic r2-service-url \
+          --from-literal=SERVICE_URL="${{ secrets.SERVICE_URL }}" \
+          --dry-run=client -o yaml | kubectl apply -f -
+
+          kubectl -n workspaceai-prod create secret generic jwt-key \
+          --from-literal=WORKSPACEAI_JWT_KEY="${{ secrets.WORKSPACEAI_JWT_KEY }}" \
+          --dry-run=client -o yaml | kubectl apply -f -
+
+          kubectl -n workspaceai-prod create secret generic postgres-password \
+          --from-literal=WORKSPACEAI_POSTGRES_PASSWORD="${{ secrets.WORKSPACEAI_POSTGRES_PASSWORD }}" \
+          --dry-run=client -o yaml | kubectl apply -f -
+
+          kubectl -n workspaceai-prod create secret generic db-connectionstring \
+          --from-literal=CONNECTION_STRING="Host=workspaceai-postgres-svc;Port=5432;Database=workspaceai_db;Username=workspaceai_user;Password=${{secrets.WORKSPACEAI_POSTGRES_PASSWORD}}" \
+          --dry-run=client -o yaml | kubectl apply -f -
+
+          for file in kube/*; do 
+              cat "$file" | envsubst | kubectl apply -f -; 
+          done

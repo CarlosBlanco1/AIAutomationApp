@@ -1,0 +1,13 @@
+apiVersion: v1
+type: Service
+metadata:
+    name: workspaceai-text-extractor-svc
+    namespace: workspaceai-prod
+spec:
+    selector:
+        app: workspaceai-text-extractor
+    port:
+     - protocol: TCP
+       port: 8000
+       targetPort: 8000
+    type: ClusterIP

@@ -85,6 +85,9 @@ public class DocumentController : Controller
     {
         var idInToken = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
+        var userDocs = await documentRepository.GetDocumentsByUserIdAsync(idInToken);
+        var totalDocsSize = userDocs.Sum(d => d.FileSizeBytes);
+
         var workspace = await workspaceRepository.GetWorkspaceByIdAsync(createDocumentDTO.WorkspaceId);
 
         if (workspace == null)
@@ -94,6 +97,10 @@ public class DocumentController : Controller
         else if (workspace.OwnerId != idInToken)
         {
             return Forbid();
+        }
+        else if(totalDocsSize > (2 * 1024 * 1024)) //2 MB
+        {
+            return BadRequest("You have more than 2 MB worth of space occupied, get rid of some of your documents");
         }
 
         var newDoc = mapper.Map<Document>(createDocumentDTO);

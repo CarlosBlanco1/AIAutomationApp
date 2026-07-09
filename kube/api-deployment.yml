@@ -1,0 +1,90 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: workspaceai-api
+  namespace: workspaceai-prod
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: workspaceai-api
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app: workspaceai-api
+    spec:
+      containers:
+        - name: workspaceai-api
+          image: carlosblanco1/workspaceai-api:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: TOKEN_VALUE
+              valueFrom:
+                secretKeyRef:
+                  name: r2-token-value
+                  key: TOKEN_VALUE
+
+            - name: ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: r2-access-key
+                  key: ACCESS_KEY
+
+            - name: SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: r2-secret-key
+                  key: SECRET_KEY
+
+            - name: BUCKET_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: r2-bucket-name
+                  key: BUCKET_NAME
+
+            - name: SERVICE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: r2-service-url
+                  key: SERVICE_URL
+
+            - name: ConnectionString
+              valueFrom:
+                secretKeyRef:
+                  name: db-connectionstring
+                  key: CONNECTION_STRING
+
+            - name: Jwt__Key
+              valueFrom:
+                secretKeyRef:
+                  name: jwt-key
+                  key: WORKSPACEAI_JWT_KEY
+                    
+            - name: Jwt__Issuer
+              value: http://workspaceai-api-svc:8080
+
+            - name: Jwt__Audience
+              value: http://workspaceai-api-svc:8080
+
+            - name: TEXT_EXTRACTOR_URL
+              value: http://workspaceai-text-extractor-svc:8000
+
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 3
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 15
+            periodSeconds: 20

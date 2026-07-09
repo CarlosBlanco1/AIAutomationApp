@@ -1,0 +1,11 @@
+apiVersion: v1
+type: PersistentVolumeClaim
+metadata:
+    name: workspaceai-ollama-pvc
+    namespace: workspaceai-prod
+spec:
+    accessModes:
+        - ReadWriteOnce
+    resources:
+        requests:
+            storage: 5Gi
