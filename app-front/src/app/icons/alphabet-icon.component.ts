@@ -1,0 +1,22 @@
+import { Component, Input } from "@angular/core";
+
+@Component({
+    selector : 'app-alphabet-icon',
+    template : `<svg xmlns="http://www.w3.org/2000/svg" 
+    viewBox="0 0 24 24" 
+    fill="none" 
+    stroke="currentColor" 
+    stroke-width="2" 
+    stroke-linecap="round" 
+    stroke-linejoin="round" 
+    [class]="['icon icon-tabler icons-tabler-outline icon-tabler-alphabet-latin', svgClass]">
+	<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+	<path d="M6 10h2a2 2 0 0 1 2 2v5h-3a2 2 0 1 1 0 -4h3" />
+	<path d="M14 7v10" />
+	<path d="M14 12a2 2 0 0 1 2 -2h1a2 2 0 0 1 2 2v3a2 2 0 0 1 -2 2h-1a2 2 0 0 1 -2 -2l0 -3" />
+</svg>`
+})
+
+export class AlphabetIconComponent{
+    @Input({}) svgClass = '';
+}
