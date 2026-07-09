@@ -51,21 +51,21 @@ jobs:
             -t carlosblanco1/workspaceai-api:latest \
             app-api
 
-          docker push carlosblanco1/workspaceai-api --all-tags
+          docker push carlosblanco1/workspaceai-api:latest
 
           docker build \
             -f app-front/Dockerfile \
             -t carlosblanco1/workspaceai-front:latest \
             app-front
 
-          docker push carlosblanco1/workspaceai-front --all-tags
+          docker push carlosblanco1/workspaceai-front:latest
 
-          docker build \
+          docker build \  
             -f app-text-server/Dockerfile \
             -t carlosblanco1/workspaceai-text-server:latest \
             app-text-server
 
-          docker push carlosblanco1/workspaceai-text-server --all-tags
+          docker push carlosblanco1/workspaceai-text-server:latest
 
       - name: Deploy to Kubernetes
         run: |
