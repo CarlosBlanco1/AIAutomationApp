@@ -3,8 +3,6 @@ kind: Ingress
 metadata:
   name: workspaceai-controller-ingress
   namespace: workspaceai-prod
-  annotations:
-    traefik.ingress.kubernetes.io/router.middlewares: workspaceai-prod-workspaceai-api-prefix@kubernetescrd
 spec:
   ingressClassName: traefik
   rules:
