@@ -67,10 +67,10 @@ spec:
                   key: WORKSPACEAI_JWT_KEY
                     
             - name: Jwt__Issuer
-              value: http://workspaceai-api-svc:8080
+              value: https://workspaceai.carlosblancodev.com/api
 
             - name: Jwt__Audience
-              value: http://workspaceai-api-svc:8080
+              value: https://workspaceai.carlosblancodev.com/api
 
             - name: TEXT_EXTRACTOR_URL
               value: http://workspaceai-text-extractor-svc:8000
