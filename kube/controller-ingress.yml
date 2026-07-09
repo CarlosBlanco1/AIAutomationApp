@@ -3,12 +3,21 @@ kind: Ingress
 metadata:
   name: workspaceai-controller-ingress
   namespace: workspaceai-prod
+  annotations:
+    traefik.ingress.kubernetes.io/router.middlewares: workspaceai-prod-workspaceai-api-prefix@kubernetescrd
 spec:
   ingressClassName: traefik
   rules:
     - host: workspaceai.carlosblancodev.com
       http:
         paths:
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: workspaceai-api-svc
+                port:
+                  number: 8080
           - path: /
             pathType: Prefix
             backend:

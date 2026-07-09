@@ -9,19 +9,21 @@ import { USER_SERVICE } from "../user/user-service.token";
 
 @Injectable({ providedIn: 'root' })
 export class JwtAuthService implements AuthService {
+    private readonly baseUrl = 'https://workspaceai.carlosblancodev.com/api/Auth';
+
     private httpClient = inject(HttpClient);
     private userService = inject(USER_SERVICE);
 
     isAuthenticated = signal(!!this.getToken())
 
     register(request: CreateUserRequest): Observable<string> {
-        return this.httpClient.post('http://localhost:8080/api/Auth/Register',
+        return this.httpClient.post(`${this.baseUrl}/Register`,
             request,
             { responseType: 'text' });
     }
 
     login(request: LoginRequest): Observable<LoginResponse> {
-        return this.httpClient.post<LoginResponse>('http://localhost:8080/api/Auth/Login',
+        return this.httpClient.post<LoginResponse>(`${this.baseUrl}/Login`,
             request
         ).pipe(tap(response => {
             localStorage.setItem('token', response.jwtToken);

@@ -6,26 +6,26 @@ import { inject, signal } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 
 export class ApiDocumentService implements DocumentService {
+    private readonly baseUrl = 'https://workspaceai.carlosblancodev.com/api/Document';
+
     httpClient = inject(HttpClient)
 
     userDocuments = signal<DocumentDto[]>([])
 
     getSingleDocument(documentId : string) : Observable<DocumentDto> {
-        return this.httpClient.get<DocumentDto>(`http://localhost:8080/api/Document/single-doc/${documentId}`)
+        return this.httpClient.get<DocumentDto>(`${this.baseUrl}/single-doc/${documentId}`)
     }
     
     getDownloadUrl(documentId: string): Observable<{downloadUrl : string}> {
-        return this.httpClient.get<{ downloadUrl: string; }>(`http://localhost:8080/api/Document/download-url/${documentId}`)
+        return this.httpClient.get<{ downloadUrl: string; }>(`${this.baseUrl}/download-url/${documentId}`)
     }
     
     deleteDocument(documentId: string): Observable<void> {
-        console.log("DELETE DOCUMENT @ SERVICE GOT CALLED")
-        console.log("Document Id is: " + documentId)
-        return this.httpClient.delete(`http://localhost:8080/api/Document/${documentId}`).pipe(map(() => void 0))
+        return this.httpClient.delete(`${this.baseUrl}/${documentId}`).pipe(map(() => void 0))
     }
 
     getUserDocuments(): Observable<DocumentDto[]> {
-        return this.httpClient.get<DocumentDto[]>("http://localhost:8080/api/Document/me")
+        return this.httpClient.get<DocumentDto[]>(`${this.baseUrl}/me`)
             .pipe(tap(res => { this.userDocuments.set(res) }))
     }
 
@@ -38,7 +38,7 @@ export class ApiDocumentService implements DocumentService {
         formData.append('description', request.description);
         formData.append('file', request.file, request.file.name)
 
-        return this.httpClient.post<DocumentDto[]>("http://localhost:8080/api/Document", formData)
+        return this.httpClient.post<DocumentDto[]>(`${this.baseUrl}`, formData)
             .pipe(map(() => void 0))
     }
 

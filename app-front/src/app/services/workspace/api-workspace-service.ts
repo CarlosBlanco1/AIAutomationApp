@@ -7,17 +7,18 @@ import { HttpClient } from "@angular/common/http";
 
 @Injectable({ providedIn: 'root' })
 export class ApiWorkspaceService implements WorkspaceService {
+    private readonly baseUrl = 'https://workspaceai.carlosblancodev.com/api/Workspace';
 
     userWorkspaces = signal<WorkspaceDto[]>([])
     httpClient = inject(HttpClient)
 
     getUserWorkspaces(): Observable<WorkspaceDto[]> {
-        return this.httpClient.get<WorkspaceDto[]>('http://localhost:8080/api/Workspace')
+        return this.httpClient.get<WorkspaceDto[]>(`${this.baseUrl}`)
             .pipe(tap(res => { this.userWorkspaces.set(res) }))
     }
 
     createWorkspace(request: CreateWorkspaceRequest): Observable<void> {
-        return this.httpClient.post<WorkspaceDto>('http://localhost:8080/api/Workspace', request)
+        return this.httpClient.post<WorkspaceDto>(`${this.baseUrl}`, request)
             .pipe(map(() => void 0))
     }
 
