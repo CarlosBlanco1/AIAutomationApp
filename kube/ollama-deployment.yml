@@ -1,47 +1,52 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-    name: workspaceai-ollama
-    namespace: workspaceai-prod
+  name: workspaceai-ollama
+  namespace: workspaceai-prod
+
 spec:
-    replicas: 1
-    selector:
-        matchlabels:
-            app: workspaceai-ollama
-    strategy:
-        type: RollingUpdate
-        rollingUpdate:
-            maxSurge: 1
-            maxUnavailable: 0
-    template:
-        metadata:
-            labels:
-                app: workspaceai-ollama
-        spec:
-            initContainers:
-                - name: ollama-init
-                image: ollama/ollama
-                command:
-                    - sh
-                    - -c
-                    - |
-                    ollama serve &
-                    sleep 5
-                    OLLAMA_HOST=http://localhost:11434 ollama pull llama3.2:1b
-                volumeMounts:
-                    - name: ollama-data
-                    mountPath: /root/.ollama
+  replicas: 1
 
-            containers:
-                - name: ollama
-                image: ollama/ollama
-                ports:
-                    - containerPort: 11434
-                volumeMounts:
-                    - name: ollama-data
-                    mountPath: /root/.ollama
+  selector:
+    matchLabels:
+      app: workspaceai-ollama
 
-            volumes:
-                - name: ollama-data
-                persistentVolumeClaim:
-                    claimName: workspaceai-ollama-pvc 
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+
+  template:
+    metadata:
+      labels:
+        app: workspaceai-ollama
+
+    spec:
+      initContainers:
+        - name: ollama-init
+          image: ollama/ollama
+          command:
+            - sh
+            - -c
+            - |
+              ollama serve &
+              sleep 5
+              OLLAMA_HOST=http://localhost:11434 ollama pull llama3.2:1b
+          volumeMounts:
+            - name: ollama-data
+              mountPath: /root/.ollama
+
+      containers:
+        - name: ollama
+          image: ollama/ollama
+          ports:
+            - containerPort: 11434
+          volumeMounts:
+            - name: ollama-data
+              mountPath: /root/.ollama
+
+      volumes:
+        - name: ollama-data
+          persistentVolumeClaim:
+            claimName: workspaceai-ollama-pvc
