@@ -117,7 +117,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy(name: myAllowSpecificOrigins,
                       policy =>
                       {
-                          policy.WithOrigins("http://localhost:4200")
+                          policy.WithOrigins("http://workspaceai-front-svc:4200")
                                 .AllowAnyHeader()
                                 .AllowAnyMethod();
                       });
