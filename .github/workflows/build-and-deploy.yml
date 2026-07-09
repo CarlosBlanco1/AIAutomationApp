@@ -38,6 +38,12 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_TOKEN }}
 
+      - name: Check Docker DNS
+        run: |
+          nslookup production.cloudfront.docker.com
+          nslookup registry-1.docker.io
+          docker pull nginx:alpine
+
       - name: Build image
         run: |
           docker build \
