@@ -34,7 +34,7 @@ public class OllamaSummaryService : ISummaryService
             Stream = false
         };
 
-        var response = await client.PostAsJsonAsync("http://ollama:11434/api/generate", request);
+        var response = await client.PostAsJsonAsync("http://workspaceai-ollama-svc:11434/api/generate", request);
 
         var ollamaResult = await response.Content.ReadFromJsonAsync<OllamaGenerateResponse>();
 
