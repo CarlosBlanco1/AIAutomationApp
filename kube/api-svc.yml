@@ -6,7 +6,7 @@ metadata:
 spec:
     selector:
         app: workspaceai-api
-    port:
+    ports:
      - protocol: TCP
        port: 8080
        targetPort: 8080
