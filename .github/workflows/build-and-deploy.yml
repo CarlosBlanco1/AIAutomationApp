@@ -42,6 +42,7 @@ jobs:
         run: |
           docker pull nginx:alpine
           docker pull node:22-alpine
+          docker pull mcr.microsoft.com/dotnet/sdk:10.0
 
       - name: Build image
         run: |
