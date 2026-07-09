@@ -60,7 +60,7 @@ jobs:
 
           docker push carlosblanco1/workspaceai-front:latest
 
-          docker build \  
+          docker build \
             -f app-text-server/Dockerfile \
             -t carlosblanco1/workspaceai-text-server:latest \
             app-text-server
