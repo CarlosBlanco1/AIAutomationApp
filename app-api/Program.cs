@@ -27,7 +27,7 @@ builder.Services.AddControllers();
 
 builder.Services.AddDbContext<MydbContext>(options =>
 {
-    options.UseNpgsql(builder.Configuration.GetConnectionString("ConnectionString"));
+    options.UseNpgsql(builder.Configuration["ConnectionString"]);
 });
 builder.Services.AddScoped<IUserRepository, SQLUserRepository>();
 builder.Services.AddScoped<IWorkspaceRepository, SQLWorkspaceRepository>();
