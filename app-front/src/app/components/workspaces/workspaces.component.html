@@ -88,39 +88,47 @@
     <div class="row-span-2 col-span-1 p-4">
         <div class="flex justify-center max-lg:gap-6 lg:gap-3 bg-(--color-bgsidebar) rounded-lg w-full p-4">
             <div class="flex-1 flex gap-2 min-w-0">
-                <div class="rounded-lg lg:p-3 text-purple-500 bg-(--color-bgcard)">
-                    <app-house-icon svgClass="size-5"></app-house-icon>
+                <div class="flex items-center">
+                    <div class="rounded-lg lg:p-3 text-purple-500 bg-(--color-bgcard) flex items-center">
+                        <app-house-icon svgClass="size-5"></app-house-icon>
+                    </div>
                 </div>
                 <div class="flex flex-col">
                     <span class="text-white max-lg:text-xs lg:text-xl">{{workspaceService.userWorkspaces().length}}</span>
-                    <span class="text-(--text-gray) max-lg:text-xs lg:text-sm">Total Workspaces</span>
+                    <span class="text-(--text-gray) max-lg:text-[0.6rem] lg:text-sm">Total Workspaces</span>
                 </div>
             </div>
             <div class="flex-1 flex gap-2 min-w-0">
-                <div class="rounded-lg lg:p-3 text-purple-800 bg-(--color-bgcard)">
-                    <app-users-icon svgClass="size-5"></app-users-icon>
+                <div class="flex items-center">
+                    <div class="rounded-lg lg:p-3 text-purple-800 bg-(--color-bgcard) flex items-center">
+                        <app-users-icon svgClass="size-5"></app-users-icon>
+                    </div>
                 </div>
                 <div class="flex flex-col">
                     <span class="text-white max-lg:text-xs lg:text-xl">1</span>
-                    <span class="text-(--text-gray) max-lg:text-xs lg:text-sm">Total Members</span>
+                    <span class="text-(--text-gray) max-lg:text-[0.6rem] lg:text-sm">Total Members</span>
                 </div>
             </div>
             <div class="flex-1 flex gap-2 min-w-0">
-                <div class="rounded-lg lg:p-3 text-blue-400 bg-(--color-bgcard)">
-                    <app-document-icon svgClass="size-5"></app-document-icon>
+                <div class="flex items-center">
+                    <div class="rounded-lg lg:p-3 text-blue-400 bg-(--color-bgcard) flex items-center">
+                        <app-document-icon svgClass="size-5"></app-document-icon>
+                    </div>
                 </div>
                 <div class="flex flex-col">
                     <span class="text-white max-lg:text-xs lg:text-xl">{{documentService.userDocuments().length}}</span>
-                    <span class="text-(--text-gray) max-lg:text-xs lg:text-sm">Total Documents</span>
+                    <span class="text-(--text-gray) max-lg:text-[0.6rem] lg:text-sm">Total Documents</span>
                 </div>
             </div>
             <div class="flex-1 flex gap-2 min-w-0">
-                <div class="rounded-lg lg:p-3 text-green-400 bg-(--color-bgcard)">
-                    <app-database-icon svgClass="size-5"></app-database-icon>
+                <div class="flex items-center">
+                    <div class="rounded-lg lg:p-3 text-green-400 bg-(--color-bgcard) flex items-center">
+                        <app-database-icon svgClass="size-5"></app-database-icon>
+                    </div>
                 </div>
                 <div class="flex flex-col">
                     <span class="text-white max-lg:text-xs lg:text-xl">{{computeByteSize() }}</span>
-                    <span class="text-(--text-gray) max-lg:text-xs lg:text-sm">Storage used</span>
+                    <span class="text-(--text-gray) max-lg:text-[0.6rem] lg:text-sm">Storage used</span>
                 </div>
             </div>
         </div>

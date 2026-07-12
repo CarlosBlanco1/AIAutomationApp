@@ -9,7 +9,7 @@
     @if(showMenu())
     {
     <div class="w-full absolute">
-      <app-sidebar></app-sidebar>
+      <app-sidebar (navigatedMobile)="showMenu.set(false)"></app-sidebar>
     </div>
     }
     <div class="flex-7 items-start justify-center h-full">

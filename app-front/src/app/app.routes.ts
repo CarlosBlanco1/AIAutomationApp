@@ -28,7 +28,7 @@ export const routes: Routes = [
     {
         path: 'workspaces',
         component: WorkspacesComponent,
-        // canActivate: [AuthGuard]
+        canActivate: [AuthGuard]
     },
     {
         path: 'documents',

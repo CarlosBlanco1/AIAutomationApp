@@ -2,8 +2,8 @@
   <div class="row-span-5 flex flex-col px-4 pt-4 gap-3">
     <div class="flex">
       <div class="flex-1 flex flex-col gap-2">
-        <span class="text-white text-2xl">Documents</span>
-        <span class="text-(--text-gray) text-sm">All your documents in one place. Create, organize and
+        <span class="text-white lg:text-2xl max-lg:text-md">Documents</span>
+        <span class="text-(--text-gray) lg:text-sm max-lg:text-xs">All your documents in one place. Create, organize and
           collaborate</span>
       </div>
       <div class="flex-1 flex justify-end items-center text-sm">
@@ -29,13 +29,13 @@
       </div>
     </div>
     <div class="grid grid-cols-3 gap-4">
-      <app-document-metric-block class="col-span-1" [metricNumber]="documentService.userDocuments().length" metricName="Total Documents">
+      <app-document-metric-block class="col-span-1" [metricNumber]="documentService.userDocuments().length" metricName="Documents">
         <app-house-icon svgClass="size-5"></app-house-icon>
       </app-document-metric-block>
-      <app-document-metric-block class="col-span-1" [metricNumber]="128" metricName="Total Documents">
+      <app-document-metric-block class="col-span-1" [metricNumber]="128" metricName="Documents">
         <app-house-icon svgClass="size-5"></app-house-icon>
       </app-document-metric-block>
-      <app-document-metric-block class="col-span-1" [metricNumber]="128" metricName="Total Documents">
+      <app-document-metric-block class="col-span-1" [metricNumber]="128" metricName="Documents">
         <app-house-icon svgClass="size-5"></app-house-icon>
       </app-document-metric-block>
     </div>
@@ -67,8 +67,8 @@
         </div>
       </div>
     </div>
-    <hr class="text-gray-700 row-span-1" />
-    <div class="row-span-10 grid grid-rows-1 h-full">
+    <hr class="max-lg:hidden text-gray-700 row-span-1" />
+    <div class="row-span-10 grid grid-rows-1 h-full max-lg:pt-4">
       <table class="text-sm text-(--text-gray) border-separate border-spacing-y-4 row-span-1 overflow-auto grid grid-cols-1 grid-rows-10">
         <thead class="col-span-1 row-span-1 grid grid-cols-1 pb-6">
           <tr class="col-span-1 grid lg:grid-cols-12 max-lg:grid-cols-8">
