@@ -231,6 +231,43 @@ namespace app_api.Migrations
                     b.ToTable("automation_logs", (string)null);
                 });
 
+            modelBuilder.Entity("app_api.Models.ConfirmationToken", b =>
+                {
+                    b.Property<Guid>("TokenId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("token_id");
+
+                    b.Property<DateOnly>("CreatedAt")
+                        .HasColumnType("date")
+                        .HasColumnName("created_at");
+
+                    b.Property<DateOnly>("ExpiresAt")
+                        .HasColumnType("date")
+                        .HasColumnName("expires_at");
+
+                    b.Property<string>("Purpose")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("purpose");
+
+                    b.Property<string>("TokenHash")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("token_hash");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("TokenId")
+                        .HasName("confirmation_tokens_pkey");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("confirmation_tokens", (string)null);
+                });
+
             modelBuilder.Entity("app_api.Models.Document", b =>
                 {
                     b.Property<Guid>("DocumentId")
@@ -463,6 +500,18 @@ namespace app_api.Migrations
                     b.Navigation("Automation");
                 });
 
+            modelBuilder.Entity("app_api.Models.ConfirmationToken", b =>
+                {
+                    b.HasOne("app_api.Models.User", "User")
+                        .WithMany("ConfirmationTokens")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("confirmation_tokens_user_id_fkey");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("app_api.Models.Document", b =>
                 {
                     b.HasOne("app_api.Models.Workspace", "Workspace")
@@ -493,6 +542,8 @@ namespace app_api.Migrations
 
             modelBuilder.Entity("app_api.Models.User", b =>
                 {
+                    b.Navigation("ConfirmationTokens");
+
                     b.Navigation("Workspaces");
                 });
 

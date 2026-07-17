@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace app_api.Migrations
 {
     /// <inheritdoc />
-    public partial class AddDocumentStorageProperties : Migration
+    public partial class AddedConfirmationToken : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -161,6 +161,28 @@ namespace app_api.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "confirmation_tokens",
+                columns: table => new
+                {
+                    token_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    user_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    token_hash = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
+                    purpose = table.Column<string>(type: "text", nullable: false),
+                    created_at = table.Column<DateOnly>(type: "date", nullable: false),
+                    expires_at = table.Column<DateOnly>(type: "date", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("confirmation_tokens_pkey", x => x.token_id);
+                    table.ForeignKey(
+                        name: "confirmation_tokens_user_id_fkey",
+                        column: x => x.user_id,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "workspaces",
                 columns: table => new
                 {
@@ -293,6 +315,11 @@ namespace app_api.Migrations
                 column: "workspace_id");
 
             migrationBuilder.CreateIndex(
+                name: "IX_confirmation_tokens_user_id",
+                table: "confirmation_tokens",
+                column: "user_id");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_documents_workspace_id",
                 table: "documents",
                 column: "workspace_id");
@@ -323,6 +350,9 @@ namespace app_api.Migrations
 
             migrationBuilder.DropTable(
                 name: "automation_logs");
+
+            migrationBuilder.DropTable(
+                name: "confirmation_tokens");
 
             migrationBuilder.DropTable(
                 name: "documents");

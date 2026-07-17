@@ -13,4 +13,6 @@ public partial class User : IdentityUser<Guid>
     public DateOnly CreatedAt { get; set; }
 
     public virtual ICollection<Workspace> Workspaces { get; set; } = new List<Workspace>();
+    
+    public virtual ICollection<ConfirmationToken> ConfirmationTokens { get; set; } = new List<ConfirmationToken>();
 }
