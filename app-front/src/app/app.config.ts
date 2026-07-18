@@ -14,6 +14,8 @@ import { NgxSmartModalModule } from 'ngx-smart-modal';
 import { ApiDocumentService } from './services/document/api-document.service';
 import { DOCUMENT_SERVICE } from './services/document/document-service.token';
 import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
+import { CONFIRMATION_TOKEN_SERVICE } from './services/confirmation-token/confirmation-token-service.token';
+import { ApiConfirmationTokenService } from './services/confirmation-token/api-confirmation-token.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -25,6 +27,7 @@ export const appConfig: ApplicationConfig = {
     { provide: USER_SERVICE, useClass: ApiUserService },
     { provide: WORKSPACE_SERVICE, useClass: ApiWorkspaceService },
     { provide: DOCUMENT_SERVICE, useClass: ApiDocumentService },
+    { provide : CONFIRMATION_TOKEN_SERVICE, useClass : ApiConfirmationTokenService },
     importProvidersFrom(NgxSmartModalModule.forRoot())
   ],
 };

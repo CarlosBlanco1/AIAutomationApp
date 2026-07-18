@@ -10,7 +10,7 @@ export class EmailConfirmedGuard implements CanActivate {
     if (this.userService.currentUser()?.emailConfirmed) {
       return true;
     }
-    this.router.navigate(['/login']);
+    this.router.navigate(['/verify-email']);
     return false;
   }
 }

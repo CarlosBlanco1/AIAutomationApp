@@ -6,7 +6,7 @@ import { DocumentsComponent } from './components/documents/documents.component';
 import { LoginCardComponent } from './components/login/logincard.component';
 import { AuthGuard } from './guards/auth-guard';
 import { HomeComponent } from './components/home/home.component';
-import { EmailConfirmedGuard } from './guards/emailConfirmed-guard';
+import { EmailConfirmedGuard } from './guards/email-confirmed-guard';
 import { EmailConfirmedComponent } from './components/email-confirmed/email-confirmed.component';
 
 export const routes: Routes = [
