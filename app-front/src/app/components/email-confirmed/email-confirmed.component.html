@@ -1,21 +1,65 @@
-<div>
-    <div class="grid grid-rows-10">
-        <div class="row-span-5">
-            <img src="assets/images/emailverify.png" alt="Email icon image">
-            <div class="grid grid-rows-7">
-                <span class="row-span-2"></span>
-                <div class="row-span-2 flex">
-                    <span>We've sent a verification link to</span>
-                    <b>{{userService.currentUser()?.email}}</b>
+<div class="h-full flex justify-center items-center p-5">
+    <div class="bg-white grid grid-rows-10 h-full rounded-lg py-4 px-10">
+        <div class="row-span-5 grid grid-rows-10 justify-center h-full">
+            <div class="row-span-5 h-full flex justify-center items-center">
+                <img src="assets/images/emailverify.png" alt="Email icon image" class="h-3/4 object-contain">
+            </div>
+            <div class="grid grid-rows-7 row-span-5 justify-center items-center">
+                <span class="row-span-2 text-3xl text-center font-semibold">Verify your email</span>
+                <div class="row-span-2 flex flex-col items-center">
+                    <span class="font-light text-gray-600 text-sm">We've sent a verification link to</span>
+                    <b>carlos&#64;gmail.com</b>
                 </div>
-                <hr class="text-gray-700">
+                <div class="w-full flex justify-center">
+                    <hr class="text-gray-400 row-span-1 w-1/4">
+                </div>
+                <div class="flex flex-col font-light text-gray-600 text-sm items-center">
+                    <span>Please check your inbox and click the link in the email</span>
+                    <span>to verify your account.</span>
+                </div>
             </div>
         </div>
-        <div class="row-span-3">
-
+        <div class="row-span-3 grid grid-rows-4 justify-center">
+            <div class="row-span-2 flex">
+                <div>
+                    <div class="grid grid-rows-3 grid-cols-6 border border-purple-200 rounded-lg p-3 items-center bg-purple-100">
+                        <div class="col-span-1 row-span-3 col-start-1 h-full">
+                            <div class="flex justify-start">
+                                <div class="rounded-full bg-purple-300 text-purple-800 p-2">
+                                    <app-clock-icon svgClass="size-5"></app-clock-icon>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-span-5 row-span-3 col-start-2 flex flex-col gap-1 text-xs">
+                            <span class="font-semibold">Haven't received the email?</span>
+                            <div class="flex flex-col">
+                                <span>Check your spam folder or click the button below</span>
+                                <span>to send a new verification email</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row-span-2 flex flex-col gap-2 text-sm">
+                <div class="flex flex-row gap-2 items-center justify-center rounded-lg bg-violet-600 text-white p-3">
+                    <app-send-icon svgClass="size-5"></app-send-icon>
+                    <span>Send verification email</span>
+                </div>
+                <div class="flex flex-row gap-2 items-center justify-center rounded-lg border border-gray-500 p-3">
+                    <app-refresh-icon svgClass="size-5"></app-refresh-icon>
+                    <span>I've already verified my email</span>
+                </div>
+            </div>
         </div>
-        <div class="row-span-2">
-
+        <div class="row-span-2 grid grid-rows-2 justify-center text-gray-500 text-sm">
+            <div class="row-span-1 flex flex-row items-center">
+                <hr class="flex-1 text-gray-400">
+                <span class="flex-1 text-center">Need help?</span>
+                <hr class="flex-1 text-gray-400">
+            </div>
+            <div class="row-span-1">
+                <span>Contact us at support.workspaceai.com</span>
+            </div>
         </div>
     </div>
 </div>

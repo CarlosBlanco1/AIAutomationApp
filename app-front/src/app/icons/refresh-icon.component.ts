@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-refresh-icon',
@@ -10,7 +10,7 @@ import { Component } from '@angular/core';
     stroke-width="2"
     stroke-linecap="round"
     stroke-linejoin="round"
-    class="icon icon-tabler icons-tabler-outline icon-tabler-reload"
+    [class]='["icon icon-tabler icons-tabler-outline icon-tabler-reload", svgClass]'
   >
     <path stroke="none" d="M0 0h24v24H0z" fill="none" />
     <path
@@ -20,4 +20,6 @@ import { Component } from '@angular/core';
   </svg>`,
   standalone: true,
 })
-export class RefreshIconComponent {}
+export class RefreshIconComponent {
+  @Input() svgClass = ''
+}
