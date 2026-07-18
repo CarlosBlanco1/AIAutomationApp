@@ -6,6 +6,8 @@ import { DocumentsComponent } from './components/documents/documents.component';
 import { LoginCardComponent } from './components/login/logincard.component';
 import { AuthGuard } from './guards/auth-guard';
 import { HomeComponent } from './components/home/home.component';
+import { EmailConfirmedGuard } from './guards/emailConfirmed-guard';
+import { EmailConfirmedComponent } from './components/email-confirmed/email-confirmed.component';
 
 export const routes: Routes = [
     {
@@ -21,26 +23,30 @@ export const routes: Routes = [
         component: RegisterComponent,
     },
     {
+        path: 'verify-email',
+        component : EmailConfirmedComponent
+    },
+    {
         path: 'dashboard',
         component: DashboardComponent,
-        canActivate : [AuthGuard]
+        canActivate : [AuthGuard, EmailConfirmedGuard]
     },
     {
         path: 'workspaces',
         component: WorkspacesComponent,
-        canActivate: [AuthGuard]
+        canActivate: [AuthGuard, EmailConfirmedGuard]
     },
     {
         path: 'documents',
         component: DocumentsComponent,
-        canActivate: [AuthGuard]
+        canActivate: [AuthGuard, EmailConfirmedGuard]
     },
     {
         path: 'singledocument/:documentId',
         loadComponent: () =>
             import('./components/single-document/single-document.component')
                 .then(m => m.SingleDocumentComponent),
-        canActivate: [AuthGuard]
+        canActivate: [AuthGuard, EmailConfirmedGuard]
     },
 
 ];

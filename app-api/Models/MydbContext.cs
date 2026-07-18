@@ -147,33 +147,6 @@ public partial class MydbContext : IdentityDbContext<User, IdentityRole<Guid>, G
                 .HasConstraintName("workspaces_owner_id_fkey");
         });
 
-        modelBuilder.Entity<ConfirmationToken>(entity =>
-        {
-            entity.HasKey(e => e.TokenId).HasName("confirmation_tokens_pkey");
-
-            entity.ToTable("confirmation_tokens");
-
-            entity.Property(e => e.TokenId)
-                .ValueGeneratedNever()
-                .HasColumnName("token_id");
-            entity.Property(e => e.UserId).HasColumnName("user_id");
-            entity.Property(e => e.TokenHash)
-                .HasMaxLength(64)
-                .HasColumnName("token_hash");
-            entity.Property(e => e.Purpose)
-                .HasColumnName("purpose")
-                .HasConversion<string>();
-            entity.Property(e => e.CreatedAt)
-                .HasColumnName("created_at");   
-            entity.Property(e => e.ExpiresAt)
-                .HasColumnName("expires_at");   
-            
-
-            entity.HasOne(d => d.User).WithMany(p => p.ConfirmationTokens)
-                .HasForeignKey(d => d.UserId)
-                .HasConstraintName("confirmation_tokens_user_id_fkey");
-        });
-
         OnModelCreatingPartial(modelBuilder);
     }
 

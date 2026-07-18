@@ -3,5 +3,6 @@ export interface UserDto {
     firstName: string;
     lastName: string;
     email: string;
+    emailConfirmed: string;
     createdAt: string;
 }

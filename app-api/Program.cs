@@ -10,6 +10,7 @@ using Amazon.S3;
 using Amazon;
 using Amazon.Runtime;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,11 +40,20 @@ builder.Services.AddScoped<IFileStorageService, R2StorageService>();
 builder.Services.AddScoped<ITextExtractorService, PythonExtractorService>();
 builder.Services.AddScoped<ISummaryService, OllamaSummaryService>();
 builder.Services.AddScoped<ITokenRepository, TokenRepository>();
+builder.Services.AddScoped<IEmailSenderRepository, EmailRepository>();
 builder.Services.AddHttpClient("ExtendedTimeoutClient", client =>
 {
     client.Timeout = TimeSpan.FromMinutes(5);
 });
-
+builder.Services.AddRateLimiter(options =>
+{
+    options.AddFixedWindowLimiter("api/confirmationtoken/email/generate", limiter =>
+    {
+        limiter.PermitLimit = 3;
+        limiter.Window = TimeSpan.FromHours(1);
+        limiter.QueueLimit = 0;
+    });
+});
 var accessKey = builder.Configuration["ACCESS_KEY"];
 var secretKey = builder.Configuration["SECRET_KEY"];
 var serviceUrl = builder.Configuration["SERVICE_URL"];
