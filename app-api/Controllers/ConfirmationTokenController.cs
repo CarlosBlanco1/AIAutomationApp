@@ -12,12 +12,14 @@ public class ConfirmationTokenController : ControllerBase
     private readonly UserManager<User> userManager;
     private readonly IUserRepository userRepository;
     private readonly IEmailSenderRepository emailSender;
+    private readonly ITokenRepository tokenRepository;
 
-    public ConfirmationTokenController(UserManager<User> userManager, IUserRepository userRepository, IEmailSenderRepository emailSender)
+    public ConfirmationTokenController(UserManager<User> userManager, IUserRepository userRepository, IEmailSenderRepository emailSender, ITokenRepository tokenRepository)
     {
         this.userManager = userManager;
         this.userRepository = userRepository;
         this.emailSender = emailSender;
+        this.tokenRepository = tokenRepository;
     }
 
     [HttpPost]
@@ -50,7 +52,7 @@ public class ConfirmationTokenController : ControllerBase
 
     [HttpGet]
     [Route("email")]
-    [Authorize]
+    [AllowAnonymous]
     public async Task<IActionResult> ValidateEmailConfirmationToken([FromQuery] Guid userId, [FromQuery] string token)
     {
         var user = await userRepository.GetUserByIdAsync(userId);
@@ -66,7 +68,12 @@ public class ConfirmationTokenController : ControllerBase
 
         if (identityResult.Succeeded)
         {
-            return Ok("Email was validated successfully!");
+            var response = new
+            {
+                JwtToken = tokenRepository.CreateJWTToken(user)
+            };
+
+            return Ok(response);
         }
         else
         {

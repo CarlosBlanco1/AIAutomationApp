@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { WritableSignal } from "@angular/core";
 import { Observable } from "rxjs";
 import { LoginResponse } from "../../models/Auth/login-response";
 import { CreateUserRequest } from "../../models/Users/create-user-request";
@@ -10,5 +10,5 @@ export interface AuthService
     login(request : LoginRequest) : Observable<LoginResponse>;
     logout() : void;
     getToken() : string | null;
-    isAuthenticated() : boolean;
+    isAuthenticated : WritableSignal<boolean>;
 }

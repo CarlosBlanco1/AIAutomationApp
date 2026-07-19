@@ -14,7 +14,7 @@ export class JwtAuthService implements AuthService {
     private httpClient = inject(HttpClient);
     private userService = inject(USER_SERVICE);
 
-    isAuthenticated = signal(!!this.getToken())
+    isAuthenticated = signal<boolean>(!!this.getToken())
 
     register(request: CreateUserRequest): Observable<string> {
         return this.httpClient.post(`${this.baseUrl}/Register`,
