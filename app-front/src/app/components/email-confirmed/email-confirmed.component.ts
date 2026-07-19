@@ -3,13 +3,23 @@ import { USER_SERVICE } from "../../services/user/user-service.token";
 import { ClockIconComponent } from "../../icons/clock-icon.component";
 import { RefreshIconComponent } from "../../icons/refresh-icon.component";
 import { SendIconComponent } from "../../icons/send-icon.component";
-import { RouterLink } from "@angular/router";
+import { Router, RouterLink } from "@angular/router";
+import { AUTH_SERVICE } from "../../services/auth/auth-service.token";
 
 @Component({
-    selector : 'app-email-confirmed',
-    templateUrl : './email-confirmed.component.html',
+    selector: 'app-email-confirmed',
+    templateUrl: './email-confirmed.component.html',
     imports: [ClockIconComponent, RefreshIconComponent, SendIconComponent, RouterLink]
 })
-export class EmailConfirmedComponent{
+export class EmailConfirmedComponent {
     protected readonly userService = inject(USER_SERVICE)
+    private router = inject(Router);
+
+    onAlreadyVerfiedClick() {
+        this.userService.fetchCurrentUser().subscribe({
+            complete : () => {
+                this.router.navigate(['/dashboard'])
+            }
+        })
+    }
 }
