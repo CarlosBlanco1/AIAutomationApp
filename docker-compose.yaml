@@ -27,13 +27,13 @@ services:
     depends_on:
       - db
 
-  # angular:
-  #   build:
-  #     context: ./app-front
-  #     dockerfile: Dockerfile
-  #   container_name: myapp-angular
-  #   ports:
-  #     - "4200:80"
+  angular:
+    build:
+      context: ./app-front
+      dockerfile: Dockerfile
+    container_name: myapp-angular
+    ports:
+      - "4200:80"
 
 #   ollama:
 #     image: ollama/ollama

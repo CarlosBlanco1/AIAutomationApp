@@ -3,6 +3,7 @@ using app_api.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.WebUtilities;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -59,7 +60,9 @@ public class ConfirmationTokenController : ControllerBase
             return NotFound("User doesn't exist");
         }
 
-        IdentityResult identityResult = await userManager.ConfirmEmailAsync(user, token);
+        var webDecodedToken = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(token));
+
+        IdentityResult identityResult = await userManager.ConfirmEmailAsync(user, webDecodedToken);
 
         if (identityResult.Succeeded)
         {

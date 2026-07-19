@@ -7,8 +7,6 @@ import { HttpClient } from "@angular/common/http";
 @Injectable({providedIn : 'root'})
 export class ApiUserService implements UserService {
     private readonly baseUrl = 'https://workspaceai.carlosblancodev.com/api/User';
-
-    
     private httpClient = inject(HttpClient);
     
     currentUser: WritableSignal<UserDto | null> = signal(null);

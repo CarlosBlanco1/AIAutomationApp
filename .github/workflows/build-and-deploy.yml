@@ -96,6 +96,22 @@ jobs:
           --from-literal=WORKSPACEAI_POSTGRES_PASSWORD="${{ secrets.WORKSPACEAI_POSTGRES_PASSWORD }}" \
           --dry-run=client -o yaml | kubectl apply -f -
 
+          kubectl -n workspaceai-prod create secret generic email-username \
+          --from-literal=EMAIL_USERNAME="${{ secrets.EMAIL_USERNAME }}" \
+          --dry-run=client -o yaml | kubectl apply -f -
+
+          kubectl -n workspaceai-prod create secret generic email-host \
+          --from-literal=EMAIL_HOST="${{ secrets.EMAIL_HOST }}" \
+          --dry-run=client -o yaml | kubectl apply -f -
+
+          kubectl -n workspaceai-prod create secret generic email-port \
+          --from-literal=EMAIL_PORT="${{ secrets.EMAIL_PORT }}" \
+          --dry-run=client -o yaml | kubectl apply -f -
+
+          kubectl -n workspaceai-prod create secret generic email-password \
+          --from-literal=EMAIL_PASSWORD="${{ secrets.EMAIL_PASSWORD }}" \
+          --dry-run=client -o yaml | kubectl apply -f -
+
           kubectl -n workspaceai-prod create secret generic db-connectionstring \
           --from-literal=CONNECTION_STRING="Host=workspaceai-postgres-svc;Port=5432;Database=workspaceai_db;Username=workspaceai_user;Password=${{secrets.WORKSPACEAI_POSTGRES_PASSWORD}}" \
           --dry-run=client -o yaml | kubectl apply -f -

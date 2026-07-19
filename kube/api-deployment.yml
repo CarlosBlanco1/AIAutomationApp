@@ -65,6 +65,30 @@ spec:
                 secretKeyRef:
                   name: jwt-key
                   key: WORKSPACEAI_JWT_KEY
+
+            - name: EMAIL_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: email-username
+                  key: EMAIL_USERNAME
+
+            - name: EMAIL_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: email-host
+                  key: EMAIL_HOST
+
+            - name: EMAIL_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: email-port
+                  key: EMAIL_PORT
+
+            - name: EMAIL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: email-password
+                  key: EMAIL_PASSWORD
                     
             - name: Jwt__Issuer
               value: https://workspaceai.carlosblancodev.com/api

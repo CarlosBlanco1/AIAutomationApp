@@ -28,7 +28,6 @@ export class JwtAuthService implements AuthService {
         ).pipe(tap(response => {
             localStorage.setItem('token', response.jwtToken);
             this.isAuthenticated.set(true);
-            this.userService.fetchCurrentUser().subscribe();
         }));
     }
 

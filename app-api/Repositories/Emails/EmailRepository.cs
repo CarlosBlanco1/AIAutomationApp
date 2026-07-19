@@ -21,9 +21,9 @@ public class EmailRepository : IEmailSenderRepository
     {
         var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
         var webEncodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
-        var frontendUrl = configuration["FRONTEND_URL"];
+        var frontendUrl = "https://workspaceai.carlosblancodev.com";
 
-        var confirmationUrl = $"{frontendUrl}/confirm-email?userId={user.Id}&token={webEncodedToken}";
+        var confirmationUrl = $"{frontendUrl}/verification-complete?userId={user.Id}&token={webEncodedToken}";
 
         var emailMessage = $@"
         <!DOCTYPE html>

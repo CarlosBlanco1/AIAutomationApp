@@ -1,21 +1,26 @@
 <div class="flex justify-center h-full py-5">
-    <div class="grid grid-rows-11 h-full text-white border border-gray-800 p-6 rounded-xl">
-        <div class="row-span-6 h-full">
+    @if(pageState() == 'loading')
+    {
+    <app-loading-animation></app-loading-animation>
+    }
+    @else if (pageState() == 'success') {
+    <div class="grid max-lg:grid-rows-9 lg:grid-rows-11 h-full text-white border border-gray-800 p-6 rounded-xl">
+        <div class="max-lg:row-span-5 lg:row-span-6 h-full">
             <img src="/assets/images/verificationsuccess.png" alt="Verification success icon"
                 class="object-contain h-full">
         </div>
         <div class="row-span-2 grid grid-rows-3 justify-center">
-            <div class="row-span-1 flex gap-1 text-4xl justify-center">
+            <div class="row-span-1 flex gap-1 max-lg:text-3xl lg:text-4xl justify-center">
                 <span>Email</span>
                 <span class="text-green-400">verified!</span>
             </div>
             <span class="row-span-1 text-md text-center">Your email has been verified successfully.</span>
             <div class="row-span-1 text-sm text-gray-400 flex flex-col items-center">
-                <span>You're all set! You can now access all of WorkspaceAI's features</span>
-                <span>And start building your smarter workspace.</span>
+                <span class="text-center">You're all set! You can now access all of WorkspaceAI's features</span>
+                <span class="text-center">And start building your smarter workspace.</span>
             </div>
         </div>
-        <div class="row-span-2 flex">
+        <div class="row-span-2 flex py-8 max-lg:hidden">
             <div>
                 <div class="flex gap-2">
                     <div class="flex gap-2">
@@ -57,13 +62,22 @@
                 </div>
             </div>
         </div>
-        <div class="row-span-1 flex justify-center items-center">
-            <div class="flex items-center justify-center">
-                <div class="flex gap-2 bg-purple-600 py-4 px-10 rounded-lg">
-                    <span>Go to Workspace</span>
+        <div class="max-lg:row-span-2 lg:row-span-1 flex justify-center items-center">
+            <div class="flex items-center justify-center max-lg:mt-4">
+                <a routerLink="/dashboard" class="flex gap-2 bg-purple-600 py-4 px-10 rounded-lg">
+                    <span>Go to Dashboard</span>
                     <app-pointer-right svgClass="size-5"></app-pointer-right>
-                </div>
+                </a>
             </div>
         </div>
     </div>
+    }
+    @else if (pageState() == 'error') {
+    <app-failure-card 
+    primaryText="Failed to authenticate email" 
+    [errorMessage]="errorMessage" 
+    secondaryText="Go to Home"
+    secondaryUrl="/">
+    </app-failure-card>
+    }
 </div>
