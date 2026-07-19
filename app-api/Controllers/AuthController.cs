@@ -10,11 +10,13 @@ public class AuthController : ControllerBase
 {
     private readonly UserManager<User> userManager;
     private readonly ITokenRepository tokenRepository;
+    private readonly IEmailSenderRepository emailSenderRepository;
 
-    public AuthController(UserManager<User> userManager, ITokenRepository tokenRepository)
+    public AuthController(UserManager<User> userManager, ITokenRepository tokenRepository, IEmailSenderRepository emailSenderRepository)
     {
         this.userManager = userManager;
         this.tokenRepository = tokenRepository;
+        this.emailSenderRepository = emailSenderRepository;
     }
 
     // POST api/Auth/Register
@@ -36,6 +38,7 @@ public class AuthController : ControllerBase
 
         if (identityResult.Succeeded)
         {
+            await emailSenderRepository.SendEmailAsync(await emailSenderRepository.CreateConfirmationEmailAsync(modelUser));
             return Ok("User was created succesfully!");
         }
         else

@@ -8,6 +8,7 @@ import { AuthGuard } from './guards/auth-guard';
 import { HomeComponent } from './components/home/home.component';
 import { EmailConfirmedGuard } from './guards/email-confirmed-guard';
 import { EmailConfirmedComponent } from './components/email-confirmed/email-confirmed.component';
+import { VerificationSuccessComponent } from './components/verification-success/verification-success.component';
 
 export const routes: Routes = [
     {
@@ -25,6 +26,10 @@ export const routes: Routes = [
     {
         path: 'verify-email',
         component : EmailConfirmedComponent
+    },
+    {
+        path: 'verification-complete',
+        component : VerificationSuccessComponent
     },
     {
         path: 'dashboard',
