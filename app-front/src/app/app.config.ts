@@ -1,6 +1,5 @@
-import { ApplicationConfig, importProvidersFrom, provideZoneChangeDetection } from '@angular/core';
+import { ApplicationConfig, importProvidersFrom, inject, provideAppInitializer, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter, withComponentInputBinding } from '@angular/router';
-
 import { routes } from './app.routes';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { JwtAuthService } from './services/auth/jwt-auth.service';
@@ -16,6 +15,7 @@ import { DOCUMENT_SERVICE } from './services/document/document-service.token';
 import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
 import { CONFIRMATION_TOKEN_SERVICE } from './services/confirmation-token/confirmation-token-service.token';
 import { ApiConfirmationTokenService } from './services/confirmation-token/api-confirmation-token.service';
+import { AppConfigService } from './services/configuration/app-config.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -23,6 +23,7 @@ export const appConfig: ApplicationConfig = {
     provideCharts(withDefaultRegisterables()),
     provideRouter(routes, withComponentInputBinding()),
     provideHttpClient(withInterceptors([authInterceptor])),
+    provideAppInitializer(() => {return inject(AppConfigService).load()}),
     { provide: AUTH_SERVICE, useClass: JwtAuthService },
     { provide: USER_SERVICE, useClass: ApiUserService },
     { provide: WORKSPACE_SERVICE, useClass: ApiWorkspaceService },

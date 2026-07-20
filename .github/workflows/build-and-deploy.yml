@@ -41,6 +41,10 @@ jobs:
           docker pull node:22-alpine
           docker pull mcr.microsoft.com/dotnet/sdk:10.0
 
+      - name: Override angular config file
+        run: |
+         echo '{"apiUrl":"https://workspaceai.carlosblancodev.com"}' > ./app-front/src/assets/config.json
+
       - name: Build image
         run: |
           docker build \

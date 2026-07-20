@@ -6,13 +6,19 @@ import { LoginResponse } from "../../models/Auth/login-response";
 import { CreateUserRequest } from "../../models/Users/create-user-request";
 import { HttpClient } from "@angular/common/http";
 import { USER_SERVICE } from "../user/user-service.token";
+import { AppConfigService } from "../configuration/app-config.service";
 
 @Injectable({ providedIn: 'root' })
 export class JwtAuthService implements AuthService {
-    private readonly baseUrl = 'https://workspaceai.carlosblancodev.com/api/Auth';
+    private baseUrl? : string;
 
-    private httpClient = inject(HttpClient);
-    private userService = inject(USER_SERVICE);
+    private readonly httpClient = inject(HttpClient);
+    private readonly userService = inject(USER_SERVICE);
+    private readonly configService = inject(AppConfigService);
+
+    constructor() {
+        this.baseUrl = `${this.configService.apiUrl}/api/Auth`;
+    }
 
     isAuthenticated = signal<boolean>(!!this.getToken())
 

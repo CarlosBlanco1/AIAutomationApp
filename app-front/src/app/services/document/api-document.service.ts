@@ -4,11 +4,17 @@ import { DocumentDto } from "../../models/Documents/document-dto";
 import { DocumentService } from "./document-service.interface";
 import { inject, signal } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
+import { AppConfigService } from "../configuration/app-config.service";
 
 export class ApiDocumentService implements DocumentService {
-    private readonly baseUrl = 'https://workspaceai.carlosblancodev.com/api/Document';
+    private baseUrl? : string;
 
-    httpClient = inject(HttpClient)
+    private readonly httpClient = inject(HttpClient)
+    private readonly configService = inject(AppConfigService);
+
+    constructor() {
+        this.baseUrl = `${this.configService.apiUrl}/api/Document`;
+    }
 
     userDocuments = signal<DocumentDto[]>([])
 

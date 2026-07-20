@@ -3,11 +3,17 @@ import { UserDto } from "../../models/Users/user-dto";
 import { UserService } from "./user-service.interface";
 import { inject, Injectable, signal, WritableSignal } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
+import { AppConfigService } from "../configuration/app-config.service";
 
 @Injectable({providedIn : 'root'})
 export class ApiUserService implements UserService {
-    private readonly baseUrl = 'https://workspaceai.carlosblancodev.com/api/User';
+    private baseUrl? : string;
     private httpClient = inject(HttpClient);
+    private configService = inject(AppConfigService);
+    
+    constructor() {
+        this.baseUrl = `${this.configService.apiUrl}/api/User`;
+    }
     
     currentUser: WritableSignal<UserDto | null> = signal(null);
     
