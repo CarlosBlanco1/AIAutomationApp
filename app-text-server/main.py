@@ -1,9 +1,9 @@
 from io import BytesIO
 from fastapi import FastAPI, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
-from pypdf import PdfReader
-from docx import Document
-
+from text_pre_processing import TextPreProcessing
+from transformers import AutoTokenizer
+from sentence_transformers import SentenceTransformer
 
 app = FastAPI()
 
@@ -27,12 +27,17 @@ async def extract_text(file : UploadFile):
     filename = file.filename.lower()
     content = await file.read()
 
+    tokenizer = AutoTokenizer.from_pretrained("BAAI/bge-large-en-v1.5")
+    model = SentenceTransformer("BAAI/bge-large-en-v1.5")
+
+
+
     if filename.endswith('.pdf'):
-        text = extract_text_pdf(content)
+        text = TextPreProcessing.extract_text_pdf(content)
     elif filename.endswith('.docx'):
-        text = extract_text_docx(content)
+        text = TextPreProcessing.extract_text_docx(content)
     elif filename.endswith('.txt'):
-        text = extract_text_txt(content)
+        text = TextPreProcessing.extract_text_txt(content)
     else:
         raise HTTPException(status_code=400, detail='Unsupported file format')
     
@@ -40,28 +45,3 @@ async def extract_text(file : UploadFile):
         "fileName" : filename,
         "text" : text
     }
-    
-def extract_text_pdf(content : bytes) -> str:
-    reader = PdfReader(BytesIO(content))
-    pages = []
-
-    for page in reader.pages:
-
-        text = page.extract_text() or ""
-
-        pages.append(text)
-
-    return "\n".join(pages).strip()
-
-def extract_text_docx(content : bytes) -> str:
-    document = Document(BytesIO(content))
-    paragraphs = [p.text for p in document.paragraphs if p.text.strip()]
-
-    return "\n".join(paragraphs).strip()
-
-def extract_text_txt(content : bytes) -> str:
-    try:
-        return content.decode("utf-8").strip()
-    except UnicodeDecodeError:
-        return content.decode("latin-1").strip()
-    

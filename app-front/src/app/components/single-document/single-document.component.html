@@ -128,34 +128,8 @@
         </div>
       </div>
     </div>
-    <div class="lg:col-span-3 lg:row-span-1 max-lg:hidden px-4 py-2 text-(--text-gray) flex flex-col">
-      <div class="flex">
-        <div class="flex-1 flex flex-col">
-          <div class="flex gap-3">
-            <div>
-              <app-sparkle-icon></app-sparkle-icon>
-            </div>
-            <span class="text-lg text-white">AI Chat</span>
-          </div>
-          <span class="text-xs">Ask questions about this document</span>
-        </div>
-        <div class="size-5">
-          <app-refresh-icon></app-refresh-icon>
-        </div>
-      </div>
-      <div class="flex-[90%] text-white flex items-center justify-center">
-        <span>AI CHATBOT</span>
-      </div>
-      <div class="flex border border-gray-700 rounded-md p-2">
-        <div class="flex-[90%] text-(--text-gray) text-sm pl-4 flex items-center">
-          <span>Ask anything about this document ...</span>
-        </div>
-        <div class="flex-[10%] flex items-center justify-center">
-          <div class="bg-(--color-hlpurple) p-1 rounded-md text-purple-500">
-            <app-pointer-right></app-pointer-right>
-          </div>
-        </div>
-      </div>
+    <div class="lg:col-span-3 lg:row-span-1 max-lg:hidden text-(--text-gray)">
+      <app-ai-chat-component></app-ai-chat-component>
     </div>
   </div>
 </div>

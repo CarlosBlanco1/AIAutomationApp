@@ -13,16 +13,16 @@ public class DocumentController : Controller
     private readonly IWorkspaceRepository workspaceRepository;
     private readonly IFileStorageService storageService;
     private readonly ITextExtractorService textExtractorService;
-    private readonly ISummaryService summaryService;
+    private readonly IChatService chatService;
     private readonly IMapper mapper;
 
-    public DocumentController(IDocumentRepository documentRepository, IWorkspaceRepository workspaceRepository, IFileStorageService storageService, ITextExtractorService textExtractorService, ISummaryService summaryService, IMapper mapper)
+    public DocumentController(IDocumentRepository documentRepository, IWorkspaceRepository workspaceRepository, IFileStorageService storageService, ITextExtractorService textExtractorService, IChatService chatService, IMapper mapper)
     {
         this.documentRepository = documentRepository;
         this.workspaceRepository = workspaceRepository;
         this.storageService = storageService;
         this.textExtractorService = textExtractorService;
-        this.summaryService = summaryService;
+        this.chatService = chatService;
         this.mapper = mapper;
     }
 
@@ -114,10 +114,10 @@ public class DocumentController : Controller
 
         newDoc.FileText = fileText.text;
 
-        //CALL AI TO GET SUMMARY
-        var textSummary = await summaryService.GenerateSummary(fileText.text);
+        //CALL AI TO GET Chat
+        var textChat = await chatService.GenerateSummaryAsync(fileText.text);
 
-        newDoc.Summary = textSummary;
+        newDoc.Summary = textChat;
 
         //STORE IT IN R2
         var uploadFileResult = await storageService.UploadAsync(file, blobKey);

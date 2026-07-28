@@ -24,4 +24,6 @@ public partial class Document
     public DateTime CreatedAt { get; set; }
 
     public virtual Workspace Workspace { get; set; } = null!;
+    public virtual ICollection<Chunk> Chunks { get; set; } = new List<Chunk>();
+
 }

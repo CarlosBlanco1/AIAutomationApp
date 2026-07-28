@@ -29,6 +29,8 @@ public partial class MydbContext : IdentityDbContext<User, IdentityRole<Guid>, G
     {
         base.OnModelCreating(modelBuilder);
 
+        modelBuilder.HasPostgresExtension("vector");
+
         modelBuilder.Entity<Automation>(entity =>
         {
             entity.HasKey(e => e.AutomationId).HasName("automations_pkey");
@@ -113,6 +115,26 @@ public partial class MydbContext : IdentityDbContext<User, IdentityRole<Guid>, G
                 .HasForeignKey(d => d.WorkspaceId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("documents_workspace_id_fkey");
+        });
+
+        modelBuilder.Entity<Chunk>(entity =>
+        {
+            entity.HasKey(e => e.ChunkId).HasName("chunks_pkey");
+
+            entity.ToTable("chunks");
+
+            entity.Property(e => e.ChunkId)
+                .ValueGeneratedNever()
+                .HasColumnName("chunk_id");
+            entity.Property(e => e.ChunkIndex).HasColumnName("chunk_index");
+            entity.Property(e => e.ChunkText).HasColumnName("chunk_text");
+            entity.Property(x => x.Embedding)
+                .HasColumnType("vector(1024)");
+
+            entity.HasOne(c => c.Document).WithMany(d => d.Chunks)
+                .HasForeignKey(c => c.DocumentId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("chunks_document_id_fkey");
         });
 
         modelBuilder.Entity<User>(entity =>

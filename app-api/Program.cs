@@ -26,10 +26,15 @@ builder.Logging.ClearProviders();
 builder.Logging.AddSerilog(logger);
 
 builder.Services.AddControllers();
+builder.Services.AddSignalR();
 
 builder.Services.AddDbContext<MydbContext>(options =>
 {
-    options.UseNpgsql(builder.Configuration["ConnectionString"]);
+    options.UseNpgsql(builder.Configuration["ConnectionString"],
+    npgsqlOptions =>
+    {
+        npgsqlOptions.UseVector();
+    });
 });
 builder.Services.AddScoped<IUserRepository, SQLUserRepository>();
 builder.Services.AddScoped<IWorkspaceRepository, SQLWorkspaceRepository>();
@@ -38,7 +43,7 @@ builder.Services.AddScoped<IAutomationRepository, SQLAutomationRepository>();
 builder.Services.AddScoped<IAutomationLogRepository, SQLAutomationLogRepository>();
 builder.Services.AddScoped<IFileStorageService, R2StorageService>();
 builder.Services.AddScoped<ITextExtractorService, PythonExtractorService>();
-builder.Services.AddScoped<ISummaryService, OllamaSummaryService>();
+builder.Services.AddScoped<IChatService, OllamaChatService>();
 builder.Services.AddScoped<ITokenRepository, TokenRepository>();
 builder.Services.AddScoped<IEmailSenderRepository, EmailRepository>();
 builder.Services.AddHttpClient("ExtendedTimeoutClient", client =>
@@ -58,7 +63,7 @@ var accessKey = builder.Configuration["ACCESS_KEY"];
 var secretKey = builder.Configuration["SECRET_KEY"];
 var serviceUrl = builder.Configuration["SERVICE_URL"];
 
-var credentials  = new BasicAWSCredentials(accessKey, secretKey);
+var credentials = new BasicAWSCredentials(accessKey, secretKey);
 var s3Config = new AmazonS3Config
 {
     ServiceURL = serviceUrl
@@ -137,7 +142,11 @@ builder.Services.AddCors(options =>
 var app = builder.Build();
 
 app.UseMiddleware<ExceptionHandlerMiddleware>();
-app.UseHttpsRedirection();
+
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
 
 app.UseRouting();
 
@@ -147,13 +156,15 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-app.MapGet("/health", () => {return Results.Ok();});
+app.MapGet("/health", () => { return Results.Ok(); });
+app.MapHub<ChatHub>("/chathub");
 
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
 
 using (var scope = app.Services.CreateScope())
 {
