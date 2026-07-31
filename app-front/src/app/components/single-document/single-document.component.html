@@ -77,8 +77,8 @@
       </ng-template>
       }
     </div>
-    <div class="lg:col-span-3 lg:row-span-1 max-lg:row-span-4 max-lg:col-span-1 max-lg:mt-8 grid grid-rows-9">
-      <div class="p-4 row-span-4 grid grid-rows-5 gap-8">
+    <div class="lg:col-span-3 lg:row-span-1 max-lg:row-span-2 max-lg:col-span-1 max-lg:mt-8 grid grid-rows-9">
+      <div class="lg:p-4 row-span-4 grid grid-rows-5 gap-8">
         <div class="flex gap-3 items-center mb-2 row-span-1">
           <div class="bg-blue-800 text-blue-300 p-2 rounded-lg">
             <app-summary-icon svgClass="size-5"></app-summary-icon>
@@ -89,7 +89,7 @@
           {{document()?.summary}}
         </div>
       </div>
-      <div class="flex flex-col px-4 text-sm justify-center row-span-5">
+      <div class="flex flex-col px-4 text-sm justify-center row-span-5 max-lg:hidden">
         <div class="flex border-b-gray-700 border-b py-2 items-center">
           <div class="flex-1 flex gap-2 justify-start text-(--text-gray) items-center">
             <app-folder-icon svgClass="size-5"></app-folder-icon>
@@ -119,7 +119,7 @@
         </div>
       </div>
     </div>
-    <div class="lg:col-span-3 lg:row-span-1 max-lg:hidden text-(--text-gray)">
+    <div class="lg:col-span-3 lg:row-span-1 max-lg:row-span-2 text-(--text-gray)">
       <app-ai-chat-component [documentId]="documentId()!"></app-ai-chat-component>
     </div>
   </div>
