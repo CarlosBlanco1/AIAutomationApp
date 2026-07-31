@@ -1,17 +1,21 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
+using Pgvector;
 
 #nullable disable
 
 namespace app_api.Migrations
 {
     /// <inheritdoc />
-    public partial class AddDocumentStorageProperties : Migration
+    public partial class AddedChunksWithEmbeddingsAndIndex : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AlterDatabase()
+                .Annotation("Npgsql:PostgresExtension:vector", ",,");
+
             migrationBuilder.CreateTable(
                 name: "AspNetRoles",
                 columns: table => new
@@ -198,7 +202,8 @@ namespace app_api.Migrations
                         name: "automations_workspace_id_fkey",
                         column: x => x.workspace_id,
                         principalTable: "workspaces",
-                        principalColumn: "workspace_id");
+                        principalColumn: "workspace_id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -211,7 +216,6 @@ namespace app_api.Migrations
                     blob_key = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
                     file_size_bytes = table.Column<long>(type: "bigint", nullable: false),
                     description = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    file_text = table.Column<string>(type: "text", nullable: false),
                     summary = table.Column<string>(type: "text", nullable: false),
                     created_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
                 },
@@ -222,7 +226,8 @@ namespace app_api.Migrations
                         name: "documents_workspace_id_fkey",
                         column: x => x.workspace_id,
                         principalTable: "workspaces",
-                        principalColumn: "workspace_id");
+                        principalColumn: "workspace_id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -242,7 +247,30 @@ namespace app_api.Migrations
                         name: "automation_logs_automation_id_fkey",
                         column: x => x.automation_id,
                         principalTable: "automations",
-                        principalColumn: "automation_id");
+                        principalColumn: "automation_id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "chunks",
+                columns: table => new
+                {
+                    chunk_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    DocumentId = table.Column<Guid>(type: "uuid", nullable: false),
+                    chunk_index = table.Column<int>(type: "integer", nullable: false),
+                    chunk_text = table.Column<string>(type: "text", nullable: false),
+                    Embedding = table.Column<Vector>(type: "vector(1024)", nullable: false),
+                    token_size = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("chunks_pkey", x => x.chunk_id);
+                    table.ForeignKey(
+                        name: "chunks_document_id_fkey",
+                        column: x => x.DocumentId,
+                        principalTable: "documents",
+                        principalColumn: "document_id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -293,6 +321,18 @@ namespace app_api.Migrations
                 column: "workspace_id");
 
             migrationBuilder.CreateIndex(
+                name: "IX_chunks_DocumentId",
+                table: "chunks",
+                column: "DocumentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_chunks_Embedding",
+                table: "chunks",
+                column: "Embedding")
+                .Annotation("Npgsql:IndexMethod", "hnsw")
+                .Annotation("Npgsql:IndexOperators", new[] { "vector_cosine_ops" });
+
+            migrationBuilder.CreateIndex(
                 name: "IX_documents_workspace_id",
                 table: "documents",
                 column: "workspace_id");
@@ -325,13 +365,16 @@ namespace app_api.Migrations
                 name: "automation_logs");
 
             migrationBuilder.DropTable(
-                name: "documents");
+                name: "chunks");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "automations");
+
+            migrationBuilder.DropTable(
+                name: "documents");
 
             migrationBuilder.DropTable(
                 name: "workspaces");

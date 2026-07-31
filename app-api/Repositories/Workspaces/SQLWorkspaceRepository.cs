@@ -37,7 +37,7 @@ public class SQLWorkspaceRepository : IWorkspaceRepository
     public async Task<List<Workspace>> GetAllWorkspacesAsync()
     {
         return await _dbContext.Workspaces
-        .Select(w => new Workspace()
+        .Select(w => new Workspace
         {
             WorkspaceId = w.WorkspaceId,
             WorkspaceName = w.WorkspaceName,

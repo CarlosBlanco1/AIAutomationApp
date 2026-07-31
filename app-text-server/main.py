@@ -1,11 +1,25 @@
-from io import BytesIO
-from fastapi import FastAPI, HTTPException, UploadFile
+from contextlib import asynccontextmanager
+from fastapi import FastAPI, HTTPException, Request, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
-from text_pre_processing import TextPreProcessing
+from pydantic import BaseModel
+from app.text_pre_processing import EmbeddedChunk, TextPreProcessing, TextChunk
 from transformers import AutoTokenizer
 from sentence_transformers import SentenceTransformer
 
-app = FastAPI()
+class PromptEmbeddingRequest(BaseModel):
+    prompt : str
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    app.state.embedding_model = SentenceTransformer("BAAI/bge-large-en-v1.5")
+    app.state.tokenizer = AutoTokenizer.from_pretrained("BAAI/bge-large-en-v1.5")
+
+    yield
+
+    del app.state.embedding_model
+    del app.state.tokenizer
+    
+app = FastAPI(lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
@@ -22,15 +36,15 @@ app.add_middleware(
 def say_hello():
     return "Hello There!"
 
-@app.post("/text-extractor")
-async def extract_text(file : UploadFile):
+@app.post("/generate-embedded-chunks")
+async def extract_text(request : Request, file : UploadFile):
     filename = file.filename.lower()
     content = await file.read()
 
-    tokenizer = AutoTokenizer.from_pretrained("BAAI/bge-large-en-v1.5")
-    model = SentenceTransformer("BAAI/bge-large-en-v1.5")
+    text = ''
 
-
+    tokenizer = request.app.state.tokenizer
+    embedding_model = request.app.state.embedding_model
 
     if filename.endswith('.pdf'):
         text = TextPreProcessing.extract_text_pdf(content)
@@ -41,7 +55,14 @@ async def extract_text(file : UploadFile):
     else:
         raise HTTPException(status_code=400, detail='Unsupported file format')
     
-    return {
-        "fileName" : filename,
-        "text" : text
-    }
+    text = TextPreProcessing.normalize_text(text)
+    text_chunks : list[TextChunk] = TextPreProcessing.chunk_text(text, tokenizer)
+    embedded_text_chunks : list[EmbeddedChunk] = TextPreProcessing.embed_chunks(text_chunks, embedding_model)
+    
+    return embedded_text_chunks
+
+@app.post("/generate-prompt-embedding")
+def generate_prompt_embedding(request : Request, body : PromptEmbeddingRequest) -> list[float]:
+    embedding_model = request.app.state.embedding_model
+
+    return embedding_model.encode(body.prompt, normalize_embeddings=True).tolist()

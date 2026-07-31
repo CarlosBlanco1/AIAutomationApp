@@ -117,19 +117,10 @@
             <span>{{document()?.fileName}}</span>
           </div>
         </div>
-        <div class="flex border-b-gray-700 border-b py-2 items-center">
-          <div class="flex-1 flex gap-2 justify-start text-(--text-gray) items-center">
-            <app-alphabet-icon svgClass="size-5"></app-alphabet-icon>
-            <span>Words</span>
-          </div>
-          <div class="flex-1 flex justify-end text-gray-300">
-            <span>{{getWords()}} words</span>
-          </div>
-        </div>
       </div>
     </div>
     <div class="lg:col-span-3 lg:row-span-1 max-lg:hidden text-(--text-gray)">
-      <app-ai-chat-component></app-ai-chat-component>
+      <app-ai-chat-component [documentId]="documentId()!"></app-ai-chat-component>
     </div>
   </div>
 </div>

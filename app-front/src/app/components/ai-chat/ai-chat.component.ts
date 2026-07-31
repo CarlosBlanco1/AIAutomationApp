@@ -1,4 +1,4 @@
-import { Component, ElementRef, inject, signal, ViewChild } from "@angular/core";
+import { Component, ElementRef, inject, Input, signal, ViewChild } from "@angular/core";
 import { SignalRService } from "../../services/signalr/signalr.service";
 import { SparkleIconComponent } from "../../icons/sparkle-icon.component";
 import { RefreshIconComponent } from "../../icons/refresh-icon.component";
@@ -12,6 +12,8 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angula
 })
 
 export class AiChatComponent {
+    @Input({required : true}) documentId! : string;
+
     private signalrService = inject(SignalRService);
     messages = signal<(UserMessage | AIMessage)[]>([]);
     isFirstCall = true;
@@ -77,7 +79,8 @@ export class AiChatComponent {
         var newMesage: UserMessage = {
             id: crypto.randomUUID().toString(),
             sender: "User",
-            message: this.currentMessage.value!
+            message: this.currentMessage.value!,
+            documentId : this.documentId
         }
 
         this.signalrService.sendMessage(newMesage)
@@ -108,6 +111,7 @@ export type UserMessage = {
     id: string,
     sender: 'User',
     message: string,
+    documentId : string
 }
 
 export type AIMessage = {

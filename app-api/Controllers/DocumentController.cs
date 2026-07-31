@@ -15,8 +15,9 @@ public class DocumentController : Controller
     private readonly ITextExtractorService textExtractorService;
     private readonly IChatService chatService;
     private readonly IMapper mapper;
+    private readonly IChunkRepository chunkRepository;
 
-    public DocumentController(IDocumentRepository documentRepository, IWorkspaceRepository workspaceRepository, IFileStorageService storageService, ITextExtractorService textExtractorService, IChatService chatService, IMapper mapper)
+    public DocumentController(IDocumentRepository documentRepository, IWorkspaceRepository workspaceRepository, IFileStorageService storageService, ITextExtractorService textExtractorService, IChatService chatService, IMapper mapper, IChunkRepository chunkRepository)
     {
         this.documentRepository = documentRepository;
         this.workspaceRepository = workspaceRepository;
@@ -24,6 +25,7 @@ public class DocumentController : Controller
         this.textExtractorService = textExtractorService;
         this.chatService = chatService;
         this.mapper = mapper;
+        this.chunkRepository = chunkRepository;
     }
 
     [HttpGet]
@@ -110,14 +112,14 @@ public class DocumentController : Controller
         newDoc.BlobKey = blobKey;
         var file = createDocumentDTO.File;
 
-        var fileText = await textExtractorService.GetTextExtractedAsync(file, file.FileName);
+        var fileChunks = await textExtractorService.GetTextEmbeddedChunksAsync(file, file.FileName);
 
-        newDoc.FileText = fileText.text;
+        fileChunks = fileChunks.OrderBy(c => c.Index).ToList();
 
-        //CALL AI TO GET Chat
-        var textChat = await chatService.GenerateSummaryAsync(fileText.text);
+        //CALL AI TO SUMMARIZE DOC
+        var summary = await chatService.GenerateSummaryAsync(fileChunks);
 
-        newDoc.Summary = textChat;
+        newDoc.Summary = summary;
 
         //STORE IT IN R2
         var uploadFileResult = await storageService.UploadAsync(file, blobKey);
@@ -129,9 +131,16 @@ public class DocumentController : Controller
 
         newDoc = await documentRepository.CreateDocumentAsync(newDoc);
 
+        var documentChunks = mapper.Map<List<Chunk>>(fileChunks, opt =>
+        {
+            opt.Items["DocumentId"] = newDoc.DocumentId;
+        });
+
+        await chunkRepository.CreateChunksAsync(documentChunks);
+
         var returnDocDto = mapper.Map<DocumentDTO>(newDoc);
 
-        return CreatedAtAction(nameof(GetDocumentsByWorkspaceId), new { workspaceId = createDocumentDTO.WorkspaceId }, newDoc);
+        return CreatedAtAction(nameof(GetDocumentsByWorkspaceId), new { workspaceId = createDocumentDTO.WorkspaceId }, returnDocDto);
     }
 
     [HttpPut]

@@ -7,8 +7,6 @@ public class WorkspaceProfiles : Profile
     {
         CreateMap<Workspace, WorkspaceDTO>();
         CreateMap<UpdateWorkspaceDTO, Workspace>();
-        CreateMap<CreateWorkspaceDTO, Workspace>()
-        .ForMember(dest => dest.WorkspaceId,
-        opt => opt.MapFrom(_ => Guid.NewGuid()));
+        CreateMap<CreateWorkspaceDTO, Workspace>();
     }
 }

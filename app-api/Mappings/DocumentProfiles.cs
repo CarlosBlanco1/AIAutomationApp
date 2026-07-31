@@ -10,8 +10,6 @@ public class DocumentProfiles : Profile
         opt => opt.MapFrom(src => src.Workspace.WorkspaceName));
         CreateMap<UpdateDocumentDTO, Document>();
         CreateMap<CreateDocumentDTO, Document>()
-        .ForMember(dest => dest.DocumentId,
-        opt => opt.MapFrom(_ => Guid.NewGuid()))
         .ForMember(dest => dest.CreatedAt,
         opt => opt.MapFrom(_ => DateTime.Now))
         .ForMember(dest => dest.FileSizeBytes,

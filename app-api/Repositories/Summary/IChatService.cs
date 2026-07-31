@@ -1,5 +1,5 @@
 public interface IChatService
 {
-    Task<string> GenerateSummaryAsync(string fileText);
-    IAsyncEnumerable<OllamaChatResponse> ChatAsync(string message, CancellationToken cancellationToken = default);
+    Task<string> GenerateSummaryAsync(List<ChunkResponse> fileChunks);
+    IAsyncEnumerable<OllamaChatResponse> ChatAsync(string message, Guid documentId, CancellationToken cancellationToken = default);
 }

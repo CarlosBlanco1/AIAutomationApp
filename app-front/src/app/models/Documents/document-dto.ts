@@ -5,7 +5,6 @@ export interface DocumentDto {
     blobKey : string;
     fileSizeBytes : number;
     description : string;
-    fileText : string;
     summary : string;
     createdAt : string;
 }

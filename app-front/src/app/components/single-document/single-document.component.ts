@@ -1,12 +1,9 @@
-import { Component, Inject, Input, signal } from '@angular/core';
+import { Component, Inject, signal } from '@angular/core';
 import { DocumentIconComponent } from '../../icons/document-icon.component';
 import { StarIconComponent } from '../../icons/start-icon.component';
 import { DownloadIconComponent } from '../../icons/download-icon.component';
 import { UsersIconComponent } from '../../icons/users-icon.component';
 import { HorizontalDotsIconComponent } from '../../icons/horizontal-dots-icon.component';
-import { SparkleIconComponent } from '../../icons/sparkle-icon.component';
-import { RefreshIconComponent } from '../../icons/refresh-icon.component';
-import { PointerRightIconComponent } from '../../icons/pointer-right-icon.component';
 import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
 import { ActivatedRoute } from '@angular/router';
 import { DOCUMENT_SERVICE } from '../../services/document/document-service.token';
@@ -42,62 +39,53 @@ import { AiChatComponent } from "../ai-chat/ai-chat.component";
 
 export class SingleDocumentComponent {
   constructor(private route: ActivatedRoute, @Inject(DOCUMENT_SERVICE) private documentService: DocumentService, private http: HttpClient) {
-    // route.paramMap.subscribe(params => {
-    //   this.documentId = params.get('documentId')!;
+    route.paramMap.subscribe(params => {
+     this.documentId.set(params.get('documentId')!);
 
-    //   documentService.getSingleDocument(this.documentId).subscribe({
-    //     next: (res) => {
-    //       this.document.set(res);
-    //     },
-    //     error: (err) => {
-    //       if (err.error && typeof err.error === 'object') {
-    //         this.errorMessage = err.error.message || 'An error occurred';
-    //       } else {
-    //         this.errorMessage = err.error
-    //       }
-    //     }
-    //   })
+      if(this.documentId() == null)
+      {
+        throw new Error("No document Id was passed in!");
+      }
 
-    //   documentService.getDownloadUrl(this.documentId).subscribe({
-    //     next: (res) => {
-    //       this.pdfUrl.set(res.downloadUrl);
+      documentService.getSingleDocument(this.documentId()!).subscribe({
+        next: (res) => {
+          this.document.set(res);
+        },
+        error: (err) => {
+          if (err.error && typeof err.error === 'object') {
+            this.errorMessage = err.error.message || 'An error occurred';
+          } else {
+            this.errorMessage = err.error
+          }
+        }
+      })
 
-    //       this.http.get(this.pdfUrl()!, { responseType: 'blob' }).subscribe({
-    //         next: blob => {
-    //           this.pdfBlobUrl.set(URL.createObjectURL(blob));
-    //         },
-    //         error: (err) => {
-    //           if (err.error && typeof err.error === 'object') {
-    //             this.errorMessage = err.error.message || 'An error occurred';
-    //           } else {
-    //             this.errorMessage = err.error
-    //           }
-    //         }
-    //       });
-    //     }
-    //   });
-    // })
+      documentService.getDownloadUrl(this.documentId()!).subscribe({
+        next: (res) => {
+          this.pdfUrl.set(res.downloadUrl);
+
+          this.http.get(this.pdfUrl()!, { responseType: 'blob' }).subscribe({
+            next: blob => {
+              this.pdfBlobUrl.set(URL.createObjectURL(blob));
+            },
+            error: (err) => {
+              if (err.error && typeof err.error === 'object') {
+                this.errorMessage = err.error.message || 'An error occurred';
+              } else {
+                this.errorMessage = err.error
+              }
+            }
+          });
+        }
+      });
+    })
   }
 
-  documentId = '';
-  pdfUrl = signal<string | null>("xd");
-  pdfBlobUrl = signal<string | null>("xd")
-  document = signal<DocumentDto | null>({
-    documentId: '',
-    workspaceName: '',
-    fileName: '',
-    blobKey: '',
-    fileSizeBytes: 0,
-    description: '',
-    fileText: '',
-    summary: '',
-    createdAt: ''
-  })
+  documentId = signal<string | null>(null);
+  pdfUrl = signal<string | null>(null);
+  pdfBlobUrl = signal<string | null>(null);
+  document = signal<DocumentDto | null>(null);
   errorMessage: string | null = null;
-
-  getWords() {
-    return this.document()?.fileText.split(/[\s]+/).length;
-  }
 
   getDate(): string {
     var date = new Date(this.document()!.createdAt)

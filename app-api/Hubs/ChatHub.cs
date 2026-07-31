@@ -11,7 +11,7 @@ public class ChatHub : Hub
     }
     public async Task SendMessage(ClientMessage message)
     {
-        var responses = chatService.ChatAsync(message.message);
+        var responses = chatService.ChatAsync(message.message, Guid.Parse(message.documentId));
 
         await foreach (var response in responses)
         {    
@@ -25,4 +25,5 @@ public class ClientMessage
     public string id {get; set;}
     public string sender {get; set;}
     public string message {get; set;}
+    public string documentId {get; set;}
 }

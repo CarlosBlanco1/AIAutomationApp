@@ -1,6 +1,8 @@
 using Amazon.Util.Internal;
+using Pgvector;
 
 public interface ITextExtractorService
 {
-    Task<TextResponse> GetTextExtractedAsync(IFormFile file, string fileName);
+    Task<List<ChunkResponse>> GetTextEmbeddedChunksAsync(IFormFile file, string fileName);
+    Task<Vector> GetEmbeddingForPrompt(string prompt);
 }

@@ -37,14 +37,14 @@ public class SQLDocumentRepository : IDocumentRepository
             BlobKey = d.BlobKey,
             FileSizeBytes = d.FileSizeBytes,
             Description = d.Description,
-            FileText = d.FileText,
             Summary = d.Summary,
             CreatedAt = d.CreatedAt,
             Workspace = new Workspace
             {
                 WorkspaceName = d.Workspace.WorkspaceName,
                 OwnerId = d.Workspace.OwnerId
-            }
+            },
+            Chunks = new List<Chunk>()
         })
         .FirstOrDefaultAsync();
     }
@@ -60,14 +60,14 @@ public class SQLDocumentRepository : IDocumentRepository
             BlobKey = d.BlobKey,
             FileSizeBytes = d.FileSizeBytes,
             Description = d.Description,
-            FileText = d.FileText,
             Summary = d.Summary,
             CreatedAt = d.CreatedAt,
             Workspace = new Workspace
             {
                 WorkspaceName = d.Workspace.WorkspaceName,
                 OwnerId = d.Workspace.OwnerId
-            }
+            },
+            Chunks = new List<Chunk>()
         })
         .Where(d => d.Workspace.OwnerId == userId)
         .ToListAsync();
@@ -84,7 +84,6 @@ public class SQLDocumentRepository : IDocumentRepository
             BlobKey = d.BlobKey,
             FileSizeBytes = d.FileSizeBytes,
             Description = d.Description,
-            FileText = d.FileText,
             Summary = d.Summary,
             CreatedAt = d.CreatedAt,
             Workspace = new Workspace
@@ -92,7 +91,8 @@ public class SQLDocumentRepository : IDocumentRepository
                 WorkspaceName = d.Workspace.WorkspaceName,
                 WorkspaceId = d.Workspace.WorkspaceId,
                 OwnerId = d.Workspace.OwnerId
-            }
+            },
+            Chunks = new List<Chunk>()
         })
         .Where(d => d.WorkspaceId == workspaceId).ToListAsync();
     }

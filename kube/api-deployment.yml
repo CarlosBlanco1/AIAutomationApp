@@ -99,6 +99,9 @@ spec:
             - name: TEXT_EXTRACTOR_URL
               value: http://workspaceai-text-extractor-svc:8000
 
+            - name: FRONTEND_URL
+              value: https://workspaceai.carlosblancodev.com
+
           readinessProbe:
             httpGet:
               path: /health

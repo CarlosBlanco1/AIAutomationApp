@@ -24,6 +24,7 @@ public partial class MydbContext : IdentityDbContext<User, IdentityRole<Guid>, G
     public virtual DbSet<Document> Documents { get; set; }
 
     public virtual DbSet<Workspace> Workspaces { get; set; }
+    public virtual DbSet<Chunk> Chunks {get; set;}
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -38,7 +39,6 @@ public partial class MydbContext : IdentityDbContext<User, IdentityRole<Guid>, G
             entity.ToTable("automations");
 
             entity.Property(e => e.AutomationId)
-                .ValueGeneratedNever()
                 .HasColumnName("automation_id");
             entity.Property(e => e.ActionType)
                 .HasMaxLength(255)
@@ -57,7 +57,7 @@ public partial class MydbContext : IdentityDbContext<User, IdentityRole<Guid>, G
 
             entity.HasOne(d => d.Workspace).WithMany(p => p.Automations)
                 .HasForeignKey(d => d.WorkspaceId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("automations_workspace_id_fkey");
         });
 
@@ -68,7 +68,6 @@ public partial class MydbContext : IdentityDbContext<User, IdentityRole<Guid>, G
             entity.ToTable("automation_logs");
 
             entity.Property(e => e.AutomationLogId)
-                .ValueGeneratedNever()
                 .HasColumnName("automation_log_id");
             entity.Property(e => e.AutomationId).HasColumnName("automation_id");
             entity.Property(e => e.CreatedAt)
@@ -81,7 +80,7 @@ public partial class MydbContext : IdentityDbContext<User, IdentityRole<Guid>, G
 
             entity.HasOne(d => d.Automation).WithMany(p => p.AutomationLogs)
                 .HasForeignKey(d => d.AutomationId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("automation_logs_automation_id_fkey");
         });
 
@@ -92,7 +91,6 @@ public partial class MydbContext : IdentityDbContext<User, IdentityRole<Guid>, G
             entity.ToTable("documents");
 
             entity.Property(e => e.DocumentId)
-                .ValueGeneratedNever()
                 .HasColumnName("document_id");
             entity.Property(e => e.CreatedAt)
                 .HasColumnType("timestamp without time zone")
@@ -107,13 +105,12 @@ public partial class MydbContext : IdentityDbContext<User, IdentityRole<Guid>, G
             entity.Property(e => e.Description)
                 .HasMaxLength(50)
                 .HasColumnName("description");
-            entity.Property(e => e.FileText).HasColumnName("file_text");
             entity.Property(e => e.Summary).HasColumnName("summary");
             entity.Property(e => e.WorkspaceId).HasColumnName("workspace_id");
 
             entity.HasOne(d => d.Workspace).WithMany(p => p.Documents)
                 .HasForeignKey(d => d.WorkspaceId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("documents_workspace_id_fkey");
         });
 
@@ -124,17 +121,20 @@ public partial class MydbContext : IdentityDbContext<User, IdentityRole<Guid>, G
             entity.ToTable("chunks");
 
             entity.Property(e => e.ChunkId)
-                .ValueGeneratedNever()
                 .HasColumnName("chunk_id");
             entity.Property(e => e.ChunkIndex).HasColumnName("chunk_index");
             entity.Property(e => e.ChunkText).HasColumnName("chunk_text");
-            entity.Property(x => x.Embedding)
-                .HasColumnType("vector(1024)");
+            entity.Property(e => e.Embedding).HasColumnType("vector(1024)");
+            entity.Property(e => e.TokenSize).HasColumnName("token_size");
 
             entity.HasOne(c => c.Document).WithMany(d => d.Chunks)
                 .HasForeignKey(c => c.DocumentId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("chunks_document_id_fkey");
+
+            entity.HasIndex(e => e.Embedding)
+            .HasMethod("hnsw")
+            .HasOperators("vector_cosine_ops");
         });
 
         modelBuilder.Entity<User>(entity =>
@@ -157,7 +157,6 @@ public partial class MydbContext : IdentityDbContext<User, IdentityRole<Guid>, G
             entity.ToTable("workspaces");
 
             entity.Property(e => e.WorkspaceId)
-                .ValueGeneratedNever()
                 .HasColumnName("workspace_id");
             entity.Property(e => e.OwnerId).HasColumnName("owner_id");
             entity.Property(e => e.WorkspaceName)

@@ -11,9 +11,7 @@ public class DocumentDTO
     public long FileSizeBytes {get; set;} 
     
     public string Description {get; set;} = null!;
-
-    public string FileText { get; set; } = null!;
-
+    
     public string Summary { get; set; } = null!;
 
     public DateTime CreatedAt { get; set; }

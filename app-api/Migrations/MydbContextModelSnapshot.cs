@@ -27,6 +27,7 @@ namespace app_api.Migrations
             modelBuilder.Entity("Chunk", b =>
                 {
                     b.Property<Guid>("ChunkId")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
                         .HasColumnName("chunk_id");
 
@@ -46,10 +47,19 @@ namespace app_api.Migrations
                         .IsRequired()
                         .HasColumnType("vector(1024)");
 
+                    b.Property<int>("TokenSize")
+                        .HasColumnType("integer")
+                        .HasColumnName("token_size");
+
                     b.HasKey("ChunkId")
                         .HasName("chunks_pkey");
 
                     b.HasIndex("DocumentId");
+
+                    b.HasIndex("Embedding");
+
+                    NpgsqlIndexBuilderExtensions.HasMethod(b.HasIndex("Embedding"), "hnsw");
+                    NpgsqlIndexBuilderExtensions.HasOperators(b.HasIndex("Embedding"), new[] { "vector_cosine_ops" });
 
                     b.ToTable("chunks", (string)null);
                 });
@@ -187,6 +197,7 @@ namespace app_api.Migrations
             modelBuilder.Entity("app_api.Models.Automation", b =>
                 {
                     b.Property<Guid>("AutomationId")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
                         .HasColumnName("automation_id");
 
@@ -233,6 +244,7 @@ namespace app_api.Migrations
             modelBuilder.Entity("app_api.Models.AutomationLog", b =>
                 {
                     b.Property<Guid>("AutomationLogId")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
                         .HasColumnName("automation_log_id");
 
@@ -266,6 +278,7 @@ namespace app_api.Migrations
             modelBuilder.Entity("app_api.Models.Document", b =>
                 {
                     b.Property<Guid>("DocumentId")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
                         .HasColumnName("document_id");
 
@@ -294,11 +307,6 @@ namespace app_api.Migrations
                     b.Property<long>("FileSizeBytes")
                         .HasColumnType("bigint")
                         .HasColumnName("file_size_bytes");
-
-                    b.Property<string>("FileText")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("file_text");
 
                     b.Property<string>("Summary")
                         .IsRequired()
@@ -401,6 +409,7 @@ namespace app_api.Migrations
             modelBuilder.Entity("app_api.Models.Workspace", b =>
                 {
                     b.Property<Guid>("WorkspaceId")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
                         .HasColumnName("workspace_id");
 
@@ -427,6 +436,7 @@ namespace app_api.Migrations
                     b.HasOne("app_api.Models.Document", "Document")
                         .WithMany("Chunks")
                         .HasForeignKey("DocumentId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("chunks_document_id_fkey");
 
@@ -489,6 +499,7 @@ namespace app_api.Migrations
                     b.HasOne("app_api.Models.Workspace", "Workspace")
                         .WithMany("Automations")
                         .HasForeignKey("WorkspaceId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("automations_workspace_id_fkey");
 
@@ -500,6 +511,7 @@ namespace app_api.Migrations
                     b.HasOne("app_api.Models.Automation", "Automation")
                         .WithMany("AutomationLogs")
                         .HasForeignKey("AutomationId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("automation_logs_automation_id_fkey");
 
@@ -511,6 +523,7 @@ namespace app_api.Migrations
                     b.HasOne("app_api.Models.Workspace", "Workspace")
                         .WithMany("Documents")
                         .HasForeignKey("WorkspaceId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("documents_workspace_id_fkey");
 

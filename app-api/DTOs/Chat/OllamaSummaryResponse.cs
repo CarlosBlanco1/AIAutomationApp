@@ -1,4 +1,4 @@
 public class OllamaSummaryResponse
 {
-    public string Summary {get; set;} = null!;
+    public required string Summary {get; set;}
 }
