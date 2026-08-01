@@ -12,10 +12,14 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angula
 })
 
 export class AiChatComponent {
-    @Input({required : true}) documentId! : string;
+    @Input({ required: true }) documentId!: string;
 
     private signalrService = inject(SignalRService);
-    messages = signal<(UserMessage | AIMessage)[]>([]);
+    messages = signal<(UserMessage | AIMessage | LoadingMessage)[]>([]);
+
+    private loadingInterval?: ReturnType<typeof setInterval>;
+
+    isLoading = false;
     isFirstCall = true;
 
     @ViewChild('messageContainer')
@@ -26,9 +30,16 @@ export class AiChatComponent {
         this.signalrService.addMessageListener().subscribe({
             next: (chunk) => {
 
+                this.isLoading = false;
+
+                if (this.loadingInterval) {
+                    clearInterval(this.loadingInterval);
+                    this.loadingInterval = undefined;
+                }
+
                 if (this.isFirstCall) {
                     this.messages.update((messages) => {
-                        return [...messages, chunk]
+                        return [...messages.slice(0, -1), chunk]
                     })
                     this.isFirstCall = false;
                     requestAnimationFrame(() => {
@@ -76,25 +87,37 @@ export class AiChatComponent {
     sendMessage(event: SubmitEvent) {
         event.preventDefault();
         event.stopPropagation();
+
         var newMesage: UserMessage = {
             id: crypto.randomUUID().toString(),
             sender: "User",
             message: this.currentMessage.value!,
-            documentId : this.documentId
+            documentId: this.documentId
+        }
+
+        var newLoadingMessage: LoadingMessage = {
+            id: crypto.randomUUID().toString(),
+            sender: 'AI',
+            message: 'Thinking.'
         }
 
         this.signalrService.sendMessage(newMesage)
 
         this.messages.update(messages => [
             ...messages,
-            newMesage
+            newMesage,
+            newLoadingMessage
         ])
 
+        this.currentMessage.reset();
+        
+        this.isLoading = true;
+        
+        this.showLoadingMessage();
+        
         requestAnimationFrame(() => {
             this.scrollToBottom();
         });
-
-        this.currentMessage.reset();
     }
 
     private scrollToBottom(): void {
@@ -105,13 +128,57 @@ export class AiChatComponent {
             behavior: 'smooth'
         });
     }
+
+    private showLoadingMessage(): void {
+
+        var lastIndex = this.messages().length - 1;
+
+        this.loadingInterval = setInterval(() => {
+
+            requestAnimationFrame(() => {
+                this.scrollToBottom();
+            });
+
+            if (!this.isLoading) {
+                clearInterval(this.loadingInterval);
+                this.loadingInterval = undefined;
+                return;
+            }
+            
+            this.messages.update((messages) => {
+
+                var updated = [...messages]
+                var loadingMessage = updated[lastIndex].message;
+                var newValue = ''
+    
+                switch (loadingMessage) {
+                    case 'Thinking.':
+                        newValue = 'Thinking..';
+                        break;
+                    case 'Thinking..':
+                        newValue = 'Thinking...';
+                        break;
+                    case 'Thinking...':
+                        newValue = 'Thinking.';
+                        break;
+                    default:
+                        break;
+                }
+
+                updated[lastIndex] = { ...updated[lastIndex], message: newValue }
+
+                return updated;
+            })
+        }, 200)
+
+    }
 }
 
 export type UserMessage = {
     id: string,
     sender: 'User',
     message: string,
-    documentId : string
+    documentId: string
 }
 
 export type AIMessage = {
@@ -119,4 +186,10 @@ export type AIMessage = {
     sender: 'AI',
     message: string,
     done: boolean
+}
+
+export type LoadingMessage = {
+    id: string,
+    sender: 'AI',
+    message: string
 }

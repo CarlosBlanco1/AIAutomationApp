@@ -1,4 +1,4 @@
-import { map, Observable, tap } from "rxjs";
+import { map, Observable, shareReplay, tap } from "rxjs";
 import { UserDto } from "../../models/Users/user-dto";
 import { UserService } from "./user-service.interface";
 import { inject, Injectable, signal, WritableSignal } from "@angular/core";
@@ -13,13 +13,14 @@ export class ApiUserService implements UserService {
     
     constructor() {
         this.baseUrl = `${this.configService.apiUrl}/api/User`;
+        this.fetchCurrentUser().subscribe();
     }
     
     currentUser: WritableSignal<UserDto | null> = signal(null);
     
-    fetchCurrentUser(): Observable<void> {  
+    fetchCurrentUser(): Observable<UserDto> {  
         return this.httpClient.get<UserDto>(`${this.baseUrl}/me`)
-        .pipe(tap(res => this.currentUser.set(res)), map(() => void 0));
+        .pipe(tap(res => this.currentUser.set(res)), shareReplay(1));
     }
 
     clearCurrentUser(): void {
