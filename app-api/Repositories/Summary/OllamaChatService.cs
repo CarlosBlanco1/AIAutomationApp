@@ -51,8 +51,8 @@ public class OllamaChatService : IChatService
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase
             });
 
-            // var response = await client.PostAsJsonAsync("http://workspaceai-ollama-svc:11434/api/generate", request);
-            var chunkResponse = await client.PostAsJsonAsync("http://ollama:11434/api/generate",
+            // var chunkResponse = await client.PostAsJsonAsync("http://ollama:11434/api/generate",
+            var chunkResponse = await client.PostAsJsonAsync("http://workspaceai-ollama-svc:11434/api/generate",
             chunkRequest,
             new JsonSerializerOptions
             {
@@ -88,8 +88,8 @@ public class OllamaChatService : IChatService
             Stream = false
         };
 
-        // var response = await client.PostAsJsonAsync("http://workspaceai-ollama-svc:11434/api/generate", request);
-        var response = await client.PostAsJsonAsync("http://ollama:11434/api/generate",
+        // var response = await client.PostAsJsonAsync("http://ollama:11434/api/generate",
+        var response = await client.PostAsJsonAsync("http://workspaceai-ollama-svc:11434/api/generate",
         request,
         new JsonSerializerOptions
         {
@@ -126,9 +126,10 @@ public class OllamaChatService : IChatService
 
         var client = clientFactory.CreateClient();
 
+        // "http://ollama:11434/api/generate")
         using var httpRequest = new HttpRequestMessage(
         HttpMethod.Post,
-        "http://ollama:11434/api/generate")
+        "http://workspaceai-ollama-svc:11434")
         {
             Content = JsonContent.Create(request)
         };

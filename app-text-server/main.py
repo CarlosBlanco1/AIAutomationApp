@@ -25,7 +25,8 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:8080",
-        "http://myapp-api:8080"
+        "http://myapp-api:8080",
+        "http://workspaceai-api-svc:8080"
     ],
     allow_credentials=True,
     allow_methods=["*"],
