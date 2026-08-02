@@ -1,6 +1,7 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, HTTPException, Request, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from app.text_pre_processing import EmbeddedChunk, TextPreProcessing, TextChunk
 from transformers import AutoTokenizer
@@ -9,17 +10,22 @@ from sentence_transformers import SentenceTransformer
 class PromptEmbeddingRequest(BaseModel):
     prompt : str
 
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     app.state.embedding_model = SentenceTransformer("BAAI/bge-large-en-v1.5")
     app.state.tokenizer = AutoTokenizer.from_pretrained("BAAI/bge-large-en-v1.5")
 
+    app.loaded_dependencies = True
+
     yield
 
     del app.state.embedding_model
     del app.state.tokenizer
-    
+
 app = FastAPI(lifespan=lifespan)
+    
+app.loaded_dependencies = False
 
 app.add_middleware(
     CORSMiddleware,
@@ -33,9 +39,20 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.get("/")
-def say_hello():
-    return "Hello There!"
+@app.get("/health/live")
+async def livelinessEndpoint():
+    return {"status": "live"}
+
+@app.get("/health/ready")
+async def readinessEndpoint():
+    if not app.loaded_dependencies:
+        return JSONResponse(
+            status_code=503,
+            content={"status":"not ready"}
+        )
+    
+    return {"status" : "ready"}
+
 
 @app.post("/generate-embedded-chunks")
 async def extract_text(request : Request, file : UploadFile):
