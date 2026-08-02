@@ -9,12 +9,14 @@ public class OllamaChatService : IChatService
     private readonly IHttpClientFactory clientFactory;
     private readonly IChunkRepository chunkRepository;
     private readonly ITextExtractorService textExtractorService;
+    private readonly string ollamaBaseUrl;
 
-    public OllamaChatService(IHttpClientFactory clientFactory, IChunkRepository chunkRepository, ITextExtractorService textExtractorService)
+    public OllamaChatService(IHttpClientFactory clientFactory, IChunkRepository chunkRepository, ITextExtractorService textExtractorService, IConfiguration configuration)
     {
         this.clientFactory = clientFactory;
         this.chunkRepository = chunkRepository;
         this.textExtractorService = textExtractorService;
+        ollamaBaseUrl = configuration["OLLAMA_BASE_URL"]!;
     }
 
     public async Task<string> GenerateSummaryAsync(List<ChunkResponse> fileChunks)
@@ -51,8 +53,7 @@ public class OllamaChatService : IChatService
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase
             });
 
-            // var chunkResponse = await client.PostAsJsonAsync("http://ollama:11434/api/generate",
-            var chunkResponse = await client.PostAsJsonAsync("http://workspaceai-ollama-svc:11434/api/generate",
+            var chunkResponse = await client.PostAsJsonAsync($"{ollamaBaseUrl}/api/generate",
             chunkRequest,
             new JsonSerializerOptions
             {
@@ -88,8 +89,7 @@ public class OllamaChatService : IChatService
             Stream = false
         };
 
-        // var response = await client.PostAsJsonAsync("http://ollama:11434/api/generate",
-        var response = await client.PostAsJsonAsync("http://workspaceai-ollama-svc:11434/api/generate",
+        var response = await client.PostAsJsonAsync($"{ollamaBaseUrl}/api/generate",
         request,
         new JsonSerializerOptions
         {
@@ -126,10 +126,9 @@ public class OllamaChatService : IChatService
 
         var client = clientFactory.CreateClient();
 
-        // "http://ollama:11434/api/generate")
         using var httpRequest = new HttpRequestMessage(
         HttpMethod.Post,
-        "http://workspaceai-ollama-svc:11434")
+        $"{ollamaBaseUrl}/api/generate")
         {
             Content = JsonContent.Create(request)
         };

@@ -10,7 +10,7 @@ import { AppConfigService } from "../configuration/app-config.service";
 
 @Injectable({ providedIn: 'root' })
 export class JwtAuthService implements AuthService {
-    private baseUrl? : string;
+    private baseUrl?: string;
 
     private readonly httpClient = inject(HttpClient);
     private readonly userService = inject(USER_SERVICE);

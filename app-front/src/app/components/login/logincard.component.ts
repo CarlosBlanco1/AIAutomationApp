@@ -11,7 +11,6 @@ import { LockIconComponent } from "../../icons/lock-icon.component";
 import { AUTH_SERVICE } from "../../services/auth/auth-service.token";
 import { getRuleToMessageEmail, getRuleToMessageExistingPassword } from "../../dictionaries/validation-messages";
 import { LoadingAnimationComponent } from "../../animations/loading-animation/loading-animation.component";
-import { USER_SERVICE } from "../../services/user/user-service.token";
 
 @Component({
     selector: 'app-login',
@@ -22,7 +21,6 @@ import { USER_SERVICE } from "../../services/user/user-service.token";
 
 export class LoginCardComponent {
     private authService = inject(AUTH_SERVICE)
-    private userService = inject(USER_SERVICE);
     private router = inject(Router);
 
     protected formState: loginFormState = 'form';
@@ -63,13 +61,7 @@ export class LoginCardComponent {
             email: this.email.value!,
             password: this.password.value!
         }).subscribe({
-            next: () => {
-                this.userService.fetchCurrentUser().subscribe({
-                    complete: () => {
-                        this.router.navigate(['/dashboard'])
-                    }
-                })
-            },
+            next: () => {this.router.navigate(['/dashboard'])},
             error: (err: HttpErrorResponse) => {
                 this.formState = 'failure';
                 if (err.error && typeof err.error === 'object') {

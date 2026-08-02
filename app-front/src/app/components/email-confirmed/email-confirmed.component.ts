@@ -4,22 +4,22 @@ import { ClockIconComponent } from "../../icons/clock-icon.component";
 import { RefreshIconComponent } from "../../icons/refresh-icon.component";
 import { SendIconComponent } from "../../icons/send-icon.component";
 import { Router, RouterLink } from "@angular/router";
-import { AUTH_SERVICE } from "../../services/auth/auth-service.token";
 
 @Component({
     selector: 'app-email-confirmed',
     templateUrl: './email-confirmed.component.html',
-    imports: [ClockIconComponent, RefreshIconComponent, SendIconComponent, RouterLink]
+    imports: [ClockIconComponent, RefreshIconComponent, SendIconComponent]
 })
 export class EmailConfirmedComponent {
     protected readonly userService = inject(USER_SERVICE)
     private router = inject(Router);
 
+    constructor()
+    {
+        this.userService.fetchCurrentUser().subscribe();
+    }
+
     onAlreadyVerfiedClick() {
-        this.userService.fetchCurrentUser().subscribe({
-            complete : () => {
-                this.router.navigate(['/dashboard'])
-            }
-        })
+        this.router.navigate(['/dashboard'])
     }
 }

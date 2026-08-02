@@ -102,6 +102,9 @@ spec:
             - name: FRONTEND_URL
               value: https://workspaceai.carlosblancodev.com
 
+            - name: OLLAMA_BASE_URL
+              value: http://workspaceai-ollama-svc:11434
+
           readinessProbe:
             httpGet:
               path: /health
