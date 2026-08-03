@@ -3,7 +3,7 @@ import { USER_SERVICE } from "../../services/user/user-service.token";
 import { ClockIconComponent } from "../../icons/clock-icon.component";
 import { RefreshIconComponent } from "../../icons/refresh-icon.component";
 import { SendIconComponent } from "../../icons/send-icon.component";
-import { Router, RouterLink } from "@angular/router";
+import { Router } from "@angular/router";
 
 @Component({
     selector: 'app-email-confirmed',
