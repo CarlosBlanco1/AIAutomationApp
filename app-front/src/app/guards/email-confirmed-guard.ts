@@ -16,9 +16,16 @@ export class EmailConfirmedGuard implements CanActivate {
     }
 
     return this.userService.fetchCurrentUser().pipe(map(user =>
-      Boolean(user.emailConfirmed)
+    {
+      if(!user)
+      {
+        return false;
+      }
+
+      return Boolean(user.emailConfirmed)
         ? true
         : this.router.createUrlTree(['/verify-email'])
-    ))
+    }
+  ))
   }
 }

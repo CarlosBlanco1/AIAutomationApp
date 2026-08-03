@@ -5,6 +5,6 @@ import { WritableSignal } from "@angular/core";
 export interface UserService
 {
     currentUser : WritableSignal<UserDto | null>;
-    fetchCurrentUser() : Observable<UserDto>;
+    fetchCurrentUser() : Observable<UserDto | null>;
     clearCurrentUser() : void;
 }

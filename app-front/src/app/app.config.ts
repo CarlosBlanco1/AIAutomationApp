@@ -16,6 +16,7 @@ import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
 import { CONFIRMATION_TOKEN_SERVICE } from './services/confirmation-token/confirmation-token-service.token';
 import { ApiConfirmationTokenService } from './services/confirmation-token/api-confirmation-token.service';
 import { AppConfigService } from './services/configuration/app-config.service';
+import { firstValueFrom } from 'rxjs';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -23,12 +24,18 @@ export const appConfig: ApplicationConfig = {
     provideCharts(withDefaultRegisterables()),
     provideRouter(routes, withComponentInputBinding()),
     provideHttpClient(withInterceptors([authInterceptor])),
-    provideAppInitializer(() => {return inject(AppConfigService).load()}),
-    { provide: AUTH_SERVICE, useClass: JwtAuthService },
     { provide: USER_SERVICE, useClass: ApiUserService },
+    { provide: AUTH_SERVICE, useClass: JwtAuthService },
     { provide: WORKSPACE_SERVICE, useClass: ApiWorkspaceService },
     { provide: DOCUMENT_SERVICE, useClass: ApiDocumentService },
     { provide : CONFIRMATION_TOKEN_SERVICE, useClass : ApiConfirmationTokenService },
+    provideAppInitializer(async () => {
+      var configService = inject(AppConfigService);
+      var userService = inject(USER_SERVICE);
+
+      await configService.load();
+      await firstValueFrom(userService.fetchCurrentUser());
+    }),
     importProvidersFrom(NgxSmartModalModule.forRoot())
   ],
 };

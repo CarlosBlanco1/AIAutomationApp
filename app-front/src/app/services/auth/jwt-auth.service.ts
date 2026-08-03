@@ -10,26 +10,23 @@ import { AppConfigService } from "../configuration/app-config.service";
 
 @Injectable({ providedIn: 'root' })
 export class JwtAuthService implements AuthService {
-    private baseUrl?: string;
-
     private readonly httpClient = inject(HttpClient);
-    private readonly userService = inject(USER_SERVICE);
     private readonly configService = inject(AppConfigService);
-
-    constructor() {
-        this.baseUrl = `${this.configService.apiUrl}/api/Auth`;
-    }
 
     isAuthenticated = signal<boolean>(!!this.getToken())
 
     register(request: CreateUserRequest): Observable<string> {
-        return this.httpClient.post(`${this.baseUrl}/Register`,
+        var baseUrl = `${this.configService.apiUrl}/api/Auth`;
+
+        return this.httpClient.post(`${baseUrl}/Register`,
             request,
             { responseType: 'text' });
     }
 
     login(request: LoginRequest): Observable<LoginResponse> {
-        return this.httpClient.post<LoginResponse>(`${this.baseUrl}/Login`,
+        var baseUrl = `${this.configService.apiUrl}/api/Auth`;
+
+        return this.httpClient.post<LoginResponse>(`${baseUrl}/Login`,
             request
         ).pipe(tap(response => {
             localStorage.setItem('token', response.jwtToken);
@@ -40,7 +37,6 @@ export class JwtAuthService implements AuthService {
     logout(): void {
         localStorage.removeItem('token');
         this.isAuthenticated.set(false);
-        this.userService.clearCurrentUser();
     }
 
     getToken(): string | null {
