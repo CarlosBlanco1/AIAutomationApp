@@ -12,9 +12,6 @@ export class EmailConfirmedGuard implements CanActivate {
     var user = this.userService.currentUser();
 
     if (user) {
-      console.log("CURRENT USER WASNT NULL!")
-      console.log(user)
-
       return Boolean(user.emailConfirmed)
         ? of(true)
         : of(this.router.createUrlTree(['/verify-email']));
@@ -22,9 +19,6 @@ export class EmailConfirmedGuard implements CanActivate {
 
     return this.userService.fetchCurrentUser().pipe(map(user =>
     {
-      console.log("USER WAS NULL, REFETCHING");
-      console.log(user);
-      
       if(!user)
       {
         return this.router.createUrlTree(['/login']);
