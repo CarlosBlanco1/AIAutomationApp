@@ -61,7 +61,7 @@ export class LoginCardComponent {
             email: this.email.value!,
             password: this.password.value!
         }).subscribe({
-            complete: () => {this.router.navigate(['/dashboard'])},
+            next: () => {this.router.navigateByUrl('/dashboard')},
             error: (err: HttpErrorResponse) => {
                 this.formState = 'failure';
                 if (err.error && typeof err.error === 'object') {

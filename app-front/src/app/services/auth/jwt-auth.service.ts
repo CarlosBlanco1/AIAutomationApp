@@ -30,6 +30,7 @@ export class JwtAuthService implements AuthService {
             request
         ).pipe(tap(response => {
             localStorage.setItem('token', response.jwtToken);
+            this.isAuthenticated.set(true);
         }));
     }
 
