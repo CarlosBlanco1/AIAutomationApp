@@ -158,7 +158,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 app.MapGet("/health", () => { return Results.Ok(); });
-app.MapHub<ChatHub>("/chathub");
+app.MapHub<ChatHub>("/api/chathub");
 
 if (app.Environment.IsDevelopment())
 {
