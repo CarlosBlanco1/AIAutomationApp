@@ -3,6 +3,8 @@ using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Schema;
+using System.Net.Http.Headers;
+using System.Text;
 
 public class OllamaChatService : IChatService
 {
@@ -10,6 +12,8 @@ public class OllamaChatService : IChatService
     private readonly IChunkRepository chunkRepository;
     private readonly ITextExtractorService textExtractorService;
     private readonly string ollamaBaseUrl;
+    private readonly string ollamaUsername;
+    private readonly string ollamaPassword;
 
     public OllamaChatService(IHttpClientFactory clientFactory, IChunkRepository chunkRepository, ITextExtractorService textExtractorService, IConfiguration configuration)
     {
@@ -17,11 +21,15 @@ public class OllamaChatService : IChatService
         this.chunkRepository = chunkRepository;
         this.textExtractorService = textExtractorService;
         ollamaBaseUrl = configuration["OLLAMA_BASE_URL"]!;
+        ollamaUsername = configuration["OLLAMA_USER"]!;
+        ollamaPassword = configuration["OLLAMA_PASSWORD"]!;
     }
 
-    public async Task<string> GenerateSummaryAsync(List<ChunkResponse> fileChunks)
+    public async Task<string> GenerateSummaryAsync(List<ChunkResponse> fileChunks, [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         var client = clientFactory.CreateClient("ExtendedTimeoutClient");
+
+        var credentials = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{ollamaUsername}:{ollamaPassword}"));
 
         JsonSerializerOptions options = JsonSerializerOptions.Default;
 
@@ -47,18 +55,19 @@ public class OllamaChatService : IChatService
                 Stream = false
             };
 
-            
-            string json = JsonSerializer.Serialize(chunkRequest, new JsonSerializerOptions
+            var chunkHttpRequest = new HttpRequestMessage(
+            HttpMethod.Post,
+            $"{ollamaBaseUrl}/api/generate")
             {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-            });
+                Content = JsonContent.Create(chunkRequest, options: new JsonSerializerOptions
+                {
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+                })
+            };
 
-            var chunkResponse = await client.PostAsJsonAsync($"{ollamaBaseUrl}/api/generate",
-            chunkRequest,
-            new JsonSerializerOptions
-            {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-            });
+            chunkHttpRequest.Headers.Authorization = new AuthenticationHeaderValue("Basic", credentials);
+
+            var chunkResponse = await client.SendAsync(chunkHttpRequest,cancellationToken);
 
             var chunkOllamaResult = await chunkResponse.Content.ReadFromJsonAsync<OllamaGenerateResponse>();
 
@@ -89,12 +98,19 @@ public class OllamaChatService : IChatService
             Stream = false
         };
 
-        var response = await client.PostAsJsonAsync($"{ollamaBaseUrl}/api/generate",
-        request,
-        new JsonSerializerOptions
-        {
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-        });
+        var summaryHttpRequest = new HttpRequestMessage(
+            HttpMethod.Post,
+            $"{ollamaBaseUrl}/api/generate")
+            {
+                Content = JsonContent.Create(request, options: new JsonSerializerOptions
+                {
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+                })
+            };
+
+        summaryHttpRequest.Headers.Authorization = new AuthenticationHeaderValue("Basic", credentials);
+
+        var response = await client.SendAsync(summaryHttpRequest,cancellationToken);
 
         var ollamaResult = await response.Content.ReadFromJsonAsync<OllamaGenerateResponse>();
 
@@ -126,12 +142,16 @@ public class OllamaChatService : IChatService
 
         var client = clientFactory.CreateClient();
 
+        var credentials = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{ollamaUsername}:{ollamaPassword}"));
+
         using var httpRequest = new HttpRequestMessage(
         HttpMethod.Post,
         $"{ollamaBaseUrl}/api/generate")
         {
             Content = JsonContent.Create(request)
         };
+
+        httpRequest.Headers.Authorization = new AuthenticationHeaderValue("Basic", credentials);
 
         using var response = await client.SendAsync(
             httpRequest,

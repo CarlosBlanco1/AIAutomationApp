@@ -21,7 +21,6 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: Development
       ASPNETCORE_URLS: "http://+:8080"
-      # ConnectionStrings__DefaultConnection: "Host=db;Port=5432;Database=mydb;Username=myuser;Password=mypassword"
     ports:
       - "8080:8080"
     depends_on:
@@ -34,27 +33,6 @@ services:
     container_name: myapp-angular
     ports:
       - "4200:80"
-
-  ollama:
-    image: ollama/ollama
-    container_name: ollama
-    ports:
-      - "11434:11434"
-    volumes:
-      - ollama:/root/.ollama
-
-  ollama-init:
-    image: ollama/ollama
-    depends_on:
-      - ollama
-    entrypoint: >
-      sh -c "
-      sleep 5 &&
-      ollama pull llama3.2:1b
-      "
-    environment:
-      - OLLAMA_HOST=http://ollama:11434
-
   text-server:
     build:
       context: ./app-text-server
@@ -67,5 +45,4 @@ services:
 
 
 volumes:
-  ollama:
   postgres_data:

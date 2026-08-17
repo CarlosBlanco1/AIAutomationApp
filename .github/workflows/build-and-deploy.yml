@@ -117,6 +117,18 @@ jobs:
           --from-literal=EMAIL_PASSWORD="${{ secrets.EMAIL_PASSWORD }}" \
           --dry-run=client -o yaml | kubectl apply -f -
 
+          kubectl -n workspaceai-prod create secret generic ollama-base-url \
+          --from-literal=OLLAMA_BASE_URL="${{ secrets.OLLAMA_BASE_URL }}" \
+          --dry-run=client -o yaml | kubectl apply -f -
+
+          kubectl -n workspaceai-prod create secret generic ollama-user \
+          --from-literal=OLLAMA_USER="${{ secrets.OLLAMA_USER }}" \
+          --dry-run=client -o yaml | kubectl apply -f -
+
+          kubectl -n workspaceai-prod create secret generic ollama-password \
+          --from-literal=OLLAMA_PASSWORD="${{ secrets.OLLAMA_PASSWORD }}" \
+          --dry-run=client -o yaml | kubectl apply -f -
+
           kubectl -n workspaceai-prod create secret generic db-connectionstring \
           --from-literal=CONNECTION_STRING="Host=workspaceai-postgres-svc;Port=5432;Database=workspaceai_db;Username=workspaceai_user;Password=${{secrets.WORKSPACEAI_POSTGRES_PASSWORD}}" \
           --dry-run=client -o yaml | kubectl apply -f -

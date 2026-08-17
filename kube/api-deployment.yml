@@ -89,6 +89,24 @@ spec:
                 secretKeyRef:
                   name: email-password
                   key: EMAIL_PASSWORD
+
+            - name: OLLAMA_BASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: ollama-base-url
+                  key: OLLAMA_BASE_URL
+
+            - name: OLLAMA_USER
+              valueFrom:
+                secretKeyRef:
+                  name: ollama-user
+                  key: OLLAMA_USER
+
+            - name: OLLAMA_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: ollama-password
+                  key: OLLAMA_PASSWORD
                     
             - name: Jwt__Issuer
               value: https://workspaceai.carlosblancodev.com/api
@@ -101,9 +119,6 @@ spec:
 
             - name: FRONTEND_URL
               value: https://workspaceai.carlosblancodev.com
-
-            - name: OLLAMA_BASE_URL
-              value: http://workspaceai-ollama-svc:11434
 
           readinessProbe:
             httpGet:
