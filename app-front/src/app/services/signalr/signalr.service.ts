@@ -2,7 +2,7 @@ import { inject, Injectable, WritableSignal } from '@angular/core';
 import * as signalR from '@microsoft/signalr';
 import { AppConfigService } from '../configuration/app-config.service';
 import { AIMessage, UserMessage } from '../../components/ai-chat/ai-chat.component';
-import { Observable, Subscriber } from 'rxjs';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +15,7 @@ export class SignalRService {
 
   public startConnection = () => {
     this.hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl(`${this.configService.apiUrl}/chathub`, {
+      .withUrl(`${this.configService.apiUrl}/api/chathub`, {
         withCredentials: false
       })
       .build();
