@@ -49,7 +49,7 @@ builder.Services.AddScoped<IEmailSenderRepository, EmailRepository>();
 builder.Services.AddScoped<IChunkRepository, SQLChunkRepository>(); 
 builder.Services.AddHttpClient("ExtendedTimeoutClient", client =>
 {
-    client.Timeout = TimeSpan.FromMinutes(5);
+    client.Timeout = TimeSpan.FromMinutes(10);
 });
 builder.Services.AddRateLimiter(options =>
 {
