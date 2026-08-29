@@ -1,3 +1,123 @@
-<div class="min-h-full min-w-full bg-(--color-bgmain) flex">
-    <app-carousel></app-carousel>
+<div class="h-full min-w-full bg-(--color-bgmain)">
+    <div class="h-full max-lg:w-full grid grid-rows-4 grid-cols-1 max-lg:p-4 p-8 gap-8 justify-center">
+        <div class="row-span-3 col-span-1 grid max-lg:grid-cols-1 max-lg:grid-rows-2 grid-cols-5 grid-rows-1">
+            <div class="max-lg:col-span-1 col-span-2 row-span-1 h-full">
+                <div class="grid grid-rows-4 h-full text-white max-lg:gap-4">
+                    <div class="row-span-1 max-lg:gap-8 lg:row-span-2 grid grid-rows-3 @container-size">
+                        <span class="row-span-1 max-lg:hidden"></span>
+                        <span class="max-lg:text-[50cqh] lg:text-[15cqh] 2xl:text-[25cqh] text-[25cqh] leading-none whitespace-nowrap row-span-1">Your work,</span>
+                        <span class="max-lg:text-[50cqh] lg:text-[15cqh] 2xl:text-[25cqh] text-[25cqh] leading-none whitespace-nowrap row-span-1">understood.</span>
+                    </div>
+                    <div class="row-span-1 grid grid-rows-5 @container-size text-gray-400 font-light">
+                        <span class="row-span-1 max-lg:text-[20cqh] lg:text-[8cqh] 2xl:text-[15cqh] text-[15cqh]">Bring your document and knowledge</span>
+                        <span class="row-span-1 max-lg:text-[20cqh] lg:text-[8cqh] 2xl:text-[15cqh] text-[15cqh]">together. Ask better questions and get</span>
+                        <span class="row-span-1 max-lg:text-[20cqh] lg:text-[8cqh] 2xl:text-[15cqh] text-[15cqh]">answers with context.</span>
+                        <span class="row-span-1"></span>
+                        <span class="row-span-1"></span>
+                    </div>
+                    <div class="max-lg:row-span-2 lg:row-span-1 grid">
+                        <div class="grid max-lg:grid-rows-2 lg:grid-cols-9 lg:justify-center max-lg:gap-1 lg:gap-3 @container-size">
+                            <div class="max-sm:row-span-1 sm:col-span-4">
+                                <a routerLink="/login"
+                                    class="max-lg:w-full flex justify-center items-center gap-2 bg-linear-to-r from-purple-600 to-blue-500 px-4 max-lg:py-2 lg:py-5 rounded-lg">
+                                    <span class="max-lg:text-[11cqh] lg:text-[6cqh] 2xl:text-[11cqh]">Start building</span>
+                                    <div>
+                                        <app-arrow-icon svgClass="size-7"></app-arrow-icon>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="max-sm:row-span-1 sm:col-span-4">
+                                <a routerLink="/login"
+                                    class="max-lg:w-full flex justify-center items-center gap-2 bg-(--color-bgmain) px-4 max-lg:py-2 lg:py-5 rounded-lg border border-purple-500">
+                                    <div>
+                                        <app-play-icon svgClass="size-7"></app-play-icon>
+                                    </div>
+                                    <span class="max-lg:text-[11cqh] lg:text-[6cqh] 2xl:text-[11cqh]">Test it out</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="max-lg:col-span-1 col-span-3 row-span-1 h-full flex justify-center items-center">
+                <img class="object-contain border border-purple-900 rounded-xl max-h-full" src="assets/images/HomePreview.png" alt="Description" />
+            </div>
+        </div>
+        <div class="row-span-1 col-span-1 max-lg:w-full grid max-lg:grid-rows-3 lg:grid-cols-9 gap-3">
+
+            <div class="max-lg:row-span-1 lg:col-span-3 grid max-lg:grid-cols-6 lg:grid-cols-4 lg:grid-rows-4 justify-center items-center border border-purple-800 rounded-xl lg:p-4 @container-size">
+                <div class="max-lg:col-span-1 lg:col-span-1 lg:row-span-3 h-full flex justify-center">
+                    <div class="flex justify-center max-lg:items-center lg:items-start h-full lg:pt-4">
+                        <div class="rounded-full border border-purple-500 text-purple-500 max-lg:p-1 lg:p-3">
+                            <app-stack-icon svgClass="max-lg:size-6 max-xl:size-10 size-14"></app-stack-icon>
+                        </div>
+                    </div>
+                </div>
+                <div class="max-lg:col-span-4 lg:col-span-3 lg:row-span-3 flex flex-col gap-1 max-lg:p-4">
+                    <div class="text-white max-lg:text-[25cqh] max-xl:text-[13cqh] max-2xl:text-[12cqh] text-[15cqh]">
+                        <span>Grounded answers</span>
+                    </div>
+                    <div class="max-lg:hidden flex flex-col text-gray-400 max-2xl:text-[8cqh] text-[11cqh]">
+                        <span>AI that cites your sources, so you can</span>
+                        <span>trust every answer.</span>
+                    </div>
+                </div>
+                <div class="max-lg:col-span-1 lg:col-span-4 lg:row-span-1 flex">
+                    <div class="w-full flex justify-end text-purple-500">
+                        <app-arrow-icon svgClass="size-8"></app-arrow-icon>
+                    </div>
+                </div>
+            </div>
+
+            <div class="max-lg:row-span-1 lg:col-span-3 grid max-lg:grid-cols-6 lg:grid-cols-4 lg:grid-rows-4 justify-center items-center border border-purple-800 rounded-xl lg:p-4 @container-size">
+                <div class="max-lg:col-span-1 lg:col-span-1 lg:row-span-3 h-full flex justify-center">
+                    <div class="flex justify-center max-lg:items-center lg:items-start h-full lg:pt-4">
+                        <div class="rounded-full border border-purple-500 text-purple-500 max-lg:p-1 lg:p-3">
+                            <app-folder-icon svgClass="max-lg:size-6 max-xl:size-10 size-14"></app-folder-icon>
+                        </div>
+                    </div>
+                </div>
+                <div class="max-lg:col-span-4 lg:col-span-3 lg:row-span-3 flex flex-col gap-1 max-lg:p-4">
+                    <div class="text-white max-lg:text-[25cqh] max-xl:text-[13cqh] max-2xl:text-[12cqh] text-[15cqh]">
+                        <span>Knowledge hub</span>     
+                    </div>
+                    <div class="max-lg:hidden flex flex-col text-gray-400 max-2xl:text-[8cqh] text-[11cqh]">
+                        <span>Organize documents in secure</span>
+                        <span>secure workspaces you can</span>
+                        <span>rely on.</span>
+                    </div>
+                </div>
+                <div class="max-lg:col-span-1 lg:col-span-4 lg:row-span-1 flex">
+                    <div class="w-full flex justify-end text-purple-500">
+                        <app-arrow-icon svgClass="size-8"></app-arrow-icon>
+                    </div>
+                </div>
+            </div>
+
+            <div class="max-lg:row-span-1 lg:col-span-3 grid max-lg:grid-cols-6 lg:grid-cols-4 lg:grid-rows-4 justify-center items-center border border-purple-800 rounded-xl lg:p-4 @container-size">
+                <div class="max-lg:col-span-1 lg:col-span-1 lg:row-span-3 h-full flex justify-center">
+                    <div class="flex justify-center max-lg:items-center lg:items-start h-full lg:pt-4">
+                        <div class="rounded-full border border-purple-500 text-purple-500 max-lg:p-1 lg:p-3">
+                            <app-shield-icon svgClass="max-lg:size-6 max-xl:size-10 size-14"></app-shield-icon>
+                        </div>
+                    </div>
+                </div>
+                <div class="max-lg:col-span-4 lg:col-span-3 lg:row-span-3 flex flex-col gap-1 max-lg:p-4">
+                    <div class="text-white max-lg:text-[25cqh] max-xl:text-[13cqh] max-2xl:text-[12cqh] text-[15cqh]">
+                        <span>Built for focus</span>
+                    </div>
+                    <div class="max-lg:hidden flex flex-col text-gray-400 max-2xl:text-[8cqh] text-[11cqh]">
+                        <span>Minimize noise and automate</span>
+                        <span>busywork so your team can think</span>
+                        <span>deeper and move faster.</span>
+                    </div>
+                </div>
+                <div class="max-lg:col-span-1 lg:col-span-4 lg:row-span-1 flex">
+                    <div class="w-full flex justify-end text-purple-500">
+                        <app-arrow-icon svgClass="size-8"></app-arrow-icon>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

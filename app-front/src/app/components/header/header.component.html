@@ -1,22 +1,24 @@
-<div class="h-full overflow-hidden bg-[#000422] flex gap-5 border-b border-gray-600 py-5 items-center">
-    <div class="pl-6">
+<div class="h-full overflow-hidden bg-[#000422] flex gap-5 py-5 items-center text-xl">
+    <div class="pl-6 flex">
         <app-logo></app-logo>
     </div>
-    <div class="grid grid-cols-4 text-(--text-gray) gap-3 flex-2 justify-center max-lg:hidden">
-        <div class="text-center">Features</div>
-        <div class="text-center">Pricing</div>
-        <div class="text-center">Docs</div>
-        <div class="text-center">Contact</div>
+    <div class="flex text-(--text-gray) gap-3 flex-2 justify-start items-center max-lg:hidden">
+        <div class="flex gap-[20%] pl-[10%] items-center">
+            <div class="text-center">Features</div>
+            <div class="text-center">Pricing</div>
+            <div class="text-center">Docs</div>
+            <div class="text-center">Contact</div>
+        </div>
     </div>
-    <div class="flex-1 flex justify-end max-lg:gap-2 lg:pr-6 max-lg:pr-4 lg:gap-2 text-white max-lg:text-xs">
+    <div class="flex-1 flex justify-end items-center max-lg:gap-2 lg:pr-6 max-lg:pr-4 lg:gap-2 text-white max-lg:text-xs font-light">
         @if(!authService.isAuthenticated())
         {
-        <a routerLink="/login" class="lg:px-5 px-2 py-2">Sign In</a>
-        <a routerLink="/register" class="lg:px-5 px-2 py-2 bg-linear-to-r from-purple-600 to-blue-500 rounded-lg">Get
-            Started</a>
+        <a routerLink="/login" class="lg:px-5 px-2 py-2">Log in</a>
+        <a routerLink="/register" class="lg:px-5 px-2 py-3 bg-linear-to-r from-purple-600 to-blue-500 rounded-lg">Get
+            started</a>
         }
         @else {
-        <button (click)="onSignOut()" class="lg:px-5 max-lg:px-2 py-2 bg-linear-to-r from-purple-600 to-blue-500 rounded-lg">Sign Out</button>
+        <button (click)="onSignOut()" class="lg:px-5 max-lg:px-2 py-3 bg-linear-to-r from-purple-600 to-blue-500 rounded-lg">Sign out</button>
         }
         <div (click)="bmClicked.emit()" class="lg:hidden text-purple-300 p-2 bg-purple-800 rounded-lg">
             <app-menu-icon svgClass="size-5"></app-menu-icon>

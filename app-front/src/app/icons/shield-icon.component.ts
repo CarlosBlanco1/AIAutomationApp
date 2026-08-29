@@ -1,7 +1,7 @@
 import { Component, Input } from "@angular/core";
 
 @Component({
-    selector : 'app-folder-icon',
+    selector : 'app-shield-icon',
     template : `<svg xmlns="http://www.w3.org/2000/svg" 
     viewBox="0 0 24 24" 
     fill="none" 
@@ -9,11 +9,13 @@ import { Component, Input } from "@angular/core";
     stroke-width="2" 
     stroke-linecap="round" 
     stroke-linejoin="round" 
-    [class]="'icon icon-tabler icons-tabler-outline icon-tabler-folder ' + svgClass">
+    [class]="'icon icon-tabler icons-tabler-outline icon-tabler-shield-half ' + svgClass">
 	<path stroke="none" d="M0 0h24v24H0z" fill="none" />
-	<path d="M5 4h4l3 3h7a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2" />
+	<path d="M12 3a12 12 0 0 0 8.5 3a12 12 0 0 1 -8.5 15a12 12 0 0 1 -8.5 -15a12 12 0 0 0 8.5 -3" />
+	<path d="M12 3v18" />
 </svg>`
 })
-export class FolderIconComponent {
+
+export class ShieldIconComponent {
     @Input() svgClass = '';
 }
