@@ -1,4 +1,4 @@
-<div class="h-full overflow-hidden bg-[#000422] flex gap-5 py-5 items-center text-xl">
+<div class="h-full overflow-hidden bg-[#000422] flex gap-5 py-5 items-center text-lg">
     <div class="pl-6 flex">
         <app-logo></app-logo>
     </div>
@@ -14,7 +14,7 @@
         class="flex-1 flex justify-end items-center max-lg:gap-2 lg:pr-6 max-lg:pr-4 lg:gap-2 text-white max-lg:text-xs font-light">
         @if(!authService.isAuthenticated())
         {
-        <a routerLink="/login" class="max-lg:hidden lg:px-5 px-2 py-2">Log in</a>
+        <a routerLink="/login" class="max-lg:hidden px-5 py-2">Log in</a>
         <a routerLink="/register"
             class="max-lg:hidden lg:px-5 px-2 py-3 bg-linear-to-r from-purple-600 to-blue-500 rounded-lg">
             Get started
@@ -28,8 +28,10 @@
 
         }
         @else {
-        <button (click)="onSignOut()"
-            class="lg:px-5 max-lg:px-2 py-3 bg-linear-to-r from-purple-600 to-blue-500 rounded-lg">Sign out</button>
+        <button (click)="onSignOut()" class="max-lg:hidden px-5 py-3 bg-linear-to-r from-purple-600 to-blue-500 rounded-lg">Sign out</button>
+        <button (click)="onSignOut()" class="lg:hidden p-2 border border-purple-500 rounded-lg text-white">
+            <app-logout-icon svgClass="size-5"></app-logout-icon>
+        </button>
         }
         <div (click)="bmClicked.emit()" class="lg:hidden text-white p-2 bg-purple-800 rounded-lg">
             <app-menu-icon svgClass="size-5"></app-menu-icon>

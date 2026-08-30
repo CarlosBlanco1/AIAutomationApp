@@ -18,7 +18,6 @@ import { DashboardIconComponent } from "../../icons/dashboard-icon.component";
   templateUrl: './sidebar.component.html',
   standalone: true,
   imports: [
-    LogoComponent,
     HouseIconComponent,
     DocumentIconComponent,
     AnalyticsIconComponent,

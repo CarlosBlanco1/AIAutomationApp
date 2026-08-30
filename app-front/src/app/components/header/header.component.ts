@@ -5,13 +5,14 @@ import { AUTH_SERVICE } from "../../services/auth/auth-service.token";
 import { MenuIconComponent } from "../../icons/menu-icon.component";
 import { LoginIconComponent } from "../../icons/login-icon.component";
 import { CreateAccountIconComponent } from "../../icons/create-account-icon.component";
+import { LogoutIconComponent } from "../../icons/logout-icon.component";
 
 @Component({
     selector: 'app-header',
     standalone: true,
     templateUrl : './header.component.html',
     styleUrl: './header.component.css',
-    imports: [LogoComponent, RouterLink, MenuIconComponent, LoginIconComponent, CreateAccountIconComponent]
+    imports: [LogoComponent, RouterLink, MenuIconComponent, LoginIconComponent, CreateAccountIconComponent, LogoutIconComponent]
 })
 
 export class HeaderComponent {
