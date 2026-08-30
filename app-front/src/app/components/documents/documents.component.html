@@ -82,12 +82,12 @@
             <th class="text-start col-span-1"></th>
           </tr>
         </thead>
-        <tbody class="col-span-1 row-span-9 overflow-y-auto grid grid-cols-1">
+        <tbody class="col-span-1 row-span-9 overflow-y-auto flex flex-col gap-2">
           @for (document of documentService.userDocuments(); track document.documentId)
           {
           <tr app-document-table-row [documentId]="document.documentId" [documentName]="document.fileName"
             [documentSubtitle]="document.documentId" [documentCategory]="document.workspaceName" [minutesAgoEdited]="2"
-            class="col-span-1 grid lg:grid-cols-12 max-lg:grid-cols-8">
+            class="grid lg:grid-cols-12 max-lg:grid-cols-8">
             <app-house-icon svgClass="size-5"></app-house-icon>
           </tr>
           }
