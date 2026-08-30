@@ -10,7 +10,7 @@ import { RouterLink } from "@angular/router";
 @Component({
     selector: 'tr[app-document-table-row]',
     templateUrl: './document-table-row.component.html',
-    imports: [HorizontalDotsIconComponent, InfoIconComponent, TrashIconComponent, DownloadIconComponent, RouterLink]
+    imports: [HorizontalDotsIconComponent, InfoIconComponent, TrashIconComponent, RouterLink]
 })
 export class DocumentTableRowComponent {
     @Input({ required: true }) documentName!: string;

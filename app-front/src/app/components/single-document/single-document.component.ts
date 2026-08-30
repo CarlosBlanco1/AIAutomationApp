@@ -31,7 +31,6 @@ import { AiChatComponent } from "../ai-chat/ai-chat.component";
     LoadingAnimationComponent,
     FolderIconComponent,
     CalendarIconComponent,
-    AlphabetIconComponent,
     SummaryIconComponent,
     AiChatComponent
 ],
