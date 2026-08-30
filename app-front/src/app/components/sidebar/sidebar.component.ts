@@ -11,6 +11,7 @@ import { AUTH_SERVICE } from '../../services/auth/auth-service.token';
 import { USER_SERVICE } from '../../services/user/user-service.token';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { filter } from 'rxjs';
+import { DashboardIconComponent } from "../../icons/dashboard-icon.component";
 
 @Component({
   selector: 'app-sidebar',
@@ -24,8 +25,9 @@ import { filter } from 'rxjs';
     UserIconComponent,
     AccountIconComponent,
     DropdownIconComponent,
-    RouterLink
-  ],
+    RouterLink,
+    DashboardIconComponent
+],
 })
 export class SideBarComponent {
   protected readonly authService = inject(AUTH_SERVICE);

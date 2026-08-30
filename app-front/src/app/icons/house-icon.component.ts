@@ -10,7 +10,7 @@ import { Component, Input } from '@angular/core';
     stroke-width="2"
     stroke-linecap="round"
     stroke-linejoin="round"
-    [class]="['icon icon-tabler icons-tabler-outline icon-tabler-home', svgClass]"
+    [class]="'icon icon-tabler icons-tabler-outline icon-tabler-home ' + svgClass"
   >
     <path stroke="none" d="M0 0h24v24H0z" fill="none" />
     <path d="M5 12l-2 0l9 -9l9 9l-2 0" />

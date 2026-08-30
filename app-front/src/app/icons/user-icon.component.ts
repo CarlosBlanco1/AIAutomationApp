@@ -1,18 +1,16 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-user-icon',
   template: `<svg
     xmlns="http://www.w3.org/2000/svg"
-    width="24"
-    height="24"
     viewBox="0 0 24 24"
     fill="var(--color-bgcard)"
     stroke="#9CA3AF"
     stroke-width="2"
     stroke-linecap="round"
     stroke-linejoin="round"
-    class="icon icon-tabler icons-tabler-outline icon-tabler-user"
+    [class]="'icon icon-tabler icons-tabler-outline icon-tabler-user ' + svgClass"
   >
     <path stroke="none" d="M0 0h24v24H0z" fill="none" />
     <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
@@ -21,4 +19,6 @@ import { Component } from '@angular/core';
   standalone: true,
 })
 
-export class UserIconComponent {}
+export class UserIconComponent {
+  @Input() svgClass = '';
+}
