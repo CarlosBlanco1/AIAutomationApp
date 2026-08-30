@@ -5,10 +5,11 @@ import { PlayIconComponent } from "../../icons/play-icon.component";
 import { StackIconComponent } from "../../icons/stack-icon.component";
 import { FolderIconComponent } from "../../icons/folder-icon.component";
 import { ShieldIconComponent } from "../../icons/shield-icon.component";
+import { FocusIconComponent } from "../../icons/focus-icon.component";
 
 @Component({
   selector: 'app-home',
-  imports: [ArrowIconComponent, PlayIconComponent, StackIconComponent, FolderIconComponent, ShieldIconComponent],
+  imports: [ArrowIconComponent, PlayIconComponent, StackIconComponent, FolderIconComponent, ShieldIconComponent, FocusIconComponent],
   templateUrl: './home.component.html'
 })
 

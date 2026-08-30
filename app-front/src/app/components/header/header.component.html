@@ -10,17 +10,28 @@
             <div class="text-center">Contact</div>
         </div>
     </div>
-    <div class="flex-1 flex justify-end items-center max-lg:gap-2 lg:pr-6 max-lg:pr-4 lg:gap-2 text-white max-lg:text-xs font-light">
+    <div
+        class="flex-1 flex justify-end items-center max-lg:gap-2 lg:pr-6 max-lg:pr-4 lg:gap-2 text-white max-lg:text-xs font-light">
         @if(!authService.isAuthenticated())
         {
-        <a routerLink="/login" class="lg:px-5 px-2 py-2">Log in</a>
-        <a routerLink="/register" class="lg:px-5 px-2 py-3 bg-linear-to-r from-purple-600 to-blue-500 rounded-lg">Get
-            started</a>
+        <a routerLink="/login" class="max-lg:hidden lg:px-5 px-2 py-2">Log in</a>
+        <a routerLink="/register"
+            class="max-lg:hidden lg:px-5 px-2 py-3 bg-linear-to-r from-purple-600 to-blue-500 rounded-lg">
+            Get started
+        </a>
+        <a routerLink="/login" class="lg:hidden p-2 border border-purple-500 rounded-lg text-white">
+            <app-login-icon svgClass="size-5"></app-login-icon>
+        </a>
+        <a routerLink="/register" class="lg:hidden text-white p-2 bg-purple-800 rounded-lg">
+            <app-create-account-icon svgClass="size-5"></app-create-account-icon>
+        </a>
+
         }
         @else {
-        <button (click)="onSignOut()" class="lg:px-5 max-lg:px-2 py-3 bg-linear-to-r from-purple-600 to-blue-500 rounded-lg">Sign out</button>
+        <button (click)="onSignOut()"
+            class="lg:px-5 max-lg:px-2 py-3 bg-linear-to-r from-purple-600 to-blue-500 rounded-lg">Sign out</button>
         }
-        <div (click)="bmClicked.emit()" class="lg:hidden text-purple-300 p-2 bg-purple-800 rounded-lg">
+        <div (click)="bmClicked.emit()" class="lg:hidden text-white p-2 bg-purple-800 rounded-lg">
             <app-menu-icon svgClass="size-5"></app-menu-icon>
         </div>
     </div>

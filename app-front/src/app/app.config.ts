@@ -34,7 +34,7 @@ export const appConfig: ApplicationConfig = {
       var userService = inject(USER_SERVICE);
 
       await configService.load();
-      await firstValueFrom(userService.fetchCurrentUser());
+      // await firstValueFrom(userService.fetchCurrentUser());
     }),
     importProvidersFrom(NgxSmartModalModule.forRoot())
   ],
