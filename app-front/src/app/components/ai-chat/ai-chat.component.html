@@ -1,19 +1,19 @@
 <div class="grid grid-rows-6 h-full">
-    <div class="row-span-1 flex">
-        <div class="flex-1 flex flex-col">
-            <div class="flex gap-3">
+    <div class="row-span-1 flex max-lg:pb-2">
+        <div class="flex-1 grid max-lg:grid-rows-1 lg:grid-rows-2">
+            <div class="row-span-1 flex gap-3">
                 <div>
-                    <app-sparkle-icon svgClass="size-5"></app-sparkle-icon>
+                    <app-sparkle-icon svgClass="max-lg:size-4 lg:size-5"></app-sparkle-icon>
                 </div>
-                <span class="text-lg text-white">AI Chat</span>
+                <span class="max-lg:text-sm lg:text-lg text-white">AI Chat</span>
             </div>
-            <span class="text-xs">Ask questions about this document</span>
+            <span class="max-lg:hidden row-span-1 text-xs">Ask questions about this document</span>
         </div>
         <div class="size-5">
             <app-refresh-icon></app-refresh-icon>
         </div>
     </div>
-    <div class="row-span-4 text-white text-sm flex items-center justify-center">
+    <div class="row-span-4 text-white text-sm flex items-center justify-center max-h-full">
         <div #messageContainer class="flex flex-col gap-3 overflow-y-scroll max-h-full w-full p-3">
             @for (message of messages(); track message.id) {
             @if(message.sender == 'AI')
@@ -32,9 +32,9 @@
         </div>
     </div>
     <div class="row-span-1">
-        <form (submit)="sendMessage($event)" class="flex border border-gray-700 rounded-md p-2">
+        <form (submit)="sendMessage($event)" class="flex border border-gray-700 rounded-md max-lg:p-1 lg:p-2">
             <input [formControl]="currentMessage" type="text" placeholder="Ask anything about this document..."
-                class="flex-[90%] text-(--text-gray) text-sm pl-4 flex items-center">
+                class="flex-[90%] text-(--text-gray) max-lg:text-xs lg:text-sm pl-4 flex items-center">
             <button type="submit" class="flex-[10%] flex items-center justify-center">
                 <div class="bg-(--color-hlpurple) p-1 rounded-md text-purple-500">
                     <app-pointer-right></app-pointer-right>
