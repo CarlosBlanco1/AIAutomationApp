@@ -100,9 +100,9 @@ public class DocumentController : Controller
         {
             return Forbid();
         }
-        else if(totalDocsSize > (2 * 1024 * 1024)) //2 MB
+        else if(totalDocsSize > (1 * 1024 * 1024))
         {
-            return BadRequest("You have more than 2 MB worth of space occupied, get rid of some of your documents");
+            return BadRequest("You have more than 1 MB worth of space occupied, get rid of some of your documents.");
         }
 
         var newDoc = mapper.Map<Document>(createDocumentDTO);

@@ -19,7 +19,11 @@
 
         <input #fileInput type="file" style="display: none;" accept=".pdf,.docx,.txt" (change)="onFileSelected($event)"
             aria-describedby="file-help" />
-        <small id="file-help">Accepted formats: PDF, DOCX, TXT (Max 5MB).</small>
+        <small id="file-help" class="grid grid-rows-3 items-center">
+            <span class="row-span-1 text-center">PDF, DOCX, TXT * Max 250KB</span>
+            <span class="row-span-1 text-center">Text-focused files only - scans, images and</span>
+            <span class="row-span-1 text-center">complex formatting may not process correctly.</span>
+        </small>
     </div>
     <div class="row-span-1 min-h-full flex">
         @if (file.invalid) {

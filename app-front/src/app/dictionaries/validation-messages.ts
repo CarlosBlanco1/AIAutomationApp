@@ -74,7 +74,7 @@ export function getRuleToMessageFile() {
         },
         {
             validationRule : 'exceededSize',
-            errorMessage : 'File can be no more than 5MB.',
+            errorMessage : 'File can be no more than 250KB.',
         }
     ]
 }
