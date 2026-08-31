@@ -4,11 +4,12 @@ import { SparkleIconComponent } from "../../icons/sparkle-icon.component";
 import { RefreshIconComponent } from "../../icons/refresh-icon.component";
 import { PointerRightIconComponent } from "../../icons/pointer-right-icon.component";
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
+import { LoadingGoey } from "../../animations/loading-goey/loading-goey.component";
 
 @Component({
     selector: 'app-ai-chat-component',
     templateUrl: './ai-chat.component.html',
-    imports: [SparkleIconComponent, RefreshIconComponent, PointerRightIconComponent, ReactiveFormsModule]
+    imports: [SparkleIconComponent, RefreshIconComponent, PointerRightIconComponent, ReactiveFormsModule, LoadingGoey]
 })
 
 export class AiChatComponent {
@@ -19,7 +20,6 @@ export class AiChatComponent {
 
     private loadingInterval?: ReturnType<typeof setInterval>;
 
-    isLoading = false;
     isFirstCall = true;
 
     @ViewChild('messageContainer')
@@ -29,8 +29,6 @@ export class AiChatComponent {
         this.signalrService.startConnection();
         this.signalrService.addMessageListener().subscribe({
             next: (chunk) => {
-
-                this.isLoading = false;
 
                 if (this.loadingInterval) {
                     clearInterval(this.loadingInterval);
@@ -97,8 +95,8 @@ export class AiChatComponent {
 
         var newLoadingMessage: LoadingMessage = {
             id: crypto.randomUUID().toString(),
-            sender: 'AI',
-            message: 'Thinking.'
+            sender: 'Loading',
+            message: ''
         }
 
         this.signalrService.sendMessage(newMesage)
@@ -110,70 +108,23 @@ export class AiChatComponent {
         ])
 
         this.currentMessage.reset();
-        
-        this.isLoading = true;
-        
-        this.showLoadingMessage();
-        
-        requestAnimationFrame(() => {
-            this.scrollToBottom();
-        });
+
+        this.loadingInterval = setInterval(() => {
+            requestAnimationFrame(() => {
+                this.scrollToBottom();
+            })
+        }, 200)
     }
 
     private scrollToBottom(): void {
-        const container = this.messageContainer.nativeElement;
+        let container = this.messageContainer.nativeElement;
 
         container.scrollTo({
             top: container.scrollHeight,
             behavior: 'smooth'
         });
     }
-
-    private showLoadingMessage(): void {
-
-        var lastIndex = this.messages().length - 1;
-
-        this.loadingInterval = setInterval(() => {
-
-            requestAnimationFrame(() => {
-                this.scrollToBottom();
-            });
-
-            if (!this.isLoading) {
-                clearInterval(this.loadingInterval);
-                this.loadingInterval = undefined;
-                return;
-            }
-            
-            this.messages.update((messages) => {
-
-                var updated = [...messages]
-                var loadingMessage = updated[lastIndex].message;
-                var newValue = ''
-    
-                switch (loadingMessage) {
-                    case 'Thinking.':
-                        newValue = 'Thinking..';
-                        break;
-                    case 'Thinking..':
-                        newValue = 'Thinking...';
-                        break;
-                    case 'Thinking...':
-                        newValue = 'Thinking.';
-                        break;
-                    default:
-                        break;
-                }
-
-                updated[lastIndex] = { ...updated[lastIndex], message: newValue }
-
-                return updated;
-            })
-        }, 200)
-
-    }
 }
-
 export type UserMessage = {
     id: string,
     sender: 'User',
@@ -190,6 +141,6 @@ export type AIMessage = {
 
 export type LoadingMessage = {
     id: string,
-    sender: 'AI',
+    sender: 'Loading',
     message: string
 }

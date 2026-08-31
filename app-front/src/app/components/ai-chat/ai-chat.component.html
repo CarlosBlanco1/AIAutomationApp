@@ -22,6 +22,12 @@
                 <span class="bg-purple-800 p-2 rounded-lg max-w-[80%]">{{message.message}}</span>
             </div>
             }
+            @else if(message.sender == 'Loading')
+            {
+                <div class="basis-full flex justify-start">
+                    <app-loading-goey></app-loading-goey>
+                </div>
+            }
             @else
             {
             <div class="basis-full flex justify-end">
