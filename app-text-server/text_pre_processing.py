@@ -117,6 +117,6 @@ class TextPreProcessing:
                 raise asyncio.CancelledError()
             
             vector = await asyncio.to_thread(model.encode, chunk.text, normalize_embeddings=True)
-            embeddings.append(vector)
+            embeddings.append(vector.tolist())
         
         return [EmbeddedChunk(index=i, chunk=c.text, vector=v, token_size=c.token_size) for i, (c, v) in enumerate(zip(chunks, embeddings))]
