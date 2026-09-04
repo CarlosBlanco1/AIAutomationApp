@@ -1,5 +1,5 @@
-<div class="grid grid-rows-6 h-full">
-    <div class="row-span-1 flex max-lg:pb-2">
+<div class="grid grid-rows-11 h-full">
+    <div class="max-lg:row-span-1 lg:row-span-2 flex max-lg:pb-2">
         <div class="flex-1 grid max-lg:grid-rows-1 lg:grid-rows-2">
             <div class="row-span-1 flex gap-3">
                 <div>
@@ -13,7 +13,7 @@
             <app-refresh-icon></app-refresh-icon>
         </div>
     </div>
-    <div class="row-span-4 text-white text-sm flex items-center justify-center max-h-full">
+    <div class="row-span-7 text-white text-sm flex items-center justify-center max-h-full">
         <div #messageContainer class="flex flex-col gap-3 overflow-y-scroll max-h-full w-full p-3">
             @for (message of messages(); track message.id) {
             @if(message.sender == 'AI')
@@ -37,22 +37,24 @@
             }
         </div>
     </div>
-    <div class="row-span-1">
-        <form (submit)="sendMessage($event)" class="flex border border-gray-700 rounded-md max-lg:p-1 lg:p-2">
-            <input [formControl]="currentMessage" type="text" placeholder="Ask anything about this document..."
-                class="flex-[90%] text-(--text-gray) max-lg:text-xs lg:text-sm pl-4 flex items-center">
-            <button type="submit" class="flex-[10%] flex items-center justify-center">
-                <div class="bg-(--color-hlpurple) p-1 rounded-md text-purple-500">
-                    <app-pointer-right></app-pointer-right>
-                </div>
-            </button>
-        </form>
+    <div class="max-lg:row-span-3 lg:row-span-2 grid grid-rows-2">
+        <div class="row-span-1 max-h-full">
+            <form (submit)="sendMessage($event)" class="flex border border-gray-700 rounded-md">
+                <input [formControl]="currentMessage" type="text" placeholder="Ask anything about this document..."
+                    class="flex-[90%] text-(--text-gray) max-lg:text-xs lg:text-xs pl-4 flex items-center">
+                <button type="submit" class="flex-[10%] flex items-center justify-center">
+                    <div class="bg-(--color-hlpurple) p-1 rounded-md text-purple-500">
+                        <app-pointer-right></app-pointer-right>
+                    </div>
+                </button>
+            </form>
+        </div>
         <div class="row-span-1 min-h-full flex">
             @if (currentMessage.invalid && (currentMessage.dirty || currentMessage.touched)) {
-            <div class="flex-1 h-full flex gap-5">
+            <div class="flex-1 h-full flex gap-5 items-center">
                 @for (ruleAndMessage of ruleToMessage; track ruleAndMessage.validationRule) {
                 @if (currentMessage.hasError(ruleAndMessage.validationRule)) {
-                <div class="text-red-700 lg:text-sm max-lg:text-xs">{{ ruleAndMessage.errorMessage }}</div>
+                <div class="text-red-700 max-lg:text-2xs lg:text-xs">{{ ruleAndMessage.errorMessage }}</div>
                 }
                 }
             </div>

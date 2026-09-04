@@ -81,3 +81,7 @@
 div {
   scrollbar-color: #9810fa #3E036B; 
 }
+
+@theme {
+  --text-2xs: 0.625rem;
+}
