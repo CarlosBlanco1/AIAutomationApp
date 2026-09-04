@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnDestroy } from '@angular/core';
 import { NgxSmartModalService } from 'ngx-smart-modal';
 import { DOCUMENT_SERVICE } from '../../../services/document/document-service.token';
 import { getRuleToMessageFile, getRuleToMessageText } from '../../../dictionaries/validation-messages';
@@ -10,14 +10,18 @@ import { fileValidator } from '../../../directives/Validation/file-validation.di
 import { CloudIconComponent } from '../../../icons/cloud-icon.component';
 import { UploadIconComponent } from '../../../icons/upload-icon.component';
 import { WORKSPACE_SERVICE } from '../../../services/workspace/workspace-service.token';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-create-document',
   imports: [ReactiveFormsModule, InputValidatorComponent, LoadingAnimationComponent, FailureCardComponent, CloudIconComponent, UploadIconComponent],
   templateUrl: './create-document.component.html'
 })
-export class CreateDocumentComponent {
+export class CreateDocumentComponent implements OnDestroy {
   constructor(private modalService: NgxSmartModalService) { }
+
+  private destroy$ = new Subject<void>();
+  private cancelDocumentCreate$ = new Subject<void>();
 
   isDragging = false;
 
@@ -63,11 +67,15 @@ export class CreateDocumentComponent {
   }
 
   onCancel() {
+    this.cancelDocumentCreate$.next();
+    console.log("Operation cancelled")
     this.modalService.get('createDocument').close();
   }
 
   onSuccess() {
-    this.documentService.getUserDocuments().subscribe();
+    this.documentService.getUserDocuments()
+    .pipe(takeUntil(this.destroy$))
+    .subscribe();
     this.modalService.get('createDocument').close();
   }
 
@@ -120,7 +128,7 @@ export class CreateDocumentComponent {
   }
 
   onSubmitForm() {
-    if (this.documentForm.invalid) {
+    if (this.documentForm.invalid || this.formState == 'loading') {
       return;
     }
 
@@ -131,7 +139,12 @@ export class CreateDocumentComponent {
       fileName: this.documentName.value!,
       description: this.description.value!,
       file: this.file.value!
-    }).subscribe(
+    })
+    .pipe(
+      takeUntil(this.cancelDocumentCreate$),
+      takeUntil(this.destroy$)
+    )
+    .subscribe(
       {
         next: () => {
           this.onSuccess()
@@ -153,6 +166,12 @@ export class CreateDocumentComponent {
     this.documentForm.markAsPristine();
     this.documentForm.markAsUntouched();
     this.formState = 'form';
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+    this.cancelDocumentCreate$.complete();
   }
 }
 

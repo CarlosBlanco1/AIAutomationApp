@@ -26,6 +26,18 @@ export class SignalRService {
       .catch(err => console.log('Error establishing SignalR connection: ' + err));
   }
 
+  public async stopConnection(): Promise<void> {
+    if (!this.hubConnection) return;
+
+    try {
+      await this.hubConnection.stop();
+      console.log("SignalR connection stopped succesfully!");
+    }
+    catch (err) {
+      console.log("Error ocurred while trying to stop SignalR connection");
+    }
+  }
+
   public addMessageListener(): Observable<AIMessage> {
     return new Observable<AIMessage>(subscriber => {
       if (!this.hubConnection) {

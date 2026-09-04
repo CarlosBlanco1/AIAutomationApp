@@ -10,15 +10,15 @@ public class SQLChunkRepository : IChunkRepository
     {
         this.dbContext = dbContext;
     }
-    public async Task<List<Chunk>> CreateChunksAsync(List<Chunk> chunks)
+    public async Task<List<Chunk>> CreateChunksAsync(List<Chunk> chunks, CancellationToken cancellationToken)
     {
-        await dbContext.Chunks.AddRangeAsync(chunks);
-        await dbContext.SaveChangesAsync();
+        await dbContext.Chunks.AddRangeAsync(chunks, cancellationToken);
+        await dbContext.SaveChangesAsync(cancellationToken);
 
         return chunks;
     }
 
-    public async Task<List<string>> GetRelevantChunksForEmbeddingForDocument(Vector queryEmbedding, int tokenBudget, Guid documentId)
+    public async Task<List<string>> GetRelevantChunksForEmbeddingForDocument(Vector queryEmbedding, int tokenBudget, Guid documentId, CancellationToken cancellationToken)
     {
         if(tokenBudget <= 0)
         {
@@ -53,12 +53,12 @@ public class SQLChunkRepository : IChunkRepository
             WHERE "CumulativeTokens" <= {tokenBudget}
             ORDER BY "Distance"
             """)
-        .ToListAsync();
+        .ToListAsync(cancellationToken);
 
         return chunksAndIndeces.OrderBy(c => c.Index).Select(c => c.Text).ToList();
     }
 
-    public async Task<List<Chunk>> RetrieveChunksByDocumentIdAsync(Guid documentId)
+    public async Task<List<Chunk>> RetrieveChunksByDocumentIdAsync(Guid documentId, CancellationToken cancellationToken)
     {
         return await dbContext.Chunks
         .Where(c => c.DocumentId == documentId)
@@ -70,6 +70,6 @@ public class SQLChunkRepository : IChunkRepository
             ChunkText = c.ChunkText,
             Embedding = c.Embedding
         })
-        .ToListAsync();
+        .ToListAsync(cancellationToken);
     }
 }

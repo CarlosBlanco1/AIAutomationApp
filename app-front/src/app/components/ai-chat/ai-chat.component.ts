@@ -1,10 +1,11 @@
-import { Component, ElementRef, inject, Input, signal, ViewChild } from "@angular/core";
+import { Component, ElementRef, inject, Input, OnDestroy, signal, ViewChild } from "@angular/core";
 import { SignalRService } from "../../services/signalr/signalr.service";
 import { SparkleIconComponent } from "../../icons/sparkle-icon.component";
 import { RefreshIconComponent } from "../../icons/refresh-icon.component";
 import { PointerRightIconComponent } from "../../icons/pointer-right-icon.component";
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { LoadingGoey } from "../../animations/loading-goey/loading-goey.component";
+import { Subject, takeUntil } from "rxjs";
 
 @Component({
     selector: 'app-ai-chat-component',
@@ -12,22 +13,27 @@ import { LoadingGoey } from "../../animations/loading-goey/loading-goey.componen
     imports: [SparkleIconComponent, RefreshIconComponent, PointerRightIconComponent, ReactiveFormsModule, LoadingGoey]
 })
 
-export class AiChatComponent {
+export class AiChatComponent implements OnDestroy {
     @Input({ required: true }) documentId!: string;
 
     private signalrService = inject(SignalRService);
     messages = signal<(UserMessage | AIMessage | LoadingMessage)[]>([]);
 
+    private destroy$ = new Subject<void>();
+
     private loadingInterval?: ReturnType<typeof setInterval>;
 
     isFirstCall = true;
+    isInMiddleOfMessage = false;
 
     @ViewChild('messageContainer')
     private messageContainer!: ElementRef<HTMLDivElement>;
 
     constructor() {
         this.signalrService.startConnection();
-        this.signalrService.addMessageListener().subscribe({
+        this.signalrService.addMessageListener()
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
             next: (chunk) => {
 
                 if (this.loadingInterval) {
@@ -48,6 +54,7 @@ export class AiChatComponent {
 
                 if (chunk.done) {
                     this.isFirstCall = true;
+                    this.isInMiddleOfMessage = false;
                 }
                 else {
                     this.messages.update((messages) => {
@@ -72,11 +79,26 @@ export class AiChatComponent {
         {
             currentMessage: new FormControl('', [
                 Validators.required,
-                Validators.maxLength(50),
+                Validators.maxLength(100),
                 Validators.minLength(4)
             ])
         }
     )
+
+    ruleToMessage = [
+        {
+            validationRule: 'required',
+            errorMessage: `Prompt is required.`,
+        },
+        {
+            validationRule: 'minlength',
+            errorMessage: `Prompt must be at least 4 characters long.`,
+        },
+        {
+            validationRule: 'maxlength',
+            errorMessage: `Prompt must be no longer than 100 characters long.`,
+        },
+    ]
 
     get currentMessage() {
         return this.messageForm.controls.currentMessage
@@ -85,6 +107,10 @@ export class AiChatComponent {
     sendMessage(event: SubmitEvent) {
         event.preventDefault();
         event.stopPropagation();
+        
+        if(this.isInMiddleOfMessage || this.messageForm.invalid) return;
+
+        this.isInMiddleOfMessage = true;
 
         var newMesage: UserMessage = {
             id: crypto.randomUUID().toString(),
@@ -123,6 +149,17 @@ export class AiChatComponent {
             top: container.scrollHeight,
             behavior: 'smooth'
         });
+    }
+
+    ngOnDestroy(): void {
+        this.destroy$.next();
+        this.destroy$.complete();
+
+        if(this.loadingInterval) {
+            clearInterval(this.loadingInterval)
+        }
+
+        this.signalrService.stopConnection();
     }
 }
 export type UserMessage = {

@@ -6,6 +6,16 @@ from pydantic import BaseModel
 from app.text_pre_processing import EmbeddedChunk, TextPreProcessing, TextChunk
 from transformers import AutoTokenizer
 from sentence_transformers import SentenceTransformer
+import logging
+import asyncio
+
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s | %(levelname)s | %(name)s | %(message)s"
+)
+
+logger = logging.getLogger(__name__)
 
 class PromptEmbeddingRequest(BaseModel):
     prompt : str
@@ -64,20 +74,25 @@ async def extract_text(request : Request, file : UploadFile):
     tokenizer = request.app.state.tokenizer
     embedding_model = request.app.state.embedding_model
 
-    if filename.endswith('.pdf'):
-        text = TextPreProcessing.extract_text_pdf(content)
-    elif filename.endswith('.docx'):
-        text = TextPreProcessing.extract_text_docx(content)
-    elif filename.endswith('.txt'):
-        text = TextPreProcessing.extract_text_txt(content)
-    else:
-        raise HTTPException(status_code=400, detail='Unsupported file format')
+    try:
+        if filename.endswith('.pdf'):
+            text = await TextPreProcessing.extract_text_pdf(content, request)
+        elif filename.endswith('.docx'):
+            text = TextPreProcessing.extract_text_docx(content)
+        elif filename.endswith('.txt'):
+            text = TextPreProcessing.extract_text_txt(content)
+        else:
+            raise HTTPException(status_code=400, detail='Unsupported file format')
+        
+        text = TextPreProcessing.normalize_text(text)
+
+        text_chunks : list[TextChunk] = await TextPreProcessing.chunk_text(text, tokenizer, request)
+        embedded_text_chunks : list[EmbeddedChunk] = await TextPreProcessing.embed_chunks(text_chunks, embedding_model, request)
     
-    text = TextPreProcessing.normalize_text(text)
-    text_chunks : list[TextChunk] = TextPreProcessing.chunk_text(text, tokenizer)
-    embedded_text_chunks : list[EmbeddedChunk] = TextPreProcessing.embed_chunks(text_chunks, embedding_model)
-    
-    return embedded_text_chunks
+        return embedded_text_chunks
+    except asyncio.CancelledError:
+        logger.info("RAG document processing cancelled by client")
+        raise
 
 @app.post("/generate-prompt-embedding")
 def generate_prompt_embedding(request : Request, body : PromptEmbeddingRequest) -> list[float]:

@@ -6,11 +6,13 @@ class PythonExtractorService : ITextExtractorService
 {
     private readonly IHttpClientFactory httpClientFactory;
     private readonly IConfiguration configuration;
+    private readonly ILogger<PythonExtractorService> logger;
 
-    public PythonExtractorService(IHttpClientFactory httpClientFactory, IConfiguration configuration)
+    public PythonExtractorService(IHttpClientFactory httpClientFactory, IConfiguration configuration, ILogger<PythonExtractorService> logger)
     {
         this.httpClientFactory = httpClientFactory;
         this.configuration = configuration;
+        this.logger = logger;
     }
 
     public async Task<Vector> GetEmbeddingForPrompt(string prompt)
@@ -30,22 +32,31 @@ class PythonExtractorService : ITextExtractorService
         return new Vector(unformattedEmbedding);
     }
 
-    public async Task<List<ChunkResponse>> GetTextEmbeddedChunksAsync(IFormFile file, string fileName)
+    public async Task<List<ChunkResponse>> GetTextEmbeddedChunksAsync(IFormFile file, string fileName, CancellationToken cancellationToken)
     {
-        var client = httpClientFactory.CreateClient("ExtendedTimeoutClient");
+        try
+        {
+            var client = httpClientFactory.CreateClient("ExtendedTimeoutClient");
 
-        using var fileStream = file.OpenReadStream();
+            using var fileStream = file.OpenReadStream();
+            using var fileContent = new StreamContent(fileStream);
+            using var content = new MultipartFormDataContent();
 
-        using var content = new MultipartFormDataContent();
+            content.Add(fileContent, "file", fileName);
 
-        content.Add(new StreamContent(fileStream), "file", fileName);
+            var textExtractorUrl = configuration["TEXT_EXTRACTOR_URL"];
 
-        var textExtractorUrl = configuration["TEXT_EXTRACTOR_URL"];
+            var response = await client.PostAsync(
+                $"{textExtractorUrl}/generate-embedded-chunks",
+                content,
+                cancellationToken);
 
-        var response = await client.PostAsync(
-            $"{textExtractorUrl}/generate-embedded-chunks",
-            content);
-
-        return (await response.Content.ReadFromJsonAsync<List<ChunkResponse>>())!;
+            return (await response.Content.ReadFromJsonAsync<List<ChunkResponse>>(cancellationToken))!;
+        }
+        catch(OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            logger.LogInformation("Retrieving embedded chunks operation cancelled for file '{fileName}'", fileName);
+            throw;
+        }
     }
 }

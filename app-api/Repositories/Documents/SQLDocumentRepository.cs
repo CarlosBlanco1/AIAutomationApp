@@ -9,10 +9,10 @@ public class SQLDocumentRepository : IDocumentRepository
     {
         _dbContext = dbContext;
     }
-    public async Task<Document> CreateDocumentAsync(Document newDocument)
+    public async Task<Document> CreateDocumentAsync(Document newDocument, CancellationToken cancellationToken)
     {
-        await _dbContext.Documents.AddAsync(newDocument);
-        await _dbContext.SaveChangesAsync();
+        await _dbContext.Documents.AddAsync(newDocument, cancellationToken);
+        await _dbContext.SaveChangesAsync(cancellationToken);
 
         return newDocument;
     }
@@ -49,7 +49,7 @@ public class SQLDocumentRepository : IDocumentRepository
         .FirstOrDefaultAsync();
     }
 
-    public async Task<List<Document>> GetDocumentsByUserIdAsync(Guid userId)
+    public async Task<List<Document>> GetDocumentsByUserIdAsync(Guid userId, CancellationToken cancellationToken)
     {
         return await _dbContext.Documents
         .Select(d => new Document
@@ -70,7 +70,7 @@ public class SQLDocumentRepository : IDocumentRepository
             Chunks = new List<Chunk>()
         })
         .Where(d => d.Workspace.OwnerId == userId)
-        .ToListAsync();
+        .ToListAsync(cancellationToken);
     }
 
     public async Task<List<Document>> GetDocumentsByWorkspaceIdAsync(Guid workspaceId)

@@ -16,8 +16,9 @@ public class DocumentController : Controller
     private readonly IChatService chatService;
     private readonly IMapper mapper;
     private readonly IChunkRepository chunkRepository;
+    private readonly ILogger<DocumentController> logger;
 
-    public DocumentController(IDocumentRepository documentRepository, IWorkspaceRepository workspaceRepository, IFileStorageService storageService, ITextExtractorService textExtractorService, IChatService chatService, IMapper mapper, IChunkRepository chunkRepository)
+    public DocumentController(IDocumentRepository documentRepository, IWorkspaceRepository workspaceRepository, IFileStorageService storageService, ITextExtractorService textExtractorService, IChatService chatService, IMapper mapper, IChunkRepository chunkRepository, ILogger<DocumentController> logger)
     {
         this.documentRepository = documentRepository;
         this.workspaceRepository = workspaceRepository;
@@ -26,6 +27,7 @@ public class DocumentController : Controller
         this.chatService = chatService;
         this.mapper = mapper;
         this.chunkRepository = chunkRepository;
+        this.logger = logger;
     }
 
     [HttpGet]
@@ -35,7 +37,7 @@ public class DocumentController : Controller
     {
         var idInToken = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
-        var documents = await documentRepository.GetDocumentsByUserIdAsync(idInToken);
+        var documents = await documentRepository.GetDocumentsByUserIdAsync(idInToken, CancellationToken.None);
 
         return Ok(mapper.Map<List<DocumentDTO>>(documents));
     }
@@ -47,7 +49,7 @@ public class DocumentController : Controller
     {
         var document = await documentRepository.GetDocumentByIdAsync(documentId);
 
-        if(document != null)
+        if (document != null)
         {
             return Ok(mapper.Map<DocumentDTO>(document));
         }
@@ -83,64 +85,72 @@ public class DocumentController : Controller
     [HttpPost]
     [ValidateModel]
     [Authorize]
-    public async Task<IActionResult> CreateDocument([FromForm] CreateDocumentDTO createDocumentDTO)
+    public async Task<IActionResult> CreateDocument([FromForm] CreateDocumentDTO createDocumentDTO, CancellationToken cancellationToken)
     {
-        var idInToken = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-
-        var userDocs = await documentRepository.GetDocumentsByUserIdAsync(idInToken);
-        var totalDocsSize = userDocs.Sum(d => d.FileSizeBytes);
-
-        var workspace = await workspaceRepository.GetWorkspaceByIdAsync(createDocumentDTO.WorkspaceId);
-
-        if (workspace == null)
+        try
         {
-            return NotFound("Workspace not found!");
+            var idInToken = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+
+            var userDocs = await documentRepository.GetDocumentsByUserIdAsync(idInToken, cancellationToken);
+            var totalDocsSize = userDocs.Sum(d => d.FileSizeBytes);
+
+            var workspace = await workspaceRepository.GetWorkspaceByIdAsync(createDocumentDTO.WorkspaceId);
+
+            if (workspace == null)
+            {
+                return NotFound("Workspace not found!");
+            }
+            else if (workspace.OwnerId != idInToken)
+            {
+                return Forbid();
+            }
+            else if ((totalDocsSize + createDocumentDTO.File.Length) > (1 * 1024 * 1024))
+            {
+                return BadRequest("You have more than 1 MB worth of space occupied, get rid of some of your documents.");
+            }
+
+            var newDoc = mapper.Map<Document>(createDocumentDTO);
+
+            var blobKey = $"users/{idInToken}/workspaces/{createDocumentDTO.WorkspaceId}/documents/{newDoc.DocumentId}.pdf";
+
+            newDoc.BlobKey = blobKey;
+            var file = createDocumentDTO.File;
+
+            var fileChunks = await textExtractorService.GetTextEmbeddedChunksAsync(file, file.FileName, cancellationToken);
+
+            fileChunks = fileChunks.OrderBy(c => c.Index).ToList();
+
+            //CALL AI TO SUMMARIZE DOC
+            var summary = await chatService.GenerateSummaryAsync(fileChunks, cancellationToken);
+
+            newDoc.Summary = summary;
+
+            //STORE IT IN R2
+            var uploadFileResult = await storageService.UploadAsync(file, blobKey, cancellationToken);
+
+            if (!uploadFileResult.Succeeded)
+            {
+                return BadRequest(uploadFileResult.Error);
+            }
+
+            newDoc = await documentRepository.CreateDocumentAsync(newDoc, cancellationToken);
+
+            var documentChunks = mapper.Map<List<Chunk>>(fileChunks, opt =>
+            {
+                opt.Items["DocumentId"] = newDoc.DocumentId;
+            });
+
+            await chunkRepository.CreateChunksAsync(documentChunks, cancellationToken);
+
+            var returnDocDto = mapper.Map<DocumentDTO>(newDoc);
+
+            return CreatedAtAction(nameof(GetDocumentsByWorkspaceId), new { workspaceId = createDocumentDTO.WorkspaceId }, returnDocDto);
         }
-        else if (workspace.OwnerId != idInToken)
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
         {
-            return Forbid();
+            logger.LogInformation("Create document operation cancelled for document {createDocumentDTO.FileName}", createDocumentDTO.FileName);
+            throw;
         }
-        else if(totalDocsSize > (1 * 1024 * 1024))
-        {
-            return BadRequest("You have more than 1 MB worth of space occupied, get rid of some of your documents.");
-        }
-
-        var newDoc = mapper.Map<Document>(createDocumentDTO);
-
-        var blobKey = $"users/{idInToken}/workspaces/{createDocumentDTO.WorkspaceId}/documents/{newDoc.DocumentId}.pdf";
-
-        newDoc.BlobKey = blobKey;
-        var file = createDocumentDTO.File;
-
-        var fileChunks = await textExtractorService.GetTextEmbeddedChunksAsync(file, file.FileName);
-
-        fileChunks = fileChunks.OrderBy(c => c.Index).ToList();
-
-        //CALL AI TO SUMMARIZE DOC
-        var summary = await chatService.GenerateSummaryAsync(fileChunks);
-
-        newDoc.Summary = summary;
-
-        //STORE IT IN R2
-        var uploadFileResult = await storageService.UploadAsync(file, blobKey);
-
-        if (!uploadFileResult.Succeeded)
-        {
-            return BadRequest(uploadFileResult.Error);
-        }
-
-        newDoc = await documentRepository.CreateDocumentAsync(newDoc);
-
-        var documentChunks = mapper.Map<List<Chunk>>(fileChunks, opt =>
-        {
-            opt.Items["DocumentId"] = newDoc.DocumentId;
-        });
-
-        await chunkRepository.CreateChunksAsync(documentChunks);
-
-        var returnDocDto = mapper.Map<DocumentDTO>(newDoc);
-
-        return CreatedAtAction(nameof(GetDocumentsByWorkspaceId), new { workspaceId = createDocumentDTO.WorkspaceId }, returnDocDto);
     }
 
     [HttpPut]

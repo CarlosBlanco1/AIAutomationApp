@@ -24,9 +24,9 @@
             }
             @else if(message.sender == 'Loading')
             {
-                <div class="basis-full flex justify-start">
-                    <app-loading-goey></app-loading-goey>
-                </div>
+            <div class="basis-full flex justify-start">
+                <app-loading-goey></app-loading-goey>
+            </div>
             }
             @else
             {
@@ -47,5 +47,16 @@
                 </div>
             </button>
         </form>
+        <div class="row-span-1 min-h-full flex">
+            @if (currentMessage.invalid && (currentMessage.dirty || currentMessage.touched)) {
+            <div class="flex-1 h-full flex gap-5">
+                @for (ruleAndMessage of ruleToMessage; track ruleAndMessage.validationRule) {
+                @if (currentMessage.hasError(ruleAndMessage.validationRule)) {
+                <div class="text-red-700 lg:text-sm max-lg:text-xs">{{ ruleAndMessage.errorMessage }}</div>
+                }
+                }
+            </div>
+            }
+        </div>
     </div>
 </div>

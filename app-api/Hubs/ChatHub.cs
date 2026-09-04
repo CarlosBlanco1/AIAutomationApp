@@ -11,11 +11,11 @@ public class ChatHub : Hub
     }
     public async Task SendMessage(ClientMessage message)
     {
-        var responses = chatService.ChatAsync(message.message, Guid.Parse(message.documentId));
+        var responses = chatService.ChatAsync(message.message, Guid.Parse(message.documentId), Context.ConnectionAborted);
 
         await foreach (var response in responses)
         {    
-            await Clients.All.SendAsync("ReceiveMessage", new {id = Guid.NewGuid(), sender = "AI", message = response.Response, done = response.Done});
+            await Clients.All.SendAsync("ReceiveMessage", new {id = Guid.NewGuid(), sender = "AI", message = response.Response, done = response.Done}, Context.ConnectionAborted);
         }
     }
 }

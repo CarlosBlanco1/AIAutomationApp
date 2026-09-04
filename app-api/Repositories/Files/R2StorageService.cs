@@ -6,12 +6,14 @@ public class R2StorageService : IFileStorageService
 {
     private readonly IConfiguration _configuration;
     private readonly IAmazonS3 _s3Client;
+    private readonly ILogger<R2StorageService> _logger;
     private readonly string _bucketName;
 
-    public R2StorageService(IConfiguration configuration, IAmazonS3 s3Client)
+    public R2StorageService(IConfiguration configuration, IAmazonS3 s3Client, ILogger<R2StorageService> logger)
     {
         _configuration = configuration;
         _s3Client = s3Client;
+        _logger = logger;
         _bucketName =  _configuration["BUCKET_NAME"]!;
     }
     public async Task<string> CreateDownloadUrlAsync(string objectKey)
@@ -57,7 +59,7 @@ public class R2StorageService : IFileStorageService
         }
     }
 
-    public async Task<UploadFileResult> UploadAsync(IFormFile file, string objectKey)
+    public async Task<UploadFileResult> UploadAsync(IFormFile file, string objectKey, CancellationToken cancellationToken)
     {
         if (file == null || file.Length == 0)
         {
@@ -77,9 +79,14 @@ public class R2StorageService : IFileStorageService
                 DisablePayloadSigning = true
             };
 
-            PutObjectResponse response = await _s3Client.PutObjectAsync(putRequest);
+            PutObjectResponse response = await _s3Client.PutObjectAsync(putRequest, cancellationToken);
 
             return UploadFileResult.Success(response.ETag);
+        }
+        catch(OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            _logger.LogInformation("Object upload cancelled for object with key {objectKey}", objectKey);
+            throw;
         }
         catch (AmazonS3Exception ex)
         {

@@ -1,8 +1,15 @@
+import asyncio
 from dataclasses import dataclass
 from io import BytesIO
 import unicodedata
+
+from fastapi import Request
 from pypdf import PdfReader
 from docx import Document
+
+import logging
+
+logger = logging.getLogger(__name__)
 
 @dataclass
 class EmbeddedChunk:
@@ -18,11 +25,14 @@ class TextChunk:
 
 class TextPreProcessing:
     @staticmethod
-    def extract_text_pdf(content : bytes) -> str:
+    async def extract_text_pdf(content : bytes, request : Request) -> str:
         reader = PdfReader(BytesIO(content))
         pages = []
 
         for page in reader.pages:
+            if await request.is_disconnected():
+                logger.info("Client disconected during text extraction")
+                raise asyncio.CancelledError()
 
             text = page.extract_text() or ""
 
@@ -56,18 +66,23 @@ class TextPreProcessing:
         return " ".join(text.split())
     
     @staticmethod
-    def chunk_text(text : str,
+    async def chunk_text(text : str,
                    tokenizer,
+                   request : Request,
                    max_tokens_per_chunk : int = 500,
                    overlap : float = 1/3) -> list[TextChunk]:
 
-        text_lenght = len(text)
+        text_length = len(text)
         chunks : list[TextChunk] = []
 
         start = 0
 
-        while start < text_lenght:
-            low_bound, high_bound = start + 1, text_lenght
+        while start < text_length:
+            if await request.is_disconnected():
+                logger.info("Client disconected during document chunking")
+                raise asyncio.CancelledError()
+            
+            low_bound, high_bound = start + 1, text_length
             last_valid_end = start
             last_valid_token_size = 0
 
@@ -85,7 +100,7 @@ class TextPreProcessing:
 
             chunks.append(TextChunk(text=text[start:last_valid_end], token_size=last_valid_token_size))
 
-            if last_valid_end >= text_lenght:
+            if last_valid_end >= text_length:
                 break
 
             start = max(start + 1, last_valid_end - int((last_valid_end - start) * overlap) )
@@ -93,6 +108,15 @@ class TextPreProcessing:
         return chunks
 
     @staticmethod
-    def embed_chunks(chunks : list[TextChunk], model) -> list[EmbeddedChunk]:
-        embeddings = model.encode([chunk.text for chunk in chunks], normalize_embeddings=True).tolist()
+    async def embed_chunks(chunks : list[TextChunk], model, request : Request) -> list[EmbeddedChunk]:
+        embeddings = []
+
+        for chunk in chunks:
+            if await request.is_disconnected():
+                logger.info("Client disconected during embedding generation for chunks")
+                raise asyncio.CancelledError()
+            
+            vector = await asyncio.to_thread(model.encode, chunk.text, normalize_embeddings=True)
+            embeddings.append(vector)
+        
         return [EmbeddedChunk(index=i, chunk=c.text, vector=v, token_size=c.token_size) for i, (c, v) in enumerate(zip(chunks, embeddings))]

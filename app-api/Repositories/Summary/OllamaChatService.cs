@@ -11,39 +11,43 @@ public class OllamaChatService : IChatService
     private readonly IHttpClientFactory clientFactory;
     private readonly IChunkRepository chunkRepository;
     private readonly ITextExtractorService textExtractorService;
+    private readonly ILogger<OllamaChatService> logger;
     private readonly string ollamaBaseUrl;
     private readonly string ollamaUsername;
     private readonly string ollamaPassword;
 
-    public OllamaChatService(IHttpClientFactory clientFactory, IChunkRepository chunkRepository, ITextExtractorService textExtractorService, IConfiguration configuration)
+    public OllamaChatService(IHttpClientFactory clientFactory, IChunkRepository chunkRepository, ITextExtractorService textExtractorService, IConfiguration configuration, ILogger<OllamaChatService> logger)
     {
         this.clientFactory = clientFactory;
         this.chunkRepository = chunkRepository;
         this.textExtractorService = textExtractorService;
+        this.logger = logger;
         ollamaBaseUrl = configuration["OLLAMA_BASE_URL"]!;
         ollamaUsername = configuration["OLLAMA_USER"]!;
         ollamaPassword = configuration["OLLAMA_PASSWORD"]!;
     }
 
-    public async Task<string> GenerateSummaryAsync(List<ChunkResponse> fileChunks, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    public async Task<string> GenerateSummaryAsync(List<ChunkResponse> fileChunks, CancellationToken cancellationToken = default)
     {
-        var client = clientFactory.CreateClient("ExtendedTimeoutClient");
-
-        var credentials = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{ollamaUsername}:{ollamaPassword}"));
-
-        JsonSerializerOptions options = JsonSerializerOptions.Default;
-
-        JsonNode schema = options.GetJsonSchemaAsNode(typeof(OllamaSummaryResponse));
-        schema["type"] = "object";
-
-        var partialSummaries = new List<string>();
-
-        foreach (var fileChunk in fileChunks)
+        try
         {
-            var chunkRequest = new OllamaSummaryRequest
+            var client = clientFactory.CreateClient("ExtendedTimeoutClient");
+
+            var credentials = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{ollamaUsername}:{ollamaPassword}"));
+
+            JsonSerializerOptions options = JsonSerializerOptions.Default;
+
+            JsonNode schema = options.GetJsonSchemaAsNode(typeof(OllamaSummaryResponse));
+            schema["type"] = "object";
+
+            var partialSummaries = new List<string>();
+
+            foreach (var fileChunk in fileChunks)
             {
-                Model = "llama3.2:1b",
-                Prompt = $"""
+                var chunkRequest = new OllamaSummaryRequest
+                {
+                    Model = "llama3.2:1b",
+                    Prompt = $"""
                         Write a concise but complete summary of 4 to 6 sentences.
 
                         Do not return only a title, topic, or single-word answer.
@@ -51,40 +55,40 @@ public class OllamaChatService : IChatService
                         Section to summarize:
                         {fileChunk.Chunk}
                         """,
-                Format = schema,
-                Stream = false
-            };
+                    Format = schema,
+                    Stream = false
+                };
 
-            var chunkHttpRequest = new HttpRequestMessage(
-            HttpMethod.Post,
-            $"{ollamaBaseUrl}/api/generate")
-            {
-                Content = JsonContent.Create(chunkRequest, options: new JsonSerializerOptions
+                using var chunkHttpRequest = new HttpRequestMessage(
+                HttpMethod.Post,
+                $"{ollamaBaseUrl}/api/generate")
                 {
-                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-                })
-            };
+                    Content = JsonContent.Create(chunkRequest, options: new JsonSerializerOptions
+                    {
+                        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+                    })
+                };
 
-            chunkHttpRequest.Headers.Authorization = new AuthenticationHeaderValue("Basic", credentials);
+                chunkHttpRequest.Headers.Authorization = new AuthenticationHeaderValue("Basic", credentials);
 
-            var chunkResponse = await client.SendAsync(chunkHttpRequest,cancellationToken);
+                using var chunkResponse = await client.SendAsync(chunkHttpRequest, cancellationToken);
 
-            var chunkOllamaResult = await chunkResponse.Content.ReadFromJsonAsync<OllamaGenerateResponse>();
+                var chunkOllamaResult = await chunkResponse.Content.ReadFromJsonAsync<OllamaGenerateResponse>();
 
-            var chunkSummary = JsonSerializer.Deserialize<OllamaSummaryResponse>(
-                chunkOllamaResult!.Response,
-                new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
-            );
+                var chunkSummary = JsonSerializer.Deserialize<OllamaSummaryResponse>(
+                    chunkOllamaResult!.Response,
+                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+                );
 
-            partialSummaries.Add(chunkSummary!.Summary);
-        }
+                partialSummaries.Add(chunkSummary!.Summary);
+            }
 
-        var combinedSummaries = string.Join("\n\n", partialSummaries);
+            var combinedSummaries = string.Join("\n\n", partialSummaries);
 
-        var request = new OllamaSummaryRequest
-        {
-            Model = "llama3.2:1b",
-            Prompt = $"""
+            var request = new OllamaSummaryRequest
+            {
+                Model = "llama3.2:1b",
+                Prompt = $"""
                         Create one coherent summary of the complete document using the
                         section summaries below.
 
@@ -94,13 +98,13 @@ public class OllamaChatService : IChatService
                         Section summaries:
                         {combinedSummaries}
                         """,
-            Format = schema,
-            Stream = false
-        };
+                Format = schema,
+                Stream = false
+            };
 
-        var summaryHttpRequest = new HttpRequestMessage(
-            HttpMethod.Post,
-            $"{ollamaBaseUrl}/api/generate")
+            using var summaryHttpRequest = new HttpRequestMessage(
+                HttpMethod.Post,
+                $"{ollamaBaseUrl}/api/generate")
             {
                 Content = JsonContent.Create(request, options: new JsonSerializerOptions
                 {
@@ -108,29 +112,40 @@ public class OllamaChatService : IChatService
                 })
             };
 
-        summaryHttpRequest.Headers.Authorization = new AuthenticationHeaderValue("Basic", credentials);
+            summaryHttpRequest.Headers.Authorization = new AuthenticationHeaderValue("Basic", credentials);
 
-        var response = await client.SendAsync(summaryHttpRequest,cancellationToken);
+            using var response = await client.SendAsync(summaryHttpRequest, cancellationToken);
 
-        var ollamaResult = await response.Content.ReadFromJsonAsync<OllamaGenerateResponse>();
+            var ollamaResult = await response.Content.ReadFromJsonAsync<OllamaGenerateResponse>();
 
-        var generalSummary = JsonSerializer.Deserialize<OllamaSummaryResponse>(
-            ollamaResult!.Response,
-            new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
-        );
+            var generalSummary = JsonSerializer.Deserialize<OllamaSummaryResponse>(
+                ollamaResult!.Response,
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+            );
 
-        return generalSummary!.Summary;
+            return generalSummary!.Summary;
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            logger.LogInformation("Generate Summary operation cancelled");
+            throw;
+        }
     }
 
-    public async IAsyncEnumerable<OllamaChatResponse> ChatAsync(string message, Guid documentId, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    public async IAsyncEnumerable<OllamaChatResponse> ChatAsync(string message, Guid documentId, [EnumeratorCancellation] CancellationToken cancellationToken)
     {
+        using var cancellationTokenRegistration = cancellationToken.Register(() =>
+        {
+            logger.LogInformation("Chat generation for {documentId} cancelled abruptly", documentId);
+        });
+
         var chunkTokenBudget = (int)(128000 * 0.8);
 
         // generate embedding from question
         var queryEmbedding = await textExtractorService.GetEmbeddingForPrompt(message);
 
         // retrieve top k chunks
-        var textChunks = await chunkRepository.GetRelevantChunksForEmbeddingForDocument(queryEmbedding, chunkTokenBudget, documentId);
+        var textChunks = await chunkRepository.GetRelevantChunksForEmbeddingForDocument(queryEmbedding, chunkTokenBudget, documentId, cancellationToken);
 
         var request = new OllamaChatRequest
         {
