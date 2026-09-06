@@ -14,7 +14,7 @@ public class R2StorageService : IFileStorageService
         _configuration = configuration;
         _s3Client = s3Client;
         _logger = logger;
-        _bucketName =  _configuration["BUCKET_NAME"]!;
+        _bucketName = _configuration["BUCKET_NAME"]!;
     }
     public async Task<string> CreateDownloadUrlAsync(string objectKey)
     {
@@ -40,8 +40,8 @@ public class R2StorageService : IFileStorageService
         try
         {
             DeleteObjectResponse response = await _s3Client.DeleteObjectAsync(deleteRequest);
-            if(response.HttpStatusCode == System.Net.HttpStatusCode.NoContent)
-            {     
+            if (response.HttpStatusCode == System.Net.HttpStatusCode.NoContent)
+            {
                 return "Successful deletion!";
             }
             else
@@ -57,6 +57,15 @@ public class R2StorageService : IFileStorageService
         {
             return $"Unknown encountered on server. Message:'{e.Message}' when deleting an object";
         }
+    }
+
+    public Task<GetObjectResponse> GetFileAsync(string objectKey, CancellationToken cancellationToken)
+    {
+        return _s3Client.GetObjectAsync(new GetObjectRequest
+        {
+            Key = objectKey,
+            BucketName = _bucketName
+        }, cancellationToken);
     }
 
     public async Task<UploadFileResult> UploadAsync(IFormFile file, string objectKey, CancellationToken cancellationToken)
@@ -83,7 +92,7 @@ public class R2StorageService : IFileStorageService
 
             return UploadFileResult.Success(response.ETag);
         }
-        catch(OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
         {
             _logger.LogInformation("Object upload cancelled for object with key {objectKey}", objectKey);
             throw;

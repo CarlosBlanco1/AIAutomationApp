@@ -3,6 +3,6 @@ using Pgvector;
 
 public interface ITextExtractorService
 {
-    Task<List<ChunkResponse>> GetTextEmbeddedChunksAsync(IFormFile file, string fileName, CancellationToken cancellationToken);
+    Task<List<ChunkResponse>> GetTextEmbeddedChunksAsync(System.IO.Stream fileStream, string fileName, CancellationToken cancellationToken);
     Task<Vector> GetEmbeddingForPrompt(string prompt);
 }

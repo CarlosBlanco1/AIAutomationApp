@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using app_api.Models;
 using AutoMapper;
+using Hangfire;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -12,21 +13,17 @@ public class DocumentController : Controller
     private readonly IDocumentRepository documentRepository;
     private readonly IWorkspaceRepository workspaceRepository;
     private readonly IFileStorageService storageService;
-    private readonly ITextExtractorService textExtractorService;
-    private readonly IChatService chatService;
+    private readonly IBackgroundJobClient backgroundJobs;
     private readonly IMapper mapper;
-    private readonly IChunkRepository chunkRepository;
     private readonly ILogger<DocumentController> logger;
 
-    public DocumentController(IDocumentRepository documentRepository, IWorkspaceRepository workspaceRepository, IFileStorageService storageService, ITextExtractorService textExtractorService, IChatService chatService, IMapper mapper, IChunkRepository chunkRepository, ILogger<DocumentController> logger)
+    public DocumentController(IDocumentRepository documentRepository, IWorkspaceRepository workspaceRepository, IFileStorageService storageService, IBackgroundJobClient backgroundJobs, IMapper mapper, ILogger<DocumentController> logger)
     {
         this.documentRepository = documentRepository;
         this.workspaceRepository = workspaceRepository;
         this.storageService = storageService;
-        this.textExtractorService = textExtractorService;
-        this.chatService = chatService;
+        this.backgroundJobs = backgroundJobs;
         this.mapper = mapper;
-        this.chunkRepository = chunkRepository;
         this.logger = logger;
     }
 
@@ -110,20 +107,14 @@ public class DocumentController : Controller
             }
 
             var newDoc = mapper.Map<Document>(createDocumentDTO);
+            newDoc.ProcessingStatus = ProcessingStatus.Pending;
+            
+            var file = createDocumentDTO.File;
+            var fileExtension = Path.GetExtension(file.FileName).ToLowerInvariant();
 
-            var blobKey = $"users/{idInToken}/workspaces/{createDocumentDTO.WorkspaceId}/documents/{newDoc.DocumentId}.pdf";
+            var blobKey = $"users/{idInToken}/workspaces/{createDocumentDTO.WorkspaceId}/documents/{newDoc.DocumentId}{fileExtension}";
 
             newDoc.BlobKey = blobKey;
-            var file = createDocumentDTO.File;
-
-            var fileChunks = await textExtractorService.GetTextEmbeddedChunksAsync(file, file.FileName, cancellationToken);
-
-            fileChunks = fileChunks.OrderBy(c => c.Index).ToList();
-
-            //CALL AI TO SUMMARIZE DOC
-            var summary = await chatService.GenerateSummaryAsync(fileChunks, cancellationToken);
-
-            newDoc.Summary = summary;
 
             //STORE IT IN R2
             var uploadFileResult = await storageService.UploadAsync(file, blobKey, cancellationToken);
@@ -133,18 +124,25 @@ public class DocumentController : Controller
                 return BadRequest(uploadFileResult.Error);
             }
 
-            newDoc = await documentRepository.CreateDocumentAsync(newDoc, cancellationToken);
-
-            var documentChunks = mapper.Map<List<Chunk>>(fileChunks, opt =>
+            try
             {
-                opt.Items["DocumentId"] = newDoc.DocumentId;
+                newDoc = await documentRepository.CreateDocumentAsync(newDoc, cancellationToken);
+            }
+            catch (Exception)
+            {
+                await storageService.DeleteAsync(blobKey); 
+                throw;
+            }
+
+
+            backgroundJobs.Enqueue<DocumentProcessingJob>(job => job.ProcessAsync(newDoc.DocumentId, CancellationToken.None));
+
+            return Accepted(new
+            {
+                documentId = newDoc.DocumentId,
+                status = newDoc.ProcessingStatus
             });
 
-            await chunkRepository.CreateChunksAsync(documentChunks, cancellationToken);
-
-            var returnDocDto = mapper.Map<DocumentDTO>(newDoc);
-
-            return CreatedAtAction(nameof(GetDocumentsByWorkspaceId), new { workspaceId = createDocumentDTO.WorkspaceId }, returnDocDto);
         }
         catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
         {

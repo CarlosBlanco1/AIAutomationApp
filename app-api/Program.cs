@@ -55,7 +55,8 @@ builder.Services.AddScoped<ITextExtractorService, PythonExtractorService>();
 builder.Services.AddScoped<IChatService, OllamaChatService>();
 builder.Services.AddScoped<ITokenRepository, TokenRepository>();
 builder.Services.AddScoped<IEmailSenderRepository, EmailRepository>();
-builder.Services.AddScoped<IChunkRepository, SQLChunkRepository>(); 
+builder.Services.AddScoped<IChunkRepository, SQLChunkRepository>();
+builder.Services.AddScoped<DocumentProcessingJob>();
 builder.Services.AddHttpClient("ExtendedTimeoutClient", client =>
 {
     client.Timeout = TimeSpan.FromMinutes(10);

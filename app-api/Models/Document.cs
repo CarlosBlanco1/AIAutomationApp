@@ -17,11 +17,10 @@ public partial class Document
 
     public string Description {get; set;} = null!;
     
-    public string Summary { get; set; } = null!;
+    public string? Summary { get; set; }
     public ProcessingStatus ProcessingStatus { get; set; } = ProcessingStatus.Pending;
     public string? ProcessingError { get; set; }
     public DateTime CreatedAt { get; set; }
-
     public virtual Workspace Workspace { get; set; } = null!;
     public virtual ICollection<Chunk> Chunks { get; set; } = new List<Chunk>();
 

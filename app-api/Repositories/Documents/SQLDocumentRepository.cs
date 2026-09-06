@@ -9,6 +9,7 @@ public class SQLDocumentRepository : IDocumentRepository
     {
         _dbContext = dbContext;
     }
+
     public async Task<Document> CreateDocumentAsync(Document newDocument, CancellationToken cancellationToken)
     {
         await _dbContext.Documents.AddAsync(newDocument, cancellationToken);
@@ -97,6 +98,43 @@ public class SQLDocumentRepository : IDocumentRepository
         .Where(d => d.WorkspaceId == workspaceId).ToListAsync();
     }
 
+    public async Task MarkProcessingFailedAsync(Guid documentId, string error, CancellationToken cancellationToken)
+    {
+        var documentToMark = await _dbContext.Documents.FirstAsync(d => d.DocumentId == documentId);
+
+        documentToMark.ProcessingStatus = ProcessingStatus.Failed;
+        documentToMark.ProcessingError = error;
+
+        await _dbContext.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task<bool> TryMarkProcessingAsync(Guid documentId, CancellationToken cancellationToken)
+    {
+        var documentToMark = await _dbContext.Documents.FirstAsync(d => d.DocumentId == documentId);
+
+        if (documentToMark.ProcessingStatus == ProcessingStatus.Pending)
+        {
+            documentToMark.ProcessingStatus = ProcessingStatus.Processing;
+
+            await _dbContext.SaveChangesAsync(cancellationToken);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    public async Task CompleteProcessingAsync(Guid documentId, string summary, CancellationToken cancellationToken)
+    {
+        var documentToMark = await _dbContext.Documents.FirstAsync(d => d.DocumentId == documentId);
+
+        documentToMark.ProcessingStatus = ProcessingStatus.Completed;
+        documentToMark.Summary = summary;
+        documentToMark.ProcessingError = null;
+
+        await _dbContext.SaveChangesAsync(cancellationToken);
+    }
+
     public async Task<Document> UpdateDocumentAsync(Guid DocumentId, Document updatedDocument)
     {
         var documentToUpdate = await _dbContext.Documents.FirstAsync(d => d.DocumentId == DocumentId);
@@ -106,5 +144,14 @@ public class SQLDocumentRepository : IDocumentRepository
         await _dbContext.SaveChangesAsync();
 
         return documentToUpdate;
+    }
+
+    public async Task MarkPendingAsync(Guid documentId, CancellationToken cancellationToken)
+    {
+        var documentToMark = await _dbContext.Documents.FirstAsync(d => d.DocumentId == documentId);
+
+        documentToMark.ProcessingStatus = ProcessingStatus.Pending;
+
+        await _dbContext.SaveChangesAsync(cancellationToken);
     }
 }

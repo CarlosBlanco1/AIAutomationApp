@@ -13,6 +13,7 @@ public class DocumentDTO
     public string Description {get; set;} = null!;
     
     public string Summary { get; set; } = null!;
+    public ProcessingStatus processingStatus {get; set;}
 
     public DateTime CreatedAt { get; set; }
 }

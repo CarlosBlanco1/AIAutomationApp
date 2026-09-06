@@ -32,13 +32,12 @@ class PythonExtractorService : ITextExtractorService
         return new Vector(unformattedEmbedding);
     }
 
-    public async Task<List<ChunkResponse>> GetTextEmbeddedChunksAsync(IFormFile file, string fileName, CancellationToken cancellationToken)
+    public async Task<List<ChunkResponse>> GetTextEmbeddedChunksAsync(System.IO.Stream fileStream, string fileName, CancellationToken cancellationToken)
     {
         try
         {
             var client = httpClientFactory.CreateClient("ExtendedTimeoutClient");
 
-            using var fileStream = file.OpenReadStream();
             using var fileContent = new StreamContent(fileStream);
             using var content = new MultipartFormDataContent();
 
