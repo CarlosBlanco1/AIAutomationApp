@@ -24,7 +24,7 @@ public partial class MydbContext : IdentityDbContext<User, IdentityRole<Guid>, G
     public virtual DbSet<Document> Documents { get; set; }
 
     public virtual DbSet<Workspace> Workspaces { get; set; }
-    public virtual DbSet<Chunk> Chunks {get; set;}
+    public virtual DbSet<Chunk> Chunks { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -106,8 +106,13 @@ public partial class MydbContext : IdentityDbContext<User, IdentityRole<Guid>, G
                 .HasMaxLength(50)
                 .HasColumnName("description");
             entity.Property(e => e.Summary).HasColumnName("summary");
+            entity.Property(e => e.ProcessingStatus)
+                .HasConversion<string>()
+                .HasColumnName("processing_status");
+            entity.Property(e => e.ProcessingError)
+                .HasMaxLength(500)
+                .HasColumnName("processing_error");
             entity.Property(e => e.WorkspaceId).HasColumnName("workspace_id");
-
             entity.HasOne(d => d.Workspace).WithMany(p => p.Documents)
                 .HasForeignKey(d => d.WorkspaceId)
                 .OnDelete(DeleteBehavior.Cascade)

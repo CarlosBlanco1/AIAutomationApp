@@ -11,6 +11,8 @@ using Amazon;
 using Amazon.Runtime;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.RateLimiting;
+using Hangfire;
+using Hangfire.PostgreSql;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,6 +38,13 @@ builder.Services.AddDbContext<MydbContext>(options =>
         npgsqlOptions.UseVector();
     });
 });
+
+builder.Services.AddHangfire(config =>
+    config.UsePostgreSqlStorage(options =>
+        options.UseNpgsqlConnection(builder.Configuration["ConnectionString"])));
+
+builder.Services.AddHangfireServer();
+
 builder.Services.AddScoped<IUserRepository, SQLUserRepository>();
 builder.Services.AddScoped<IWorkspaceRepository, SQLWorkspaceRepository>();
 builder.Services.AddScoped<IDocumentRepository, SQLDocumentRepository>();
@@ -147,6 +156,7 @@ app.UseMiddleware<ExceptionHandlerMiddleware>();
 if (!app.Environment.IsDevelopment())
 {
     app.UseHttpsRedirection();
+    app.UseHangfireDashboard("/hangfire");
 }
 
 app.UseRouting();
