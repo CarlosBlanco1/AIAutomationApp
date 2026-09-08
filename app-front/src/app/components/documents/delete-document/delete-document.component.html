@@ -24,7 +24,7 @@
 }
 @else if (formState === 'loading')
 {
-<app-loading-animation></app-loading-animation>
+<app-loading-animation widthAndHeight="w-[40px] h-[40px]" spinnerPadding="p-[20px]" borderStyle="border-4" spinnerColor="#9333ea"></app-loading-animation>
 }
 @else if(formState === 'failure'){
 <app-failure-card primaryText="Failed to delete document" [errorMessage]="errorMessage" (tryAgain)="tryAgain()"

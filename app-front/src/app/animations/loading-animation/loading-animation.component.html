@@ -1,3 +1,4 @@
-<div class="spinner-container">
-    <div class="lightweight-spinner"></div>
+<div [class]="'spinner-container flex items-center justify-center ' + spinnerPadding">
+    <div [class]="'lightweight-spinner border-black/10 ' + widthAndHeight + ' ' + borderStyle + ' ' + 'border-l-4'"
+    [style.border-left]="'4px solid ' + spinnerColor"></div>
 </div>

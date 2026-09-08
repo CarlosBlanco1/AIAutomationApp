@@ -71,13 +71,14 @@
     <div class="row-span-10 grid grid-rows-1 h-full max-lg:pt-4">
       <table class="text-sm text-(--text-gray) border-separate border-spacing-y-4 row-span-1 overflow-auto grid grid-cols-1 grid-rows-10">
         <thead class="col-span-1 row-span-1 grid grid-cols-1 pb-6">
-          <tr class="col-span-1 grid lg:grid-cols-12 max-lg:grid-cols-8">
+          <tr class="col-span-1 grid lg:grid-cols-13 max-lg:grid-cols-9">
             <th class="text-center px-3 col-span-1">
               <input type="checkbox" class="bg-green-400" />
             </th>
             <th class="text-start col-span-4">Name</th>
-            <th class="text-start col-span-2">Workspace</th>
+            <th class="text-start col-span-2">Space</th>
             <th class="text-start col-span-2 max-lg:hidden">Last updated</th>
+            <th class="text-start col-span-1">State</th>
             <th class="text-start col-span-2 max-lg:hidden">Updated by</th>
             <th class="text-start col-span-1"></th>
           </tr>
@@ -87,7 +88,8 @@
           {
           <tr app-document-table-row [documentId]="document.documentId" [documentName]="document.fileName"
             [documentSubtitle]="document.documentId" [documentCategory]="document.workspaceName" [minutesAgoEdited]="2"
-            class="grid lg:grid-cols-12 max-lg:grid-cols-8">
+            [processingStatus]="document.processingStatus"
+            class="grid lg:grid-cols-13 max-lg:grid-cols-9">
             <app-house-icon svgClass="size-5"></app-house-icon>
           </tr>
           }

@@ -1,0 +1,53 @@
+@switch (processingStatus()) {
+@case ("Pending") {
+<div class="flex items-center justify-start">
+    <div class="grid max-lg:grid-cols-1 lg:grid-cols-3 lg:gap-2 max-lg:p-1 lg:p-2 rounded-3xl text-[#BFDBFE] bg-[#1E293B]">
+        <div class="col-span-1 flex items-center">
+            <app-clock-icon svgClass="max-lg:size-7 lg:size-5 xl:size-7"></app-clock-icon>
+        </div>
+        <div class="max-lg:hidden lg:col-span-2 flex items-center max-xl:text-xs">
+            <span>Pending</span>
+        </div>
+    </div>
+</div>
+}
+@case ("Processing") {
+<div class="flex items-center justify-start">
+    <div class="grid max-lg:grid-cols-1 lg:grid-cols-3 lg:gap-2 max-lg:p-1 lg:p-3 lg:pr-5 rounded-3xl text-[#D8B4FE] bg-[#2E1A47]">
+        <div class="col-span-1 flex items-center">
+            <app-loading-animation widthAndHeight="w-[20px] h-[20px]" spinnerPadding="" borderStyle="border-2" spinnerColor="#D8B4FE"></app-loading-animation>
+        </div>
+        <div class="max-lg:hidden lg:col-span-2 flex items-center max-xl:text-xs">
+            <span>Loading</span>
+        </div>
+    </div>
+</div>
+}
+@case ("Failed") {
+<div class="flex items-center justify-start">
+    <div class="grid max-lg:grid-cols-1 lg:grid-cols-3 lg:gap-2 max-lg:p-1 lg:p-2 rounded-3xl text-[#FB7185] bg-[#421F2A]">
+        <div class="col-span-1 flex items-center">
+            <app-alert-icon svgClass="max-lg:size-7 lg:size-5 xl:size-7"></app-alert-icon>
+        </div>
+        <div class="max-lg:hidden lg:col-span-2 flex items-center max-xl:text-xs">
+            <span>Failed</span>
+        </div>
+    </div>
+</div>
+}
+@case ("Completed") {
+<div class="flex items-center justify-start">
+    <div class="grid max-lg:grid-cols-1 lg:grid-cols-3 lg:gap-2 max-lg:p-1 lg:p-2 rounded-3xl text-[#4ADE80] bg-[#123526]">
+        <div class="col-span-1 flex items-center">
+            <app-check-icon svgClass="max-lg:size-7 lg:size-5 xl:size-7"></app-check-icon>
+        </div>
+        <div class="max-lg:hidden lg:col-span-2 flex items-center max-xl:text-xs">
+            <span>Done</span>
+        </div>
+    </div>
+</div>
+}
+@default {
+
+}
+}

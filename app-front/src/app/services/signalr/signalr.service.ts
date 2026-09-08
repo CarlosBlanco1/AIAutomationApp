@@ -56,6 +56,24 @@ export class SignalRService {
     })
   };
 
+  public awaitDocumentUpdates(): Observable<string> {
+    return new Observable<string>(subscriber => {
+      if (!this.hubConnection) {
+        subscriber.error(new Error("Connection hasn't been initialized"))
+      }
+
+      const documentHandler = (documentId: string) => {
+        subscriber.next(documentId);
+      }
+
+      this.hubConnection?.on("DocumentProcessingUpdated", documentHandler);
+
+      return () => {
+        this.hubConnection?.off("DocumentProcessingUpdated", documentHandler);
+      }
+    })
+  }
+
   public sendMessage = (message: UserMessage) => {
     this.hubConnection?.invoke('SendMessage', message)
       .catch(err => console.error(err));

@@ -1,24 +1,22 @@
 import { Component, Input } from "@angular/core";
-
 @Component({
-    selector : 'app-check-icon',
+    selector: 'app-user-circle-icon',
     template: `
-    <svg xmlns="http://www.w3.org/2000/svg"
+    <svg xmlns="http://www.w3.org/2000/svg" 
     viewBox="0 0 24 24" 
     fill="none" 
     stroke="currentColor" 
     stroke-width="2" 
     stroke-linecap="round" 
     stroke-linejoin="round" 
-    [class]="'icon icon-tabler icons-tabler-outline icon-tabler-alert-circle ' + svgClass">
+    [class]="'icon icon-tabler icons-tabler-outline icon-tabler-user-circle ' + svgClass">
 	<path stroke="none" d="M0 0h24v24H0z" fill="none" />
 	<path d="M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
-	<path d="M9 12l2 2l4 -4" />
-    </svg>
-    `,
-    standalone : true
+	<path d="M9 10a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" />
+	<path d="M6.168 18.849a4 4 0 0 1 3.832 -2.849h4a4 4 0 0 1 3.834 2.855" />
+    </svg>`
 })
 
-export class CheckIconComponent {
+export class UserCircleComponent {
     @Input() svgClass = '';
 }

@@ -12,14 +12,27 @@
     </div>
   </div>
 </td>
-<td class="col-span-2">* {{documentCategory}}</td>
-<td class="col-span-2 max-lg:hidden">{{minutesAgoEdited}} minutes ago</td>
-<td class="col-span-2 max-lg:hidden">CIRCLE You</td>
+<td class="col-span-2 flex items-start">
+  <span>* {{documentCategory}}</span>
+</td>
+<td class="col-span-2 flex items-start max-lg:hidden">
+  <span>{{minutesAgoEdited}} minutes ago</span>
+</td>
+<td class="col-span-1 flex items-start">
+  <app-status-pill [processingStatus]="processingStatus"></app-status-pill>
+</td>
+<td class="col-span-2 flex items-start max-lg:hidden">
+  <div class="flex gap-1 items-center p-1">
+    <app-user-circle-icon svgClass="size-7 max-xl:size-5"></app-user-circle-icon>
+    <span class="max-xl:text-xs">You</span>
+  </div>
+</td>
 <td class="col-span-1">
   <div (click)="isHidden = !isHidden">
     <app-horizontal-dots></app-horizontal-dots>
   </div>
-  <div id="custom-dropdown" class="absolute flex-col gap-4 right-10 rounded-lg bg-(--color-bgcard) p-5 text-white w-auto"
+  <div id="custom-dropdown"
+    class="absolute flex-col gap-4 right-10 rounded-lg bg-(--color-bgcard) p-5 text-white w-auto"
     [class.hidden]="isHidden" [class.inline-flex]="!isHidden">
     <div class="flex gap-2" [routerLink]="['/singledocument',documentId]">
       <app-info-icon svgClass="size-5"></app-info-icon>
