@@ -3,6 +3,7 @@ import * as signalR from '@microsoft/signalr';
 import { AppConfigService } from '../configuration/app-config.service';
 import { AIMessage, UserMessage } from '../../components/ai-chat/ai-chat.component';
 import { Observable } from 'rxjs';
+import { AUTH_SERVICE } from '../auth/auth-service.token';
 
 @Injectable({
   providedIn: 'root'
@@ -10,13 +11,15 @@ import { Observable } from 'rxjs';
 export class SignalRService {
   private hubConnection?: signalR.HubConnection;
   private configService = inject(AppConfigService);
+  private authService = inject(AUTH_SERVICE)
 
   constructor() { }
 
   public startConnection = () => {
     this.hubConnection = new signalR.HubConnectionBuilder()
       .withUrl(`${this.configService.apiUrl}/api/chathub`, {
-        withCredentials: false
+        withCredentials: false,
+        accessTokenFactory : () => this.authService.getToken() ?? '',
       })
       .build();
 

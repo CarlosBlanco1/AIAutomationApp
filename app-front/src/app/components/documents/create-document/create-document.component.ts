@@ -4,8 +4,6 @@ import { DOCUMENT_SERVICE } from '../../../services/document/document-service.to
 import { getRuleToMessageFile, getRuleToMessageText } from '../../../dictionaries/validation-messages';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { InputValidatorComponent } from "../../register/input-validator/input-validator.component";
-import { LoadingAnimationComponent } from "../../../animations/loading-animation/loading-animation.component";
-import { FailureCardComponent } from "../../state-cards/failure-card/failure-card.component";
 import { fileValidator } from '../../../directives/Validation/file-validation.directive';
 import { CloudIconComponent } from '../../../icons/cloud-icon.component';
 import { UploadIconComponent } from '../../../icons/upload-icon.component';
@@ -14,7 +12,7 @@ import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-create-document',
-  imports: [ReactiveFormsModule, InputValidatorComponent, LoadingAnimationComponent, FailureCardComponent, CloudIconComponent, UploadIconComponent],
+  imports: [ReactiveFormsModule, InputValidatorComponent, CloudIconComponent, UploadIconComponent],
   templateUrl: './create-document.component.html'
 })
 export class CreateDocumentComponent implements OnDestroy {
@@ -81,8 +79,6 @@ export class CreateDocumentComponent implements OnDestroy {
 
   private documentService = inject(DOCUMENT_SERVICE)
 
-  protected formState: createDocumentFormState = 'form';
-
   errorMessage = ''
   documentValidationMessages = getRuleToMessageText('Document Name', 2, 50);
   descriptionValidationMessages = getRuleToMessageText('Description', 2, 50);
@@ -128,11 +124,9 @@ export class CreateDocumentComponent implements OnDestroy {
   }
 
   onSubmitForm() {
-    if (this.documentForm.invalid || this.formState == 'loading') {
+    if (this.documentForm.invalid) {
       return;
     }
-
-    this.formState = 'loading';
 
     this.documentService.createDocument({
       workspaceId: this.workspaceId.value!,
@@ -150,7 +144,6 @@ export class CreateDocumentComponent implements OnDestroy {
           this.onSuccess()
         },
         error: (err) => {
-          this.formState = 'failure';
           if (err.error && typeof err.error === 'object') {
             this.errorMessage = err.error.message || 'An error occurred';
           } else {
@@ -161,19 +154,9 @@ export class CreateDocumentComponent implements OnDestroy {
     )
   }
 
-  tryAgain() {
-    this.documentForm.reset();
-    this.documentForm.markAsPristine();
-    this.documentForm.markAsUntouched();
-    this.formState = 'form';
-  }
-
   ngOnDestroy() {
     this.destroy$.next();
     this.destroy$.complete();
     this.cancelDocumentCreate$.complete();
   }
 }
-
-type createDocumentFormState = 'form' | 'failure' | 'loading'
-

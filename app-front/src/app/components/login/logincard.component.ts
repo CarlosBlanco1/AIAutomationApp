@@ -23,7 +23,7 @@ export class LoginCardComponent {
     private authService = inject(AUTH_SERVICE)
     private router = inject(Router);
 
-    protected formState: loginFormState = 'loading';
+    protected formState: loginFormState = 'form';
 
     errorMessage = ''
     isLoading = false
