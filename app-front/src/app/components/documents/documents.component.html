@@ -29,7 +29,7 @@
       </div>
     </div>
     <div class="grid grid-cols-3 gap-4">
-      <app-document-metric-block class="col-span-1" [metricNumber]="userDocuments().length" metricName="Documents">
+      <app-document-metric-block class="col-span-1" [metricNumber]="documentService.userDocuments().length" metricName="Documents">
         <app-house-icon svgClass="size-5"></app-house-icon>
       </app-document-metric-block>
       <app-document-metric-block class="col-span-1" [metricNumber]="128" metricName="Documents">
@@ -84,7 +84,7 @@
           </tr>
         </thead>
         <tbody class="col-span-1 row-span-9 overflow-y-auto flex flex-col gap-2">
-          @for (document of userDocuments(); track document.documentId)
+          @for (document of documentService.userDocuments(); track document.documentId)
           {
           <tr app-document-table-row [documentId]="document.documentId" [documentName]="document.fileName"
             [documentSubtitle]="document.documentId" [documentCategory]="document.workspaceName" [minutesAgoEdited]="2"

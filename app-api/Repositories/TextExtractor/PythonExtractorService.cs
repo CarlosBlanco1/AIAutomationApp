@@ -32,7 +32,7 @@ class PythonExtractorService : ITextExtractorService
         return new Vector(unformattedEmbedding);
     }
 
-    public async Task<List<ChunkResponse>> GetTextEmbeddedChunksAsync(System.IO.Stream fileStream, string fileName, CancellationToken cancellationToken)
+    public async Task<List<ChunkResponse>> GetTextEmbeddedChunksAsync(Stream fileStream, string fileName, CancellationToken cancellationToken)
     {
         try
         {

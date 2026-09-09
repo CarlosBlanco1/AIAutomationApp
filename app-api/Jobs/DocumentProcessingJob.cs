@@ -26,11 +26,11 @@ public class DocumentProcessingJob(IDocumentRepository documentService,
             return;
         }
 
-
         var documentWorkspace = await workspaceRepository.GetWorkspaceByIdAsync(newDoc.WorkspaceId);
 
         try
         {
+            logger.LogInformation("Document fetching succesful! starting processing for doc : {documentId}", documentId);
             // Pending to Processing
             if (!await documentService.TryMarkProcessingAsync(documentId, cancellationToken))
             {
@@ -38,11 +38,16 @@ public class DocumentProcessingJob(IDocumentRepository documentService,
                 return;
             }
 
+            // Notify user document is now being processed
+            await hubContext.Clients
+            .Group($"user:{documentWorkspace!.OwnerId}")
+            .SendAsync("DocumentProcessingUpdated", documentId, cancellationToken);
+
             // Fetch file
             using var response = await storageService.GetFileAsync(newDoc.BlobKey, cancellationToken);
 
             // Call existing document/text/storage services
-            var fileChunks = await textExtractorService.GetTextEmbeddedChunksAsync(response.ResponseStream, newDoc.FileName, cancellationToken);
+            var fileChunks = await textExtractorService.GetTextEmbeddedChunksAsync(response.ResponseStream, newDoc.BlobKey, cancellationToken);
 
             fileChunks = fileChunks.OrderBy(c => c.Index).ToList();
 

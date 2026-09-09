@@ -9,4 +9,5 @@ export interface DocumentService {
     createDocument(request : CreateDocumentRequest) : Observable<void>;
     deleteDocument(documentId : string) : Observable<void>;
     getDownloadUrl(documentId : string) : Observable<{downloadUrl : string}>;
+    updateDocuments(updateDoc: DocumentDto) : void
 }

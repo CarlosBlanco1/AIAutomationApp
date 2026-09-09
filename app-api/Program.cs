@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.RateLimiting;
 using Hangfire;
 using Hangfire.PostgreSql;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,7 +28,11 @@ var logger = new LoggerConfiguration()
 builder.Logging.ClearProviders();
 builder.Logging.AddSerilog(logger);
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+});
+
 builder.Services.AddSignalR();
 
 builder.Services.AddDbContext<MydbContext>(options =>

@@ -7,7 +7,7 @@ import { HttpClient } from "@angular/common/http";
 import { AppConfigService } from "../configuration/app-config.service";
 
 export class ApiDocumentService implements DocumentService {
-    private baseUrl? : string;
+    private baseUrl?: string;
 
     private readonly httpClient = inject(HttpClient)
     private readonly configService = inject(AppConfigService);
@@ -18,14 +18,14 @@ export class ApiDocumentService implements DocumentService {
 
     userDocuments = signal<DocumentDto[]>([])
 
-    getSingleDocument(documentId : string) : Observable<DocumentDto> {
+    getSingleDocument(documentId: string): Observable<DocumentDto> {
         return this.httpClient.get<DocumentDto>(`${this.baseUrl}/single-doc/${documentId}`)
     }
-    
-    getDownloadUrl(documentId: string): Observable<{downloadUrl : string}> {
+
+    getDownloadUrl(documentId: string): Observable<{ downloadUrl: string }> {
         return this.httpClient.get<{ downloadUrl: string; }>(`${this.baseUrl}/download-url/${documentId}`)
     }
-    
+
     deleteDocument(documentId: string): Observable<void> {
         return this.httpClient.delete(`${this.baseUrl}/${documentId}`).pipe(map(() => void 0))
     }
@@ -48,4 +48,9 @@ export class ApiDocumentService implements DocumentService {
             .pipe(map(() => void 0))
     }
 
+    updateDocuments(updateDoc: DocumentDto) : void {
+        this.userDocuments.update(documents =>
+            documents.map(document => document.documentId == updateDoc.documentId ? updateDoc : document)
+        )
+    }
 }

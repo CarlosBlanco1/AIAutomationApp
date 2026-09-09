@@ -39,6 +39,8 @@ public class SQLDocumentRepository : IDocumentRepository
             FileSizeBytes = d.FileSizeBytes,
             Description = d.Description,
             Summary = d.Summary,
+            ProcessingStatus = d.ProcessingStatus,
+            ProcessingError = d.ProcessingError,
             CreatedAt = d.CreatedAt,
             Workspace = new Workspace
             {
@@ -62,6 +64,8 @@ public class SQLDocumentRepository : IDocumentRepository
             FileSizeBytes = d.FileSizeBytes,
             Description = d.Description,
             Summary = d.Summary,
+            ProcessingStatus = d.ProcessingStatus,
+            ProcessingError = d.ProcessingError,
             CreatedAt = d.CreatedAt,
             Workspace = new Workspace
             {
@@ -86,6 +90,8 @@ public class SQLDocumentRepository : IDocumentRepository
             FileSizeBytes = d.FileSizeBytes,
             Description = d.Description,
             Summary = d.Summary,
+            ProcessingStatus = d.ProcessingStatus,
+            ProcessingError = d.ProcessingError,
             CreatedAt = d.CreatedAt,
             Workspace = new Workspace
             {

@@ -36,24 +36,17 @@ export class DocumentsComponent {
   workspaceService = inject(WORKSPACE_SERVICE)
 
   private signalrService = inject(SignalRService);
-  userDocuments = signal<DocumentDto[]>([]);
 
   constructor(private ngxSmartModalService: NgxSmartModalService, private vcr: ViewContainerRef) {
-    this.documentService.getUserDocuments().subscribe({
-      next: (documents) => { 
-        this.userDocuments.set(documents);  
-        console.log(this.userDocuments)}
-    });
-
+    this.documentService.getUserDocuments().subscribe();
     this.workspaceService.getUserWorkspaces().subscribe();
 
     this.signalrService.startConnection();
     this.signalrService.awaitDocumentUpdates().subscribe((updatedDocumentId) => {
+
       this.documentService.getSingleDocument(updatedDocumentId)
         .subscribe((updatedDocument) => {
-          this.userDocuments.update(documents => documents.map(document =>
-            document.documentId === updatedDocumentId ? updatedDocument : document
-          ))
+          this.documentService.updateDocuments(updatedDocument);
         })
     });
   }

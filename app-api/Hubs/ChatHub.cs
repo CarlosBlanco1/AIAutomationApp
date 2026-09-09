@@ -14,9 +14,6 @@ public class ChatHub : Hub
     {
         var userId = Context.UserIdentifier;
 
-        Console.WriteLine("USER ID:");
-        Console.WriteLine(userId);
-
         if (string.IsNullOrWhiteSpace(userId))
         {
             Context.Abort();
