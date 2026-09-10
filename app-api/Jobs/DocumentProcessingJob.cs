@@ -14,9 +14,9 @@ public class DocumentProcessingJob(IDocumentRepository documentService,
     IMapper mapper,
     ILogger<DocumentProcessingJob> logger)
 {
+    [Queue("document-processing")]
     public async Task ProcessAsync(Guid documentId, CancellationToken cancellationToken)
     {
-
         // Load document
         var newDoc = await documentService.GetDocumentByIdAsync(documentId);
 
@@ -42,6 +42,8 @@ public class DocumentProcessingJob(IDocumentRepository documentService,
             await hubContext.Clients
             .Group($"user:{documentWorkspace!.OwnerId}")
             .SendAsync("DocumentProcessingUpdated", documentId, cancellationToken);
+
+            if (newDoc.BlobKey is null) { throw new Exception($"BlobKey for document : {documentId} is null!"); }
 
             // Fetch file
             using var response = await storageService.GetFileAsync(newDoc.BlobKey, cancellationToken);

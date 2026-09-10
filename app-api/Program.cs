@@ -48,7 +48,11 @@ builder.Services.AddHangfire(config =>
     config.UsePostgreSqlStorage(options =>
         options.UseNpgsqlConnection(builder.Configuration["ConnectionString"])));
 
-builder.Services.AddHangfireServer();
+builder.Services.AddHangfireServer(options =>
+{
+    options.Queues = ["document-processing"];
+    options.WorkerCount = 1;
+});
 
 builder.Services.AddScoped<IUserRepository, SQLUserRepository>();
 builder.Services.AddScoped<IWorkspaceRepository, SQLWorkspaceRepository>();
