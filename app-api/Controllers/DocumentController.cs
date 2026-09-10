@@ -108,32 +108,60 @@ public class DocumentController : Controller
 
             var newDoc = mapper.Map<Document>(createDocumentDTO);
             newDoc.ProcessingStatus = ProcessingStatus.Pending;
-            
-            var file = createDocumentDTO.File;
-            var fileExtension = Path.GetExtension(file.FileName).ToLowerInvariant();
-
-            var blobKey = $"users/{idInToken}/workspaces/{createDocumentDTO.WorkspaceId}/documents/{newDoc.DocumentId}{fileExtension}";
-
-            newDoc.BlobKey = blobKey;
-
-            //STORE IT IN R2
-            var uploadFileResult = await storageService.UploadAsync(file, blobKey, cancellationToken);
-
-            if (!uploadFileResult.Succeeded)
-            {
-                return BadRequest(uploadFileResult.Error);
-            }
 
             try
             {
                 newDoc = await documentRepository.CreateDocumentAsync(newDoc, cancellationToken);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                await storageService.DeleteAsync(blobKey); 
-                throw;
+                logger.LogError("An error ocurrred while creating the new document in the DB! " + ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, "Could not upload document to the DB");
             }
 
+
+            var file = createDocumentDTO.File;
+            var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
+
+            var blobKey = $"users/{idInToken}/workspaces/{createDocumentDTO.WorkspaceId}/documents/{newDoc.DocumentId}{extension}";
+
+            try
+            {
+                var uploadResult = await storageService.UploadAsync(file, blobKey, cancellationToken);
+
+                if (!uploadResult.Succeeded)
+                {
+                    newDoc.ProcessingStatus = ProcessingStatus.Failed;
+                    await documentRepository.UpdateDocumentAsync(newDoc.DocumentId, newDoc);
+
+                    return StatusCode(StatusCodes.Status500InternalServerError, uploadResult.Error);
+                }
+
+                newDoc.BlobKey = blobKey;
+                await documentRepository.UpdateDocumentAsync(newDoc.DocumentId, newDoc);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex,
+                    "Failed to upload document or save blob key for document {DocumentId}",
+                    newDoc.DocumentId);
+
+                newDoc.ProcessingStatus = ProcessingStatus.Failed;
+                await documentRepository.UpdateDocumentAsync(newDoc.DocumentId, newDoc);
+
+                try
+                {
+                    await storageService.DeleteAsync(blobKey);
+                }
+                catch (Exception cleanupEx)
+                {
+                    logger.LogWarning(cleanupEx,
+                        "Could not clean up blob {BlobKey}", blobKey);
+                }
+
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    "Could not upload the document.");
+            }
 
             backgroundJobs.Enqueue<DocumentProcessingJob>(job => job.ProcessAsync(newDoc.DocumentId, CancellationToken.None));
 
@@ -195,12 +223,16 @@ public class DocumentController : Controller
             return Forbid();
         }
 
-        var response = await storageService.DeleteAsync(document.BlobKey);
+        if(document.BlobKey != null)
+        {   
+            var response = await storageService.DeleteAsync(document.BlobKey);
 
-        if (!response.Contains("Successful deletion!"))
-        {
-            return BadRequest(response);
+            if (!response.Contains("Successful deletion!"))
+            {
+                return BadRequest(response);
+            }
         }
+
 
         await documentRepository.DeleteDocumentAsync(documentId);
 

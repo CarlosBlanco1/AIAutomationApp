@@ -11,7 +11,7 @@ public partial class Document
 
     public string FileName { get; set; } = null!;
 
-    public string BlobKey { get; set; } = null!;
+    public string? BlobKey { get; set; }
 
     public long FileSizeBytes {get; set;} 
 

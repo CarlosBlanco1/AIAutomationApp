@@ -13,7 +13,6 @@ import { HttpClient } from '@angular/common/http';
 import { DocumentDto } from '../../models/Documents/document-dto';
 import { FolderIconComponent } from "../../icons/folder-icon.component";
 import { CalendarIconComponent } from "../../icons/calendar-icon.component";
-import { AlphabetIconComponent } from "../../icons/alphabet-icon.component";
 import { SummaryIconComponent } from "../../icons/summary-icon.component";
 import { AiChatComponent } from "../ai-chat/ai-chat.component";
 
@@ -33,21 +32,24 @@ import { AiChatComponent } from "../ai-chat/ai-chat.component";
     CalendarIconComponent,
     SummaryIconComponent,
     AiChatComponent
-],
+  ],
 })
 
 export class SingleDocumentComponent {
   constructor(private route: ActivatedRoute, @Inject(DOCUMENT_SERVICE) private documentService: DocumentService, private http: HttpClient) {
     route.paramMap.subscribe(params => {
-     this.documentId.set(params.get('documentId')!);
+      this.documentId.set(params.get('documentId')!);
 
-      if(this.documentId() == null)
-      {
+      if (this.documentId() == null) {
         throw new Error("No document Id was passed in!");
       }
 
       documentService.getSingleDocument(this.documentId()!).subscribe({
         next: (res) => {
+          if (res.processingStatus !== "Completed") {
+            this.errorMessage = "Your document hasn't been processed successfully!"
+            return;
+          }
           this.document.set(res);
         },
         error: (err) => {

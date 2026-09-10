@@ -8,11 +8,12 @@ import { DeleteDocumentComponent } from "./delete-document/delete-document.compo
 import { RouterLink } from "@angular/router";
 import { StatsuPillComponent } from "./state-pill/status-pill.component";
 import { UserCircleComponent } from "../../icons/user-circle-icon.component";
+import { LockIconComponent } from "../../icons/lock-icon.component";
 
 @Component({
     selector: 'tr[app-document-table-row]',
     templateUrl: './document-table-row.component.html',
-    imports: [HorizontalDotsIconComponent, InfoIconComponent, TrashIconComponent, RouterLink, StatsuPillComponent, UserCircleComponent]
+    imports: [HorizontalDotsIconComponent, InfoIconComponent, TrashIconComponent, RouterLink, StatsuPillComponent, UserCircleComponent, LockIconComponent]
 })
 export class DocumentTableRowComponent {
     @Input({ required: true }) documentName!: string;

@@ -146,6 +146,7 @@ public class SQLDocumentRepository : IDocumentRepository
         var documentToUpdate = await _dbContext.Documents.FirstAsync(d => d.DocumentId == DocumentId);
 
         documentToUpdate.Description = updatedDocument.Description;
+        documentToUpdate.BlobKey = updatedDocument.BlobKey;
 
         await _dbContext.SaveChangesAsync();
 
