@@ -173,6 +173,37 @@ public partial class MydbContext : IdentityDbContext<User, IdentityRole<Guid>, G
                 .HasConstraintName("workspaces_owner_id_fkey");
         });
 
+        modelBuilder.Entity<RefreshToken>(entity =>
+        {
+            entity.HasKey(e => e.TokenId).HasName("refresh_tokens_pkey");
+
+            entity.ToTable("refresh_tokens");
+
+            entity.Property(e => e.UserId)
+            .HasColumnName("user_id")
+            .IsRequired();
+
+            entity.Property(e => e.TokenHash)
+            .HasColumnName("token_hash")
+            .IsRequired();
+
+            entity.Property(e => e.CreatedAt)
+            .HasColumnName("created_at")
+            .HasColumnType("timestamp with time zone");
+
+            entity.Property(e => e.ExpiresAt)
+            .HasColumnName("expires_at")
+            .HasColumnType("timestamp with time zone");
+
+            entity.HasIndex(e => e.UserId)
+            .IsUnique()
+            .HasDatabaseName("ux_refresh_tokens_user_id");
+
+            entity.HasOne(rt => rt.TokenUser).WithOne(u => u.RefreshToken)
+            .HasForeignKey<RefreshToken>(rt => rt.UserId)
+            .HasConstraintName("refresh_tokens_user_id_fkey");
+        });
+
         OnModelCreatingPartial(modelBuilder);
     }
 
