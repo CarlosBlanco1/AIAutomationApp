@@ -25,6 +25,7 @@ public partial class MydbContext : IdentityDbContext<User, IdentityRole<Guid>, G
 
     public virtual DbSet<Workspace> Workspaces { get; set; }
     public virtual DbSet<Chunk> Chunks { get; set; }
+    public virtual DbSet<RefreshToken> RefreshTokens {get; set;}
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
