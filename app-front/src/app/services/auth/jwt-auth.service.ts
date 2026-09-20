@@ -1,15 +1,15 @@
 import { inject, Injectable, signal } from "@angular/core";
 import { AuthService } from "./auth-service.interface";
-import { Observable, tap } from "rxjs";
+import { map, Observable, tap } from "rxjs";
 import { LoginRequest } from "../../models/Auth/login-request";
 import { LoginResponse } from "../../models/Auth/login-response";
 import { CreateUserRequest } from "../../models/Users/create-user-request";
 import { HttpClient } from "@angular/common/http";
-import { USER_SERVICE } from "../user/user-service.token";
 import { AppConfigService } from "../configuration/app-config.service";
 
 @Injectable({ providedIn: 'root' })
 export class JwtAuthService implements AuthService {
+
     private readonly httpClient = inject(HttpClient);
     private readonly configService = inject(AppConfigService);
 
@@ -34,9 +34,32 @@ export class JwtAuthService implements AuthService {
         }));
     }
 
-    logout(): void {
-        localStorage.removeItem('token');
-        this.isAuthenticated.set(false);
+    logout(): Observable<void> {
+        var baseUrl = `${this.configService.apiUrl}/api/Auth`;
+
+        return this.httpClient.post<void>(`${baseUrl}/Logout`, {}, { withCredentials: true }).pipe(
+            tap(() => {
+                localStorage.removeItem('token');
+                this.isAuthenticated.set(false);
+            })
+        )
+    }
+
+    fetchNewAcessToken(): Observable<void> {
+        var baseUrl = `${this.configService.apiUrl}/api/Auth`;
+
+        return this.httpClient.post<{ jwtToken: string }>(`${baseUrl}/Refresh`, {}, { withCredentials: true }).pipe(
+            tap((res) => {
+                localStorage.setItem('token', res.jwtToken)
+                this.isAuthenticated.set(true);
+            }),
+            map(() => void 0)
+        )
+    }
+
+    clearLocalSession(): void {
+        localStorage.removeItem('token')
+        this.isAuthenticated.set(false)
     }
 
     getToken(): string | null {

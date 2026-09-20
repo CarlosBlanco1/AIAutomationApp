@@ -8,7 +8,9 @@ export interface AuthService
 {
     register(request : CreateUserRequest) : Observable<string>;
     login(request : LoginRequest) : Observable<LoginResponse>;
-    logout() : void;
+    logout() : Observable<void>;
+    fetchNewAcessToken() : Observable<void>;
     getToken() : string | null;
+    clearLocalSession() : void
     isAuthenticated : WritableSignal<boolean>;
 }

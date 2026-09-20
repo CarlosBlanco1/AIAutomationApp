@@ -37,7 +37,7 @@ public class RefreshTokenCoordinator : IRefreshTokenCoordinator
         return new RefreshTokenIssueResult(rawRefreshToken, refreshToken.ExpiresAt);
     }
 
-    public async Task<RefreshTokenIssueResult> ValidateAndRotateRefreshToken(string rawRefreshToken, CancellationToken cancellationToken = default)
+    public async Task<RenewAccessTokenResult> ValidateAndRotateRefreshToken(string rawRefreshToken, CancellationToken cancellationToken = default)
     {
         var bytes = Encoding.UTF8.GetBytes(rawRefreshToken);
         var tokenHash = Convert.ToBase64String(SHA256.HashData(bytes));
@@ -66,10 +66,10 @@ public class RefreshTokenCoordinator : IRefreshTokenCoordinator
 
         await refreshTokenRepository.UpsertTokenForUserAsync(newRefreshToken, cancellationToken);
 
-        return new RefreshTokenIssueResult(newRawRefreshToken, newRefreshToken.ExpiresAt);
+        return new RenewAccessTokenResult(newRawRefreshToken, newRefreshToken.ExpiresAt, newRefreshToken.UserId);
     }
 
-    public async Task ClearUserRefreshToken(Guid userId, CancellationToken cancellationToken)
+    public async Task ClearUserRefreshToken(Guid userId, CancellationToken cancellationToken = default)
     {
         if(await userRepository.GetUserByIdAsync(userId) is null)
         {

@@ -66,6 +66,8 @@ builder.Services.AddScoped<ITokenRepository, TokenRepository>();
 builder.Services.AddScoped<IEmailSenderRepository, EmailRepository>();
 builder.Services.AddScoped<IChunkRepository, SQLChunkRepository>();
 builder.Services.AddScoped<DocumentProcessingJob>();
+builder.Services.AddScoped<IRefreshTokenCoordinator, RefreshTokenCoordinator>();
+builder.Services.AddScoped<IRefreshTokenRepository, SQLRefreshTokenRepository>();
 builder.Services.AddHttpClient("ExtendedTimeoutClient", client =>
 {
     client.Timeout = TimeSpan.FromMinutes(10);

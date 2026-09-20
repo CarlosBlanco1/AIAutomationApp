@@ -22,7 +22,8 @@ export class HeaderComponent {
     private router = inject(Router);
 
     onSignOut() : void{
-        this.authService.logout();
-        this.router.navigateByUrl('')
+        this.authService.logout().subscribe({
+            next : () => this.router.navigateByUrl('')
+        })
     }
 }
