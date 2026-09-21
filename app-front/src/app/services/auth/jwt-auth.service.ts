@@ -27,11 +27,13 @@ export class JwtAuthService implements AuthService {
         var baseUrl = `${this.configService.apiUrl}/api/Auth`;
 
         return this.httpClient.post<LoginResponse>(`${baseUrl}/Login`,
-            request
-        ).pipe(tap(response => {
-            localStorage.setItem('token', response.jwtToken);
-            this.isAuthenticated.set(true);
-        }));
+            request,
+            { withCredentials: true })
+            .pipe(
+                tap(response => {
+                    localStorage.setItem('token', response.jwtToken);
+                    this.isAuthenticated.set(true);
+                }));
     }
 
     logout(): Observable<void> {
@@ -48,13 +50,16 @@ export class JwtAuthService implements AuthService {
     fetchNewAcessToken(): Observable<void> {
         var baseUrl = `${this.configService.apiUrl}/api/Auth`;
 
-        return this.httpClient.post<{ jwtToken: string }>(`${baseUrl}/Refresh`, {}, { withCredentials: true }).pipe(
-            tap((res) => {
-                localStorage.setItem('token', res.jwtToken)
-                this.isAuthenticated.set(true);
-            }),
-            map(() => void 0)
-        )
+        return this.httpClient.post<{ jwtToken: string }>(`${baseUrl}/Refresh`,
+            {},
+            { withCredentials: true })
+            .pipe(
+                tap((res) => {
+                    localStorage.setItem('token', res.jwtToken)
+                    this.isAuthenticated.set(true);
+                }),
+                map(() => void 0)
+            )
     }
 
     clearLocalSession(): void {

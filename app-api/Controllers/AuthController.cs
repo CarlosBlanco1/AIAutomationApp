@@ -136,7 +136,7 @@ public class AuthController : ControllerBase
                 SameSite = SameSiteMode.Strict,
                 Secure = false, //CHANGE ON PROD
                 Expires = refreshTokenIssueResult.ExpiresAt,
-                Path = "api/Auth/Refresh"
+                Path = "/api/Auth/Refresh"
             });
 
             var user = await userRepository.GetUserByIdAsync(refreshTokenIssueResult.UserId);
