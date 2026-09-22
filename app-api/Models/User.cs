@@ -14,4 +14,5 @@ public partial class User : IdentityUser<Guid>
 
     public virtual ICollection<Workspace> Workspaces { get; set; } = new List<Workspace>();
     public virtual RefreshToken? RefreshToken {get; set;}
+    public virtual ICollection<IdempotencyRecord> IdempotencyRecords {get; set;} = new List<IdempotencyRecord>();
 }

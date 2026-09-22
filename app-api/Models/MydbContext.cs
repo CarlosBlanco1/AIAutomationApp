@@ -205,6 +205,53 @@ public partial class MydbContext : IdentityDbContext<User, IdentityRole<Guid>, G
             .HasConstraintName("refresh_tokens_user_id_fkey");
         });
 
+        modelBuilder.Entity<IdempotencyRecord>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("idempotency_records_pkey");
+
+            entity.ToTable("idempotency_records");
+
+            entity.Property(e => e.UserId)
+            .HasColumnName("user_id")
+            .IsRequired();
+
+            entity.Property(e => e.Operation)
+            .HasColumnName("operation")
+            .IsRequired();
+
+            entity.Property(e => e.ClientKey)
+            .HasColumnName("client_key")
+            .IsRequired();
+
+            entity.Property(e => e.RequestBodyHash)
+            .HasColumnName("request_body_hash")
+            .IsRequired();
+
+            entity.Property(e => e.ResponseStatusCode)
+            .HasColumnName("response_status_code");
+
+            entity.Property(e => e.ResponseBody)
+            .HasColumnName("response_body");
+
+            entity.Property(e => e.Status)
+                .HasConversion<string>()
+                .HasColumnName("status")
+                .IsRequired();
+
+            entity.Property(e => e.ExpirationDate)
+            .HasColumnName("expiration_date")
+            .HasColumnType("timestamp with time zone")
+            .IsRequired();
+
+            entity.HasIndex((e) => new {e.UserId, e.Operation, e.ClientKey})
+            .IsUnique()
+            .HasDatabaseName("ux_idempotency_records_user_id_operation_key");
+
+            entity.HasOne(ir => ir.Originator).WithMany(u => u.IdempotencyRecords)
+            .HasForeignKey(ir => ir.UserId)
+            .HasConstraintName("idempotency_records_user_id_fkey");
+        });
+
         OnModelCreatingPartial(modelBuilder);
     }
 
