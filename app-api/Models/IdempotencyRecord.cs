@@ -4,7 +4,7 @@ public class IdempotencyRecord
 {
     public Guid Id {get; set;}
     public Guid UserId {get; set;}
-    public string Operation {get; set;} = null!;
+    public IdempotencyRecordOperation Operation {get; set;}
     public string ClientKey {get; set;} = null!;
     public string RequestBodyHash {get; set;} = null!;
     public int? ResponseStatusCode {get; set;}

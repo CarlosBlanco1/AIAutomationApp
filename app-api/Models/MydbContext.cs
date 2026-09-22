@@ -216,6 +216,7 @@ public partial class MydbContext : IdentityDbContext<User, IdentityRole<Guid>, G
             .IsRequired();
 
             entity.Property(e => e.Operation)
+            .HasConversion<string>()
             .HasColumnName("operation")
             .IsRequired();
 
