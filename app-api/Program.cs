@@ -68,6 +68,7 @@ builder.Services.AddScoped<IChunkRepository, SQLChunkRepository>();
 builder.Services.AddScoped<DocumentProcessingJob>();
 builder.Services.AddScoped<IRefreshTokenCoordinator, RefreshTokenCoordinator>();
 builder.Services.AddScoped<IRefreshTokenRepository, SQLRefreshTokenRepository>();
+builder.Services.AddScoped<IIdempotencyRecordRepository, SQLIdempotencyRecordRepository>();
 builder.Services.AddHttpClient("ExtendedTimeoutClient", client =>
 {
     client.Timeout = TimeSpan.FromMinutes(10);

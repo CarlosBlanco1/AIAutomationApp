@@ -3,6 +3,9 @@ using System.ComponentModel.DataAnnotations;
 public class CreateDocumentDTO
 {
     [Required]
+    public string RequestKey {get; set;} = null!;
+    
+    [Required]
     [NotEmptyGuid(ErrorMessage = "Workspace Id is required")]
     public Guid WorkspaceId { get; set; }
     [Required]

@@ -5,6 +5,8 @@ import { DocumentService } from "./document-service.interface";
 import { inject, signal } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { AppConfigService } from "../configuration/app-config.service";
+import {v4 as uuidv4} from 'uuid';
+
 
 export class ApiDocumentService implements DocumentService {
     private baseUrl?: string;
@@ -37,8 +39,11 @@ export class ApiDocumentService implements DocumentService {
 
     createDocument(request: CreateDocumentRequest): Observable<void> {
 
+        let requestUuid = uuidv4();
+
         const formData = new FormData();
 
+        formData.append('requestKey', requestUuid);
         formData.append('workspaceId', request.workspaceId);
         formData.append('fileName', request.fileName);
         formData.append('description', request.description);
