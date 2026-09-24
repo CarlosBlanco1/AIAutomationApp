@@ -28,7 +28,12 @@ public class SQLWorkspaceRepository : IWorkspaceRepository
 
     public async Task DeleteWorkspaceAsync(Guid WorkspaceId)
     {
-        var WorkspaceToDelete = await _dbContext.Workspaces.FirstAsync(u => u.WorkspaceId == WorkspaceId);
+        var WorkspaceToDelete = await _dbContext.Workspaces.FirstOrDefaultAsync(u => u.WorkspaceId == WorkspaceId);
+
+        if(WorkspaceToDelete is null)
+        {
+            throw new Exception($"Workspace with Id : {WorkspaceId} couldn't be found. Delete process failed.");
+        }
 
         _dbContext.Workspaces.Remove(WorkspaceToDelete);
         await _dbContext.SaveChangesAsync();

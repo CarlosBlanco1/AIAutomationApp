@@ -7,6 +7,7 @@ import { LoadingAnimationComponent } from "../../../animations/loading-animation
 import { SparkleIconComponent } from "../../../icons/sparkle-icon.component";
 import { InputValidatorComponent } from "../../register/input-validator/input-validator.component";
 import { NgxSmartModalService } from 'ngx-smart-modal';
+import { v4 as uuidv4 } from 'uuid';
 
 @Component({
   selector: 'app-create-workspace',
@@ -55,6 +56,7 @@ export class CreateWorkspaceComponent {
     this.formState = 'loading';
 
     this.workspaceService.createWorkspace({
+      requestKey: uuidv4(),
       workspaceName: this.workspaceName.value!
     }).subscribe(
       {
