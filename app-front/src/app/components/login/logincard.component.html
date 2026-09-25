@@ -55,7 +55,7 @@
 @else if (formState === 'failure'){
 <div class="flex items-center justify-center bg-gray-400 min-w-full min-h-full">
     <app-failure-card primaryText="Failed to Login" [errorMessage]="errorMessage" (tryAgain)="tryAgain()"
-        secondaryText="Go to home" secondaryUrl="">
+        secondaryText="Go to home" secondaryUrl="/">
         <app-house-icon></app-house-icon>
     </app-failure-card>
 </div>

@@ -1,4 +1,4 @@
-import { Component, inject, OnDestroy } from '@angular/core';
+import { Component, inject, OnDestroy, signal } from '@angular/core';
 import { NgxSmartModalService } from 'ngx-smart-modal';
 import { DOCUMENT_SERVICE } from '../../../services/document/document-service.token';
 import { getRuleToMessageFile, getRuleToMessageText } from '../../../dictionaries/validation-messages';
@@ -9,10 +9,12 @@ import { CloudIconComponent } from '../../../icons/cloud-icon.component';
 import { UploadIconComponent } from '../../../icons/upload-icon.component';
 import { WORKSPACE_SERVICE } from '../../../services/workspace/workspace-service.token';
 import { Subject, takeUntil } from 'rxjs';
+import { LoadingAnimationComponent } from '../../../animations/loading-animation/loading-animation.component';
+import { FailureCardComponent } from '../../state-cards/failure-card/failure-card.component';
 
 @Component({
   selector: 'app-create-document',
-  imports: [ReactiveFormsModule, InputValidatorComponent, CloudIconComponent, UploadIconComponent],
+  imports: [ReactiveFormsModule, InputValidatorComponent, CloudIconComponent, UploadIconComponent, LoadingAnimationComponent, FailureCardComponent],
   templateUrl: './create-document.component.html'
 })
 export class CreateDocumentComponent implements OnDestroy {
@@ -79,6 +81,8 @@ export class CreateDocumentComponent implements OnDestroy {
 
   private documentService = inject(DOCUMENT_SERVICE)
 
+  formState = signal<createDocumentFormState>('failure');
+
   errorMessage = ''
   documentValidationMessages = getRuleToMessageText('Document Name', 2, 50);
   descriptionValidationMessages = getRuleToMessageText('Description', 2, 50);
@@ -128,6 +132,8 @@ export class CreateDocumentComponent implements OnDestroy {
       return;
     }
 
+    this.formState.set('loading');
+
     this.documentService.createDocument({
       workspaceId: this.workspaceId.value!,
       fileName: this.documentName.value!,
@@ -144,6 +150,7 @@ export class CreateDocumentComponent implements OnDestroy {
           this.onSuccess()
         },
         error: (err) => {
+          this.formState.set('failure');
           if (err.error && typeof err.error === 'object') {
             this.errorMessage = err.error.message || 'An error occurred';
           } else {
@@ -160,3 +167,5 @@ export class CreateDocumentComponent implements OnDestroy {
     this.cancelDocumentCreate$.complete();
   }
 }
+
+type createDocumentFormState = 'form' | 'failure' | 'loading';
