@@ -104,16 +104,6 @@ public class SQLDocumentRepository : IDocumentRepository
         .Where(d => d.WorkspaceId == workspaceId).ToListAsync();
     }
 
-    public async Task MarkProcessingFailedAsync(Guid documentId, string error, CancellationToken cancellationToken)
-    {
-        var documentToMark = await _dbContext.Documents.FirstAsync(d => d.DocumentId == documentId);
-
-        documentToMark.ProcessingStatus = ProcessingStatus.Failed;
-        documentToMark.ProcessingError = error;
-
-        await _dbContext.SaveChangesAsync(cancellationToken);
-    }
-
     public async Task<bool> TryMarkProcessingAsync(Guid documentId, CancellationToken cancellationToken)
     {
         var documentToMark = await _dbContext.Documents.FirstAsync(d => d.DocumentId == documentId);
@@ -153,11 +143,26 @@ public class SQLDocumentRepository : IDocumentRepository
         return documentToUpdate;
     }
 
-    public async Task MarkPendingAsync(Guid documentId, CancellationToken cancellationToken)
+    public async Task ResetProcessingDocumentAsync(Guid documentId, ProcessingStatus nextStatus, CancellationToken cancellationToken, string? error)
     {
-        var documentToMark = await _dbContext.Documents.FirstAsync(d => d.DocumentId == documentId);
+        var documentWhoseSummaryAndChunksMustBeDeleted = await _dbContext.Documents.FirstOrDefaultAsync(d => d.DocumentId == documentId, cancellationToken);
 
-        documentToMark.ProcessingStatus = ProcessingStatus.Pending;
+        if(documentWhoseSummaryAndChunksMustBeDeleted is null)
+        {
+            throw new Exception("Couldn't find document whose summary must be deleted");
+        }
+
+        documentWhoseSummaryAndChunksMustBeDeleted.Summary = null;
+        documentWhoseSummaryAndChunksMustBeDeleted.ProcessingStatus = nextStatus;
+
+        if(nextStatus == ProcessingStatus.Failed && error != null)
+        {
+            documentWhoseSummaryAndChunksMustBeDeleted.ProcessingError = error;
+        }
+
+        var chunksToDelete = await _dbContext.Chunks.Where(c => c.DocumentId == documentId).ToListAsync(cancellationToken);
+
+        _dbContext.Chunks.RemoveRange(chunksToDelete);
 
         await _dbContext.SaveChangesAsync(cancellationToken);
     }

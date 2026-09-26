@@ -10,6 +10,7 @@ public class DocumentProcessingJob(IDocumentRepository documentService,
     ITextExtractorService textExtractorService,
     IChunkRepository chunkRepository,
     IChatService chatService,
+    IBackgroundJobClient backgroundJobs,
     IHubContext<ChatHub> hubContext,
     IMapper mapper,
     ILogger<DocumentProcessingJob> logger)
@@ -22,11 +23,17 @@ public class DocumentProcessingJob(IDocumentRepository documentService,
 
         if (newDoc == null)
         {
-            logger.LogInformation("Document does not exist and cannot be processed.");
+            logger.LogInformation("Document : {DocumentId} does not exist and cannot be processed.", documentId);
             return;
         }
 
         var documentWorkspace = await workspaceRepository.GetWorkspaceByIdAsync(newDoc.WorkspaceId);
+
+        if (documentWorkspace == null)
+        {
+            logger.LogInformation("Workspace for document : {DocumentId} doesn't exist", documentId);
+            return;
+        }
 
         try
         {
@@ -38,12 +45,25 @@ public class DocumentProcessingJob(IDocumentRepository documentService,
                 return;
             }
 
-            // Notify user document is now being processed
-            await hubContext.Clients
-            .Group($"user:{documentWorkspace!.OwnerId}")
-            .SendAsync("DocumentProcessingUpdated", documentId, cancellationToken);
+            newDoc = await documentService.GetDocumentByIdAsync(documentId);
 
-            if (newDoc.BlobKey is null) { throw new Exception($"BlobKey for document : {documentId} is null!"); }
+            // Notify user document is now being processed
+            try
+            {
+                await hubContext.Clients
+                .Group($"user:{documentWorkspace!.OwnerId}")
+                .SendAsync("DocumentProcessingUpdated", documentId, cancellationToken);
+            }
+            catch(OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "SignalR notification for document set to processing state failed for document : {DocumentId}", documentId);
+            }
+
+            if (newDoc!.BlobKey is null) { throw new Exception($"BlobKey for document : {documentId} is null!"); }
 
             // Fetch file
             using var response = await storageService.GetFileAsync(newDoc.BlobKey, cancellationToken);
@@ -69,15 +89,41 @@ public class DocumentProcessingJob(IDocumentRepository documentService,
         catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
         {
             logger.LogInformation("Document processing interrupted because worker is stopping : {documentId}", documentId);
-            await documentService.MarkPendingAsync(documentId, CancellationToken.None);
+
+            try
+            {
+                await documentService.ResetProcessingDocumentAsync(documentId, ProcessingStatus.Pending, CancellationToken.None);
+            }
+            catch (Exception cleanupEx)
+            {
+                logger.LogError(cleanupEx, "Cleanup failed after cancellation for document ; {DocumentId}", documentId);
+                backgroundJobs.Enqueue<DocumentProcessingJob>(job => job.CleanupAsync(documentId));
+            }
             throw;
         } // Completed or Failed and notification
         catch (Exception ex)
         {
-            await documentService.MarkProcessingFailedAsync(documentId, "An error has ocurred while processing your document.", CancellationToken.None);
-            await hubContext.Clients
-            .Group($"user:{documentWorkspace!.OwnerId}")
-            .SendAsync("DocumentProcessingUpdated", documentId, cancellationToken);
+            try
+            {
+                await documentService.ResetProcessingDocumentAsync(documentId, ProcessingStatus.Failed, CancellationToken.None, "An error has ocurred while processing your document.");
+            }
+            catch (Exception cleanupEx)
+            {
+                logger.LogError(cleanupEx, "Cleanup failed after cancellation for document ; {DocumentId}", documentId);
+                backgroundJobs.Enqueue<DocumentProcessingJob>(job => job.CleanupAsync(documentId));
+            }
+
+            try
+            {
+                await hubContext.Clients
+                .Group($"user:{documentWorkspace!.OwnerId}")
+                .SendAsync("DocumentProcessingUpdated", documentId, CancellationToken.None);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "SignalR notification for document set to failed state failed for document : {DocumentId}", documentId);
+            }
+
             logger.LogError(ex, "An error has ocurred while processing the document : {documentId}", documentId);
             return;
         }
@@ -86,7 +132,7 @@ public class DocumentProcessingJob(IDocumentRepository documentService,
         {
             await hubContext.Clients
                 .Group($"user:{documentWorkspace!.OwnerId}")
-                .SendAsync("DocumentProcessingUpdated", documentId, cancellationToken);
+                .SendAsync("DocumentProcessingUpdated", documentId, CancellationToken.None);
         }
         catch (Exception ex)
         {
@@ -95,5 +141,20 @@ public class DocumentProcessingJob(IDocumentRepository documentService,
         }
 
         logger.LogInformation("Document {documentId} successfully processed.", documentId);
+    }
+
+    [Queue("cleanup")]
+    [AutomaticRetry(Attempts = 5)]
+    public async Task CleanupAsync(Guid documentId)
+    {
+        try
+        {
+            await documentService.ResetProcessingDocumentAsync(documentId, ProcessingStatus.Failed, CancellationToken.None, "Processing was interrupted and cleanup initially failed.");
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Exception thrown while running cleanup job for document : {DocumentId}", documentId);
+            throw;
+        }
     }
 }

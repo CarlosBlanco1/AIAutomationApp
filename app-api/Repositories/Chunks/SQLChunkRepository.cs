@@ -18,9 +18,10 @@ public class SQLChunkRepository : IChunkRepository
         return chunks;
     }
 
+
     public async Task<List<string>> GetRelevantChunksForEmbeddingForDocument(Vector queryEmbedding, int tokenBudget, Guid documentId, CancellationToken cancellationToken)
     {
-        if(tokenBudget <= 0)
+        if (tokenBudget <= 0)
         {
             throw new ArgumentOutOfRangeException(nameof(tokenBudget), "Token budget must be greater than 0");
         }
@@ -71,5 +72,11 @@ public class SQLChunkRepository : IChunkRepository
             Embedding = c.Embedding
         })
         .ToListAsync(cancellationToken);
+    }
+    public async Task DeleteChunksForDocumentAsync(Guid documentId, CancellationToken cancellationToken)
+    {
+        var chunksToDelete = await dbContext.Chunks.Where(c => c.DocumentId == documentId).ToListAsync(cancellationToken);
+        dbContext.Chunks.RemoveRange(chunksToDelete);
+        await dbContext.SaveChangesAsync();
     }
 }

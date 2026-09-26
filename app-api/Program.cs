@@ -50,7 +50,7 @@ builder.Services.AddHangfire(config =>
 
 builder.Services.AddHangfireServer(options =>
 {
-    options.Queues = ["document-processing"];
+    options.Queues = ["document-processing", "cleanup"];
     options.WorkerCount = 1;
 });
 

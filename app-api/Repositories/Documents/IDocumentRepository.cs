@@ -9,7 +9,6 @@ public interface IDocumentRepository
     Task<Document> UpdateDocumentAsync(Guid DocumentId, Document updatedDocument);
     Task DeleteDocumentAsync(Guid DocumentId);
     Task<bool> TryMarkProcessingAsync(Guid documentId, CancellationToken cancellationToken);
-    Task MarkProcessingFailedAsync(Guid documentId, string error, CancellationToken cancellationToken);
     Task CompleteProcessingAsync(Guid documentId, string summary, CancellationToken cancellationToken);
-    Task MarkPendingAsync(Guid documentId, CancellationToken cancellationToken);
+    Task ResetProcessingDocumentAsync(Guid documentId, ProcessingStatus nextStatus, CancellationToken cancellationToken, string? error = null);
 }
