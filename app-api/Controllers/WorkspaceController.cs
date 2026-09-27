@@ -19,7 +19,7 @@ public class WorkspaceController : ApiControllerBase
     private readonly IMapper mapper;
     private readonly ILogger logger;
 
-    public WorkspaceController(IWorkspaceRepository workspaceRepository, IIdempotencyRecordRepository idempotencyRecordRepository, IMapper mapper, ILogger logger)
+    public WorkspaceController(IWorkspaceRepository workspaceRepository, IIdempotencyRecordRepository idempotencyRecordRepository, IMapper mapper, ILogger<WorkspaceController> logger)
     {
         this.workspaceRepository = workspaceRepository;
         this.idempotencyRecordRepository = idempotencyRecordRepository;

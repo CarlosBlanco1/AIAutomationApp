@@ -81,7 +81,7 @@ export class CreateDocumentComponent implements OnDestroy {
 
   private documentService = inject(DOCUMENT_SERVICE)
 
-  formState = signal<createDocumentFormState>('failure');
+  formState = signal<createDocumentFormState>('form');
 
   errorMessage = ''
   documentValidationMessages = getRuleToMessageText('Document Name', 2, 50);
