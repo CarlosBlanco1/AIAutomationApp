@@ -120,6 +120,9 @@ spec:
             - name: FRONTEND_URL
               value: https://workspaceai.carlosblancodev.com
 
+            - name: RT_SECURE
+              value: true
+
           readinessProbe:
             httpGet:
               path: /health

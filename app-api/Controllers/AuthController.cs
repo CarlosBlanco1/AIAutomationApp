@@ -15,14 +15,16 @@ public class AuthController : ControllerBase
     private readonly IEmailSenderRepository emailSenderRepository;
     private readonly IRefreshTokenCoordinator refreshTokenCoordinator;
     private readonly IUserRepository userRepository;
+    private readonly IConfiguration configuration;
 
-    public AuthController(UserManager<User> userManager, ITokenRepository tokenRepository, IEmailSenderRepository emailSenderRepository, IRefreshTokenCoordinator refreshTokenCoordinator, IUserRepository userRepository)
+    public AuthController(UserManager<User> userManager, ITokenRepository tokenRepository, IEmailSenderRepository emailSenderRepository, IRefreshTokenCoordinator refreshTokenCoordinator, IUserRepository userRepository, IConfiguration configuration)
     {
         this.userManager = userManager;
         this.tokenRepository = tokenRepository;
         this.emailSenderRepository = emailSenderRepository;
         this.refreshTokenCoordinator = refreshTokenCoordinator;
         this.userRepository = userRepository;
+        this.configuration = configuration;
     }
 
     // POST api/Auth/Register
@@ -83,8 +85,8 @@ public class AuthController : ControllerBase
         Response.Cookies.Append("workspace_ai_refresh_token", refreshTokenResult!.RawRefreshToken, new CookieOptions
         {
             HttpOnly = true,
-            Secure = false, //SET TO TRUEE for Https only
-            SameSite = SameSiteMode.Strict, //NOT SURE IF IT'LL WORK, SAME DOMAIN SAME SITE?
+            Secure = bool.Parse(configuration["RT_SECURE"]!),
+            SameSite = SameSiteMode.Strict,
             Expires = refreshTokenResult.ExpiresAt,
             Path = "/api/Auth/Refresh"
         });
@@ -134,7 +136,7 @@ public class AuthController : ControllerBase
             {
                 HttpOnly = true,
                 SameSite = SameSiteMode.Strict,
-                Secure = false, //CHANGE ON PROD
+                Secure = bool.Parse(configuration["RT_SECURE"]!),
                 Expires = refreshTokenIssueResult.ExpiresAt,
                 Path = "/api/Auth/Refresh"
             });
