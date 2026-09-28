@@ -121,7 +121,7 @@ spec:
               value: https://workspaceai.carlosblancodev.com
 
             - name: RT_SECURE
-              value: true
+              value: "true"
 
           readinessProbe:
             httpGet:
