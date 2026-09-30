@@ -5,7 +5,7 @@ import { DocumentService } from "./document-service.interface";
 import { inject, signal } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { AppConfigService } from "../configuration/app-config.service";
-import {v4 as uuidv4} from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 
 
 export class ApiDocumentService implements DocumentService {
@@ -53,7 +53,7 @@ export class ApiDocumentService implements DocumentService {
             .pipe(map(() => void 0))
     }
 
-    updateDocuments(updateDoc: DocumentDto) : void {
+    updateDocuments(updateDoc: DocumentDto): void {
         this.userDocuments.update(documents =>
             documents.map(document => document.documentId == updateDoc.documentId ? updateDoc : document)
         )

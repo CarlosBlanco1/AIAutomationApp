@@ -9,4 +9,7 @@ import { Component, Input } from "@angular/core";
 export class DocumentMetricBlockComponent {
     @Input({required : true}) metricNumber!:number;
     @Input({required : true}) metricName!:string; 
+    @Input({required : true}) iconColor!:string;
+    @Input({required : true}) iconBackgroundColor!:string;
+    @Input({required : true}) cardColor!:string;
 }

@@ -29,14 +29,17 @@
       </div>
     </div>
     <div class="grid grid-cols-3 gap-4">
-      <app-document-metric-block class="col-span-1" [metricNumber]="documentService.userDocuments().length" metricName="Documents">
+      <app-document-metric-block class="col-span-1" [metricNumber]="documentService.userDocuments().length"
+        metricName="Total Documents" iconColor="#a855f7" iconBackgroundColor="#040c49" cardColor="#3E036B">
         <app-house-icon svgClass="size-5"></app-house-icon>
       </app-document-metric-block>
-      <app-document-metric-block class="col-span-1" [metricNumber]="128" metricName="Documents">
-        <app-house-icon svgClass="size-5"></app-house-icon>
+      <app-document-metric-block class="col-span-1" [metricNumber]="documentService.userDocuments().length"
+        metricName="Created by you" iconColor="#38BDF8" iconBackgroundColor="#040c49" cardColor="#16405C">
+        <app-pencil-icon svgClass="size-5"></app-pencil-icon>
       </app-document-metric-block>
-      <app-document-metric-block class="col-span-1" [metricNumber]="128" metricName="Documents">
-        <app-house-icon svgClass="size-5"></app-house-icon>
+      <app-document-metric-block class="col-span-1" [metricNumber]="0" metricName="Shared with you" iconColor="#4ADE80"
+        iconBackgroundColor="#040c49" cardColor="#123526">
+        <app-users-icon svgClass="size-5"></app-users-icon>
       </app-document-metric-block>
     </div>
   </div>
@@ -69,7 +72,8 @@
     </div>
     <hr class="max-lg:hidden text-gray-700 row-span-1" />
     <div class="row-span-10 grid grid-rows-1 h-full max-lg:pt-4">
-      <table class="text-sm text-(--text-gray) border-separate border-spacing-y-4 row-span-1 overflow-auto grid grid-cols-1 grid-rows-10">
+      <table
+        class="text-sm text-(--text-gray) border-separate border-spacing-y-4 row-span-1 overflow-auto grid grid-cols-1 grid-rows-10">
         <thead class="col-span-1 row-span-1 grid grid-cols-1 pb-6">
           <tr class="col-span-1 grid lg:grid-cols-13 max-lg:grid-cols-9">
             <th class="text-center px-3 col-span-1">
@@ -83,13 +87,13 @@
             <th class="text-start col-span-1"></th>
           </tr>
         </thead>
-        <tbody class="col-span-1 row-span-9 overflow-y-auto flex flex-col gap-2">
+        <tbody #documentContainer class="col-span-1 row-span-9 overflow-y-auto flex flex-col gap-2">
           @for (document of documentService.userDocuments(); track document.documentId)
           {
           <tr app-document-table-row [documentId]="document.documentId" [documentName]="document.fileName"
             [documentSubtitle]="document.documentId" [documentCategory]="document.workspaceName" [minutesAgoEdited]="2"
-            [processingStatus]="document.processingStatus"
-            class="grid lg:grid-cols-13 max-lg:grid-cols-9">
+            [processingStatus]="document.processingStatus" [isMenuVisible]="selectedDocumentId() === document.documentId"
+            (menuOpened)="onDocumentMenuOpened(document.documentId)" class="grid lg:grid-cols-13 max-lg:grid-cols-9" [containerBoundary]="documentContainer">
             <app-house-icon svgClass="size-5"></app-house-icon>
           </tr>
           }

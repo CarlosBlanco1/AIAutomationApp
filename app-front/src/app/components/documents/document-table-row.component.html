@@ -27,15 +27,15 @@
     <span class="max-xl:text-xs">You</span>
   </div>
 </td>
-<td class="col-span-1">
+<td class="col-span-1 relative">
   @if(processingStatus === "Completed" || processingStatus === "Failed")
   {
-  <div (click)="isHidden = !isHidden">
+  <div (click)="onSelectDropdown()">
     <app-horizontal-dots></app-horizontal-dots>
   </div>
-  <div id="custom-dropdown"
-    class="absolute flex-col gap-4 right-10 rounded-lg bg-(--color-bgcard) p-5 text-white w-auto"
-    [class.hidden]="isHidden" [class.inline-flex]="!isHidden">
+  <div #customDropdown class="absolute flex-col gap-4 right-10 rounded-lg bg-(--color-bgcard) p-5 text-white w-auto z-50"
+    [class.hidden]="!isMenuVisible" [class.inline-flex]="isMenuVisible" [class.top-full]="!openUpwards()"
+    [class.mt-2]="!openUpwards()" [class.bottom-full]="openUpwards()" [class.mb-2]="openUpwards()">
     @if(processingStatus === "Completed")
     {
     <div class="flex gap-2" [routerLink]="['/singledocument',documentId]">

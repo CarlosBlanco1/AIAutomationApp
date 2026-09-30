@@ -14,6 +14,8 @@ import { CreateDocumentComponent } from './create-document/create-document.compo
 import { WORKSPACE_SERVICE } from '../../services/workspace/workspace-service.token';
 import { SignalRService } from '../../services/signalr/signalr.service';
 import { DocumentDto } from '../../models/Documents/document-dto';
+import { PencilIconComponent } from '../../icons/pencil-icon.component';
+import { UsersIconComponent } from '../../icons/users-icon.component';
 
 @Component({
   selector: 'app-documents',
@@ -28,12 +30,29 @@ import { DocumentDto } from '../../models/Documents/document-dto';
     BaselineIconComponent,
     GridIconComponent,
     DocumentMetricBlockComponent,
-    DocumentTableRowComponent
+    DocumentTableRowComponent,
+    PencilIconComponent,
+    UsersIconComponent
   ],
 })
 export class DocumentsComponent {
+
   documentService = inject(DOCUMENT_SERVICE)
   workspaceService = inject(WORKSPACE_SERVICE)
+  
+  selectedDocumentId = signal<string | null>(null);
+
+  onDocumentMenuOpened(documentId: string) {
+
+    if(documentId === this.selectedDocumentId())
+    {
+      this.selectedDocumentId.set(null);
+    }
+    else
+    {
+      this.selectedDocumentId.set(documentId);
+    }
+  }
 
   private signalrService = inject(SignalRService);
 
