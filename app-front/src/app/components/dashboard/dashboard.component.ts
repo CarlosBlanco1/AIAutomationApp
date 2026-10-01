@@ -7,13 +7,18 @@ import { USER_SERVICE } from "../../services/user/user-service.token";
 import { DOCUMENT_SERVICE } from "../../services/document/document-service.token";
 import { ChartConfiguration, ChartType } from 'chart.js/auto';
 import { BaseChartDirective } from 'ng2-charts';
+import { MailIconComponent } from "../../icons/mail-icon.component";
+import { UsersIconComponent } from "../../icons/users-icon.component";
+import { TrendIconComponent } from "../../icons/trend-icon.component";
+import { SparkleIconComponent } from "../../icons/sparkle-icon.component";
+import { SparklineComponent } from "../../icons/sparkline.component";
 
 
 @Component({
     selector: 'app-dashboard',
     templateUrl: './dashboard.component.html',
     standalone: true,
-    imports: [DocumentIconComponent, EyeIconComponent, VerticalDotsIconComponent, PointerRightIconComponent, BaseChartDirective]
+    imports: [DocumentIconComponent, EyeIconComponent, VerticalDotsIconComponent, PointerRightIconComponent, BaseChartDirective, MailIconComponent, UsersIconComponent, TrendIconComponent, SparkleIconComponent, SparklineComponent]
 })
 
 export class DashboardComponent {
