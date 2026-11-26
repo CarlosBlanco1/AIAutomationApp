@@ -22,8 +22,6 @@ spec:
           image: pgvector/pgvector:pg16
           
           securityContext:
-            runAsUser: 70
-            runAsGroup: 70
             appArmorProfile:
               type: Unconfined 
               
