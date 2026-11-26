@@ -4,7 +4,7 @@ on:
     
 jobs:
   build-and-deploy:
-    runs-on: [self-hosted]
+    runs-on: [self-hosted, workspaceai]
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
